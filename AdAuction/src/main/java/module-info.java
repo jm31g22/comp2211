@@ -11,7 +11,6 @@ module uk.ac.soton.adauction {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens org.example.adauction to javafx.fxml;
-    exports uk.ac.soton.adauction.example;
     opens uk.ac.soton.adauction.example to javafx.fxml;
+    exports uk.ac.soton.adauction.example;
 }
