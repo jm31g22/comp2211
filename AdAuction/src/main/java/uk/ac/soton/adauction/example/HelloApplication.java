@@ -1,4 +1,4 @@
-package org.example.adaduction;
+package uk.ac.soton.adauction.example;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -1,4 +1,4 @@
-module org.example.adaduction {
+module uk.ac.soton.adauction {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -11,6 +11,7 @@ module org.example.adaduction {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens org.example.adaduction to javafx.fxml;
-    exports org.example.adaduction;
+    opens org.example.adauction to javafx.fxml;
+    exports uk.ac.soton.adauction.example;
+    opens uk.ac.soton.adauction.example to javafx.fxml;
 }

@@ -1,4 +1,4 @@
-package org.example.adaduction;
+package uk.ac.soton.adauction.example;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
