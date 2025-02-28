@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="820.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.DashBoardController">
+   <VBox prefHeight="713.0" prefWidth="156.0" BorderPane.alignment="CENTER">
+      <children>
+         <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@./assets/logo.png" />
+            </image>
+         </ImageView>
+         <VBox prefHeight="675.0" prefWidth="100.0" style="-fx-background-color: #1F263E;">
+            <children>
+               <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" style="-fx-text-fill: white; -fx-font-weight: bold;" text="Quick Access">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <HBox prefHeight="50.0" prefWidth="200.0" style="-fx-background-color: #303750">
+                  <children>
+                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@./assets/house.png" />
+                        </image>
+                        <HBox.margin>
+                           <Insets bottom="10.0" left="5.0" top="10.0" />
+                        </HBox.margin>
+                     </ImageView>
+                     <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold" text="Dashboard">
+                        <HBox.margin>
+                           <Insets bottom="10.0" top="10.0" />
+                        </HBox.margin>
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                     </Button>
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+      </children>
+   </VBox>
+   <HBox layoutX="485.0" prefHeight="50.0" prefWidth="350.0">
+      <children>
+         <HBox prefHeight="50.0" prefWidth="100.0">
+            <children>
+               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@./assets/house_dark.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets bottom="10.0" left="5.0" top="10.0" />
+                  </HBox.margin>
+               </ImageView>
+               <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Home">
+                  <HBox.margin>
+                     <Insets bottom="10.0" top="10.0" />
+                  </HBox.margin>
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Button>
+            </children>
+         </HBox>
+         <HBox prefHeight="50.0" prefWidth="116.0">
+            <children>
+               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@./assets/phone-call.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets bottom="10.0" left="5.0" top="10.0" />
+                  </HBox.margin>
+               </ImageView>
+               <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="84.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Support">
+                  <HBox.margin>
+                     <Insets bottom="10.0" top="10.0" />
+                  </HBox.margin>
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Button>
+            </children>
+         </HBox>
+         <HBox prefHeight="50.0" prefWidth="100.0">
+            <children>
+               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@./assets/back.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets bottom="10.0" left="5.0" top="10.0" />
+                  </HBox.margin>
+               </ImageView>
+               <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Back">
+                  <HBox.margin>
+                     <Insets bottom="10.0" top="10.0" />
+                  </HBox.margin>
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Button>
+            </children>
+         </HBox>
+      </children>
+   </HBox>
+   <BorderPane layoutX="225.0" layoutY="250.0" prefHeight="450.0" prefWidth="570.0">
+      <top>
+         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      </top></BorderPane>
+   <SplitPane dividerPositions="0.15" layoutX="225.0" layoutY="200.0" orientation="VERTICAL" prefHeight="480.0" prefWidth="570.0">
+     <items>
+       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+            <children>
+               <PieChart fx:id="impressionPie" prefWidth="570.0"/>
+            </children>
+       </AnchorPane>
+     </items>
+   </SplitPane>
+</AnchorPane>
