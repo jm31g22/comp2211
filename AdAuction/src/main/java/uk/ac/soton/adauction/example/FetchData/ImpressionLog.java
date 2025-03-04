@@ -8,9 +8,9 @@ import java.util.HashMap;
  * Class to obtain data from the impression log
  */
 public class ImpressionLog {
-    private static final String JDBC_URL = "jdbc:mysql://localhost:3306/testcampaign?rewriteBatchedStatements=true";
+    private static final String JDBC_URL = "jdbc:mysql://185.247.116.78:3306/2month_campaign?user=root&password=Group34Southampton!&rewriteBatchedStatements=true";
     private static final String JDBC_USER = "root";
-    private static final String JDBC_PASSWORD = "root";
+    private static final String JDBC_PASSWORD = "Group34Southampton!";
 
     /**
      * Function to fetch all impression data
@@ -88,31 +88,15 @@ public class ImpressionLog {
                 JDBC_URL, JDBC_USER, JDBC_PASSWORD);
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "select impression_date, count(*) as count from impression_log group by impression_date";
+            String strSelect = "select date(impression_log.impression_date) as date, count(*) as count from impression_log group by date";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
-            String currentDate = "";
-            int currentCount = 0;
-            boolean ini = true;
             while (rs.next()) {
-                String date = rs.getDate("impression_date").toString();
-                if (ini) {
-                    currentDate = date;
-                    ini = false;
-                }
+                String date = rs.getDate("date").toString();
                 int count = rs.getInt("count");
-                if (!currentDate.equals(date)){
-                    counts.put(currentDate,currentCount);
-                    System.out.println("impression date: " + currentDate + " count: " + currentCount);
-                    currentDate = date;
-                    currentCount = count;
-                }else{
-                    currentCount += count;
-                }
-
+                counts.put(date,count);
+                System.out.println("impression date: " + date + " count: " + count);
             }
-            counts.put(currentDate,currentCount);
-            System.out.println("impression date: " + currentDate + " count: " + currentCount);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -125,32 +109,58 @@ public class ImpressionLog {
                 JDBC_URL, JDBC_USER, JDBC_PASSWORD);
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "select impression_date, count(*) as count from impression_log group by impression_date";
+            String strSelect = "select date_format(impression_date, '%Y-%m-%d %H:00:00') as time, count(*) as count from impression_log group by time";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
-            String currentTime = "";
-            int currentCount = 0;
-            boolean ini = true;
             while (rs.next()) {
-                String time = rs.getTimestamp("impression_date").toString();
-                time = time.substring(0,14).concat("00:00");
-                if (ini) {
-                    currentTime = time;
-                    ini = false;
-                }
+                String time = rs.getTimestamp("time").toString();
                 int count = rs.getInt("count");
-                if (!currentTime.equals(time)){
-                    counts.put(currentTime,currentCount);
-                    System.out.println("impression time: " + currentTime + " count: " + currentCount);
-                    currentTime = time;
-                    currentCount = count;
-                }else{
-                    currentCount += count;
-                }
-
+                counts.put(time,count);
+                System.out.println("impression time: " + time + " count: " + count);
             }
-            counts.put(currentTime,currentCount);
-            System.out.println("impression date: " + currentTime + " count: " + currentCount);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return counts;
+    }
+
+    public HashMap<String, Integer> fetchImpressionWeekCount(){
+        HashMap<String, Integer> counts = new HashMap<>();
+        try (Connection conn = DriverManager.getConnection(
+                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+             Statement stmt = conn.createStatement();
+        ) {
+            String strSelect = "select extract(week from impression_date) as week, count(*) as count from impression_log group by week";
+            System.out.println("SQL statement " + strSelect + " called");
+            ResultSet rs = stmt.executeQuery(strSelect);
+            while (rs.next()) {
+                String time = String.valueOf(rs.getLong("week"));
+                Integer count = rs.getInt("count");
+                time = "Week " + time;
+                counts.put(time, count);
+                System.out.println("impression week: " + time + " count: " + count);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return counts;
+    }
+
+    public HashMap<String, Integer> fetchImpressionMonthCount(){
+        HashMap<String, Integer> counts = new HashMap<>();
+        try (Connection conn = DriverManager.getConnection(
+                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+             Statement stmt = conn.createStatement();
+        ) {
+            String strSelect = "select extract(month from impression_date) as month, count(*) as count from impression_log group by month";
+            System.out.println("SQL statement " + strSelect + " called");
+            ResultSet rs = stmt.executeQuery(strSelect);
+            while (rs.next()) {
+                String time = String.valueOf(rs.getLong("Month"));
+                Integer count = rs.getInt("count");
+                counts.put(time, count);
+                System.out.println("impression month: " + time + " count: " + count);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
