@@ -7,11 +7,7 @@ import java.util.HashMap;
 /**
  * Class to obtain data from the impression log
  */
-public class ImpressionLog {
-    private static final String JDBC_URL = "jdbc:mysql://185.247.116.78:3306/2month_campaign?user=root&password=Group34Southampton!&rewriteBatchedStatements=true";
-    private static final String JDBC_USER = "root";
-    private static final String JDBC_PASSWORD = "Group34Southampton!";
-
+public class ImpressionLog extends Log{
     /**
      * Function to fetch all impression data
      *
@@ -19,8 +15,7 @@ public class ImpressionLog {
      */
     public ArrayList<Impression> fetchAll() {
         ArrayList<Impression> impressions = new ArrayList<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select * from impression_log";
@@ -54,8 +49,7 @@ public class ImpressionLog {
         Integer male = 0;
         Integer female = 0;
         Integer total = 0;
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "SELECT gender FROM impression_log";
@@ -84,8 +78,7 @@ public class ImpressionLog {
 
     public HashMap<String, Integer> fetchImpressionDateCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select date(impression_log.impression_date) as date, count(*) as count from impression_log group by date";
@@ -105,8 +98,7 @@ public class ImpressionLog {
 
     public HashMap<String, Integer> fetchImpressionHourCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select date_format(impression_date, '%Y-%m-%d %H:00:00') as time, count(*) as count from impression_log group by time";
@@ -126,8 +118,7 @@ public class ImpressionLog {
 
     public HashMap<String, Integer> fetchImpressionWeekCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select extract(week from impression_date) as week, count(*) as count from impression_log group by week";
@@ -148,8 +139,7 @@ public class ImpressionLog {
 
     public HashMap<String, Integer> fetchImpressionMonthCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select extract(month from impression_date) as month, count(*) as count from impression_log group by month";

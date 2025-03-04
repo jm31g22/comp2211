@@ -10,14 +10,15 @@ import java.io.IOException;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("dashboard.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 1020, 713);
-        stage.setTitle("Ad Dashboard");
-        stage.setScene(scene);
-        stage.show();
+        SceneManager.setStage(stage);
+        try {
+            SceneManager.switchScene("dashboard.fxml"); // Load the first scene
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }

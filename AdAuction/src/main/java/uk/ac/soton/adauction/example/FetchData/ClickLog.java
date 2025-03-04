@@ -3,17 +3,16 @@ package uk.ac.soton.adauction.example.FetchData;
 import java.sql.*;
 import java.util.HashMap;
 
-public class ClickLog {
-    private static final String JDBC_URL = "jdbc:mysql://185.247.116.78:3306/2month_campaign?user=root&password=Group34Southampton!&rewriteBatchedStatements=true";
-    private static final String JDBC_USER = "root";
-    private static final String JDBC_PASSWORD = "Group34Southampton!";
+public class ClickLog extends Log{
+
 
     public HashMap<String, Integer> fetchClickDateCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             Statement stmt = conn.createStatement();
-        ) {
+
+        Statement stmt;
+        try {
+            stmt = conn.createStatement();
+
             String strSelect = "select date(click_log.click_date) as date, count(*) as count from click_log group by date";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
@@ -26,14 +25,14 @@ public class ClickLog {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return counts;
     }
 
     public HashMap<String, Integer> fetchClickHourCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             Statement stmt = conn.createStatement();
+        try (
+             Statement stmt = conn.createStatement()
         ) {
             String strSelect = "select date_format(click_date, '%Y-%m-%d %H:00:00') as click_time, count(*) as count from click_log group by click_time";
             System.out.println("SQL statement " + strSelect + " called");
@@ -52,9 +51,8 @@ public class ClickLog {
 
     public HashMap<String, Integer> fetchClickWeekCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             Statement stmt = conn.createStatement();
+        try (
+             Statement stmt = conn.createStatement()
         ) {
             String strSelect = "select extract(week from click_date) as week, count(*) as count from click_log group by week";
             System.out.println("SQL statement " + strSelect + " called");
@@ -74,9 +72,8 @@ public class ClickLog {
 
     public HashMap<String, Integer> fetchClickMonthCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             Statement stmt = conn.createStatement();
+        try (
+             Statement stmt = conn.createStatement()
         ) {
             String strSelect = "select extract(month from click_date) as month, count(*) as count from click_log group by month";
             System.out.println("SQL statement " + strSelect + " called");
@@ -95,9 +92,8 @@ public class ClickLog {
 
     public HashMap<String, Integer> fetchUniqueDateCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             Statement stmt = conn.createStatement();
+        try (
+             Statement stmt = conn.createStatement()
         ) {
             String strSelect = "with first_date as (select id, min(date(click_date)) as date from click_log group by id) select first_date.date as unique_date, count(*) as count from first_date group by first_date.date";
             System.out.println("SQL statement " + strSelect + " called");
@@ -116,9 +112,8 @@ public class ClickLog {
 
     public HashMap<String, Integer> fetchUniqueHourCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             Statement stmt = conn.createStatement();
+        try (
+             Statement stmt = conn.createStatement()
         ) {
             String strSelect = "with first_date as (select id, min(date_format( click_date, '%Y-%m-%d %H:00:00' )) as date from click_log group by id) select date_format(first_date.date, '%Y-%m-%d %H:00:00' ) as time, count(*) as count from first_date group by time";
             System.out.println("SQL statement " + strSelect + " called");
@@ -137,9 +132,8 @@ public class ClickLog {
 
     public HashMap<String, Integer> fetchUniqueWeekCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             Statement stmt = conn.createStatement();
+        try (
+             Statement stmt = conn.createStatement()
         ) {
             String strSelect = "with first_date as (select id, min(week(click_date)) as date from click_log group by id) select first_date.date as week, count(*) as count from first_date group by first_date.date";
             System.out.println("SQL statement " + strSelect + " called");
@@ -159,9 +153,8 @@ public class ClickLog {
 
     public HashMap<String, Integer> fetchUniqueMonthCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             Statement stmt = conn.createStatement();
+        try (
+             Statement stmt = conn.createStatement()
         ) {
             String strSelect = "with first_date as (select id, min(month(click_date)) as date from click_log group by id) select first_date.date as month, count(*) as count from first_date group by first_date.date";
             System.out.println("SQL statement " + strSelect + " called");

@@ -3,15 +3,12 @@ package uk.ac.soton.adauction.example.FetchData;
 import java.sql.*;
 import java.util.HashMap;
 
-public class ServerLog {
-    private static final String JDBC_URL = "jdbc:mysql://185.247.116.78:3306/2month_campaign?user=root&password=Group34Southampton!&rewriteBatchedStatements=true";
-    private static final String JDBC_USER = "root";
-    private static final String JDBC_PASSWORD = "Group34Southampton!";
+public class ServerLog extends Log{
+
 
     public HashMap<String, Integer> fetchConversionDateCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select date(server_log.entry_date) as date, count(*) as count from server_log where conversion = 'Yes' group by date";
@@ -31,9 +28,8 @@ public class ServerLog {
 
     public HashMap<String, Integer> fetchConversionHourCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
-             Statement stmt = conn.createStatement();
+        try (
+             Statement stmt = conn.createStatement()
         ) {
             String strSelect = "select date_format(server_log.entry_date, '%Y-%m-%d %H:00:00') as time, count(*) as count from server_log where conversion = 'Yes' group by time";
             System.out.println("SQL statement " + strSelect + " called");
@@ -52,8 +48,7 @@ public class ServerLog {
 
     public HashMap<String, Integer> fetchConversionWeekCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select extract(week from server_log.entry_date) as week, count(*) as count from server_log where conversion = 'Yes' group by week";
@@ -74,8 +69,7 @@ public class ServerLog {
 
     public HashMap<String, Integer> fetchConversionMonthCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select extract(month from server_log.entry_date) as month, count(*) as count from server_log where conversion = 'Yes' group by month";
@@ -95,8 +89,7 @@ public class ServerLog {
 
     public HashMap<String, Integer> fetchBounceDateCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select date(server_log.entry_date) as date, count(*) as count from server_log where timediff(server_log.exit_date, server_log.entry_date) <= time('00:00:10') or pages_viewed = 1 group by date;";
@@ -116,8 +109,7 @@ public class ServerLog {
 
     public HashMap<String, Integer> fetchBounceHourCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select date_format(server_log.entry_date, '%Y-%m-%d %H:00:00') as time, count(*) as count from server_log where timediff(server_log.exit_date, server_log.entry_date) <= time('00:00:10') or pages_viewed = 1 group by time";
@@ -137,8 +129,7 @@ public class ServerLog {
 
     public HashMap<String, Integer> fetchBounceWeekCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select extract(week from server_log.entry_date) as week, count(*) as count from server_log where timediff(server_log.exit_date, server_log.entry_date) <= time('00:00:10') or pages_viewed = 1 group by week";
@@ -159,8 +150,7 @@ public class ServerLog {
 
     public HashMap<String, Integer> fetchBounceMonthCount(){
         HashMap<String, Integer> counts = new HashMap<>();
-        try (Connection conn = DriverManager.getConnection(
-                JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        try (
              Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select extract(month from server_log.entry_date) as month, count(*) as count from server_log where timediff(server_log.exit_date, server_log.entry_date) <= time('00:00:10') or pages_viewed = 1 group by month";
