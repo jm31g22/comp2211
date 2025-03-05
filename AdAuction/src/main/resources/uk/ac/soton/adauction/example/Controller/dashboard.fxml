@@ -18,7 +18,7 @@
                <children>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@./assets/house_dark.png" />
+                        <Image url="@../assets/house_dark.png" />
                      </image>
                      <HBox.margin>
                         <Insets bottom="10.0" left="5.0" top="10.0" />
@@ -35,7 +35,7 @@
                <children>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@./assets/phone-call.png" />
+                        <Image url="@../assets/phone-call.png" />
                      </image>
                      <HBox.margin>
                         <Insets bottom="10.0" left="5.0" top="10.0" />
@@ -52,7 +52,7 @@
                <children>
                   <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@./assets/back.png" />
+                        <Image url="@../assets/back.png" />
                      </image>
                      <HBox.margin>
                         <Insets bottom="10.0" left="5.0" top="10.0" />
@@ -71,7 +71,7 @@
          <children>
             <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@./assets/logo.png" />
+                  <Image url="@../assets/logo.png" />
                </image>
             </ImageView>
             <VBox alignment="TOP_CENTER" prefHeight="675.0" prefWidth="100.0" style="-fx-background-color: #1F263E;">
@@ -85,7 +85,7 @@
                      <children>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@./assets/house.png" />
+                              <Image url="@../assets/house.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="20.0"/>
@@ -113,7 +113,7 @@
                      <children>
                         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@./assets/chart.png" />
+                              <Image url="@../assets/chart.png" />
                            </image>
                            <HBox.margin>
                               <Insets right="28.0"/>
