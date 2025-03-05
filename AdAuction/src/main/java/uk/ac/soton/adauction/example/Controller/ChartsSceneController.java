@@ -3,6 +3,7 @@ package uk.ac.soton.adauction.example.Controller;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.StackPane;
@@ -56,9 +57,11 @@ public class ChartsSceneController extends SceneController {
             if (selectedIndex == 0) {
                 currentPage = 0;
                 loadLineChartPage();
+                timeSelection.opacityProperty().setValue(1);
             } else if (selectedIndex == 1) {
                 currentPage = 1;
                 loadPieChartPage();
+                timeSelection.opacityProperty().setValue(0);
             } else if (selectedIndex == 2) {
                 currentPage = 2;
 
@@ -103,6 +106,9 @@ public class ChartsSceneController extends SceneController {
                         new PieChart.Data("Female", femaleCount),
                         new PieChart.Data("Male", maleCount));
         impressionPie.setData(pieChartData);
+        pieChartData.get(0).getNode().setStyle("-fx-pie-color: #b81370;");
+        pieChartData.get(1).getNode().setStyle("-fx-pie-color: #2d58d6;");
+        impressionPie.setPrefWidth(770.0);
         impressionPie.setLegendVisible(false);
     }
 
@@ -367,6 +373,10 @@ public class ChartsSceneController extends SceneController {
         metricsLine.getData().add(series);
         metricsLine.setLegendVisible(false);
         metricsLine.setPrefWidth(770.0);
+        metricsLine.setHorizontalGridLinesVisible(false);
+        metricsLine.setVerticalGridLinesVisible(false);
+        Node line = series.getNode().lookup(".chart-series-line");
+        line.setStyle("-fx-stroke: #6677b2;");
         stackPaneGraph.getChildren().clear();
         stackPaneGraph.getChildren().add(metricsLine);
         System.out.println("Data Loaded");

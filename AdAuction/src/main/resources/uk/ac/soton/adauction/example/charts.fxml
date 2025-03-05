@@ -7,12 +7,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/21.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.ChartsSceneController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.ChartsSceneController">
    <VBox prefHeight="713.0" prefWidth="156.0" BorderPane.alignment="CENTER">
       <children>
          <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
             <image>
-               <Image url="@../assets/logo.png" />
+               <Image url="@assets/logo.png" />
             </image>
          </ImageView>
          <VBox prefHeight="675.0" prefWidth="100.0" style="-fx-background-color: #1F263E;">
@@ -26,10 +26,10 @@
                   <children>
                      <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                           <Image url="@../assets/house.png" />
+                           <Image url="@assets/house.png" />
                         </image>
                         <HBox.margin>
-                           <Insets right="20.0"/>
+                           <Insets right="20.0" />
                         </HBox.margin>
                      </ImageView>
                      <Button mnemonicParsing="false" onAction="#switchToDashboard" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
@@ -54,10 +54,10 @@
                   <children>
                      <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                           <Image url="@../assets/chart.png" />
+                           <Image url="@assets/chart.png" />
                         </image>
                         <HBox.margin>
-                           <Insets right="28.0"/>
+                           <Insets right="28.0" />
                         </HBox.margin>
                      </ImageView>
                      <Button mnemonicParsing="false" onAction="#switchToCharts" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Graphs">
@@ -76,7 +76,7 @@
             <children>
                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                     <Image url="@../assets/house_dark.png" />
+                     <Image url="@assets/house_dark.png" />
                   </image>
                   <HBox.margin>
                      <Insets bottom="10.0" left="5.0" top="10.0" />
@@ -96,7 +96,7 @@
             <children>
                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                     <Image url="@../assets/phone-call.png" />
+                     <Image url="@assets/phone-call.png" />
                   </image>
                   <HBox.margin>
                      <Insets bottom="10.0" left="5.0" top="10.0" />
@@ -116,7 +116,7 @@
             <children>
                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                     <Image url="@../assets/back.png" />
+                     <Image url="@assets/back.png" />
                   </image>
                   <HBox.margin>
                      <Insets bottom="10.0" left="5.0" top="10.0" />
@@ -142,13 +142,13 @@
      <items>
        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
             <children>
-               <ChoiceBox fx:id="chartSelection" layoutX="14.0" layoutY="23.0" prefWidth="150.0" />
-               <ChoiceBox fx:id="metricSelection" layoutX="310.0" layoutY="23.0" prefWidth="150.0" />
-               <ChoiceBox fx:id="timeSelection" layoutX="607.0" layoutY="23.0" prefWidth="150.0" />
+               <ChoiceBox fx:id="chartSelection" layoutX="14.0" layoutY="19.0" prefHeight="30" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" styleClass="choice-box" stylesheets="@assets/chart_styles.css" />
+               <ChoiceBox fx:id="metricSelection" layoutX="290.0" layoutY="19.0" prefHeight="30" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" styleClass="choice-box" stylesheets="@assets/chart_styles.css" />
+               <ChoiceBox fx:id="timeSelection" layoutX="557.0" layoutY="19.0" prefHeight="30" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" styleClass="choice-box" stylesheets="@assets/chart_styles.css" />
             </children></AnchorPane>
        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
             <StackPane fx:id="stackPaneGraph">
-               <PieChart fx:id="impressionPie" prefWidth="570.0" />
+               <PieChart fx:id="impressionPie" prefWidth="570.0" styleClass="chart-pie-gender"/>
                <LineChart fx:id="metricsLine" axisSortingPolicy="NONE" legendVisible="false" prefWidth="700.0">
                   <xAxis>
                      <CategoryAxis fx:id="xAxis" />
