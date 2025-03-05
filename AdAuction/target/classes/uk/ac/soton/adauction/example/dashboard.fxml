@@ -77,7 +77,7 @@
             </HBox>
          </children>
       </HBox>
-      <VBox alignment="BOTTOM_CENTER" prefHeight="713.0" prefWidth="205.0">
+      <VBox alignment="BOTTOM_CENTER" prefHeight="713.0" prefWidth="200.0">
          <children>
             <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>

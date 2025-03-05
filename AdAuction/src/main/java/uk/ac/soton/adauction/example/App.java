@@ -2,7 +2,6 @@ package uk.ac.soton.adauction.example;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import uk.ac.soton.adauction.example.Controller.SceneManager;
 
 import java.io.IOException;
 
