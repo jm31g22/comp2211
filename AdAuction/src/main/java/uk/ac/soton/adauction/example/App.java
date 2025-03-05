@@ -2,24 +2,34 @@ package uk.ac.soton.adauction.example;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import uk.ac.soton.adauction.example.FetchData.MetricsLoader;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class App extends Application {
 
     private static SceneManager sceneController;
+    private static MetricsLoader metricsLoader;
 
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) throws IOException, SQLException {
         sceneController = new SceneManager(stage);
 
-        sceneController.loadScene("dashboard", "Controller/dashboard.fxml");
-        sceneController.loadScene("charts", "Controller/charts.fxml");
+        initialise();
 
         sceneController.switchTo("dashboard");
 
         stage.show();
+    }
+
+    private void initialise() throws IOException, SQLException {
+        metricsLoader = new MetricsLoader();
+        metricsLoader.loadMetrics();
+
+        sceneController.loadScene("dashboard", "Controller/dashboard.fxml");
+        sceneController.loadScene("charts", "Controller/charts.fxml");
     }
 
     public static void main(String[] args) {
@@ -29,4 +39,5 @@ public class App extends Application {
     public static SceneManager getSceneController() {
         return sceneController;
     }
+    public static MetricsLoader getMetricsLoader() {return metricsLoader;}
 }

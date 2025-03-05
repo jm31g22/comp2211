@@ -1,17 +1,10 @@
 package uk.ac.soton.adauction.example.Controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
 import uk.ac.soton.adauction.example.App;
-import uk.ac.soton.adauction.example.FetchData.KeyMetrics;
+import uk.ac.soton.adauction.example.FetchData.MetricsLoader;
 
-import java.io.IOException;
-import java.security.Key;
 import java.util.HashMap;
 
 public class DashboardController extends SceneController{
@@ -41,21 +34,26 @@ public class DashboardController extends SceneController{
     private HashMap<String, String> metricValuePairs;
 
     public DashboardController() {
+
     }
 
     public void initialize() {
-        KeyMetrics keyMetrics = new KeyMetrics();
-        keyMetrics.calculateMetrics();
 
-        metricValuePairs = keyMetrics.getMetricValuePairs();
-//
-//        impressionsLabel.setText("Number of Impressions: " + metricValuePairs.get("NumberOfImpressions"));
+        metricValuePairs = App.getMetricsLoader().getMetricValuePairs();
+
+        initializeLabels();
     }
 
+    private void initializeLabels() {
+        impressionsLabel.setText("Number of Impressions: " + metricValuePairs.get("NumberOfImpressions"));
+        conversionsLabel.setText("Number of Conversions: " + metricValuePairs.get("NumberOfConversions"));
+        clicksLabel.setText("Number of Clicks: " + metricValuePairs.get("NumberOfClicks"));
+        uniquesLabel.setText("Number of Uniques: " + metricValuePairs.get("NumberOfUniques"));
+        costLabel.setText("Total Cost: " + "$" + metricValuePairs.get("TotalCost"));
+        CPALabel.setText("CPA: " + metricValuePairs.get("CPA"));
+        CPCLabel.setText("CPC: " + metricValuePairs.get("CPC"));
+        CTRLabel.setText("CTR: " + metricValuePairs.get("CTR"));
+        CPMLabel.setText("CPM: " + metricValuePairs.get("CPM"));
 
-//    private String getCost() {
-//
-//
-//        return "lool";
-//    }
+    }
 }
