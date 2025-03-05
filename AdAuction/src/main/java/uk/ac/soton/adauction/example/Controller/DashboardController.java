@@ -1,9 +1,16 @@
 package uk.ac.soton.adauction.example.Controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.stage.Stage;
+import uk.ac.soton.adauction.example.App;
 import uk.ac.soton.adauction.example.FetchData.KeyMetrics;
 
+import java.io.IOException;
 import java.security.Key;
 import java.util.HashMap;
 
@@ -33,6 +40,9 @@ public class DashboardController extends SceneController{
 
     private HashMap<String, String> metricValuePairs;
 
+    public DashboardController() {
+    }
+
     public void initialize() {
         KeyMetrics keyMetrics = new KeyMetrics();
         keyMetrics.calculateMetrics();
@@ -42,9 +52,10 @@ public class DashboardController extends SceneController{
 //        impressionsLabel.setText("Number of Impressions: " + metricValuePairs.get("NumberOfImpressions"));
     }
 
-    private String getCost() {
 
-
-        return "lool";
-    }
+//    private String getCost() {
+//
+//
+//        return "lool";
+//    }
 }

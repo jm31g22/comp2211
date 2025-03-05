@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import uk.ac.soton.adauction.example.FetchData.ClickLog;
 import uk.ac.soton.adauction.example.FetchData.ServerLog;
 import uk.ac.soton.adauction.example.FetchData.ImpressionLog;
@@ -42,6 +43,7 @@ public class ChartsSceneController extends SceneController {
         clickLog = new ClickLog();
         serverLog = new ServerLog();
     }
+
 
     //assume pie chart is shown after entering the scene
     public void initialize() {

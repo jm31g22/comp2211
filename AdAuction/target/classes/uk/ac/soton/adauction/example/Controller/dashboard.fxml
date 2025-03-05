@@ -43,8 +43,11 @@
                      </HBox.margin>
                   </ImageView>
                   <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold;" text="Support" textFill="#2a3768">
+                     <HBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </HBox.margin>
                      <font>
-                        <Font size="17.0" />
+                        <Font size="15.0" />
                      </font>
                   </Button>
                </children>
