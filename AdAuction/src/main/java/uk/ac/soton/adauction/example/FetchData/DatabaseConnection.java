@@ -9,18 +9,18 @@ public class DatabaseConnection {
     private static final String JDBC_USER = "root";
     private static final String JDBC_PASSWORD = "Group34Southampton!";
 
-    private final Connection connection;
+    protected final Connection conn;
 
     public DatabaseConnection() {
 
         try {
-            connection = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+            conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public Connection getConnection() {
-        return connection;
+        return conn;
     }
 }

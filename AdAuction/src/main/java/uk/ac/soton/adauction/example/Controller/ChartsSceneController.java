@@ -12,7 +12,7 @@ import uk.ac.soton.adauction.example.FetchData.ImpressionLog;
 
 import java.util.*;
 
-public class DashBoardController extends SceneManager{
+public class ChartsSceneController extends SceneController {
     @FXML
     private PieChart impressionPie;
     @FXML
@@ -36,7 +36,7 @@ public class DashBoardController extends SceneManager{
     private final ClickLog clickLog;
     private final ServerLog serverLog;
 
-    public DashBoardController() {
+    public ChartsSceneController() {
         impressionLog = new ImpressionLog();
         clickLog = new ClickLog();
         serverLog = new ServerLog();

@@ -3,7 +3,7 @@ package uk.ac.soton.adauction.example.FetchData;
 import java.sql.*;
 import java.util.HashMap;
 
-public class ClickLog extends Log{
+public class ClickLog extends DatabaseConnection{
 
 
     public HashMap<String, Integer> fetchClickDateCount(){

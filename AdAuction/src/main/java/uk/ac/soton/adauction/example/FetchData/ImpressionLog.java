@@ -7,7 +7,7 @@ import java.util.HashMap;
 /**
  * Class to obtain data from the impression log
  */
-public class ImpressionLog extends Log{
+public class ImpressionLog extends DatabaseConnection{
     /**
      * Function to fetch all impression data
      *

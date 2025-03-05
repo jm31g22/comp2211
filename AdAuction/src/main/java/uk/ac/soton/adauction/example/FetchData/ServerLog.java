@@ -3,7 +3,7 @@ package uk.ac.soton.adauction.example.FetchData;
 import java.sql.*;
 import java.util.HashMap;
 
-public class ServerLog extends Log{
+public class ServerLog extends DatabaseConnection{
 
 
     public HashMap<String, Integer> fetchConversionDateCount(){
