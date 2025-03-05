@@ -14,8 +14,8 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         sceneController = new SceneManager(stage);
 
-        sceneController.loadScene("dashboard", "dashboard.fxml");
-        sceneController.loadScene("charts", "charts.fxml");
+        sceneController.loadScene("dashboard", "Controller/dashboard.fxml");
+        sceneController.loadScene("charts", "Controller/charts.fxml");
 
         sceneController.switchTo("dashboard");
 
