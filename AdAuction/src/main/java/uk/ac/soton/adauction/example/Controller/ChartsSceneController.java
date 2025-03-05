@@ -375,6 +375,7 @@ public class ChartsSceneController extends SceneController {
         metricsLine.setPrefWidth(770.0);
         metricsLine.setHorizontalGridLinesVisible(false);
         metricsLine.setVerticalGridLinesVisible(false);
+        metricsLine.setCreateSymbols(false);
         Node line = series.getNode().lookup(".chart-series-line");
         line.setStyle("-fx-stroke: #6677b2;");
         stackPaneGraph.getChildren().clear();
