@@ -14,13 +14,13 @@ public class App extends Application {
 
 
     @Override
-    public void start(Stage stage) throws IOException, SQLException {
-        sceneManager = new SceneManager(stage);
 
-        initialise();
 
-        sceneManager.switchTo("dashboard");
-
+    public void start(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/uk/ac/soton/adauction/example/loginPage-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("AdGuru - Login");
+        stage.setScene(scene);
         stage.show();
     }
 
@@ -39,5 +39,6 @@ public class App extends Application {
     public static SceneManager getSceneController() {
         return sceneManager;
     }
+
     public static MetricsLoader getMetricsLoader() {return metricsLoader;}
 }

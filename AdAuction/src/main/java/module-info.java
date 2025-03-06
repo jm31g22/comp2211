@@ -8,10 +8,11 @@ module uk.ac.soton.adauction {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
-    requires eu.hansolo.tilesfx;
+    //requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
 
+    opens uk.ac.soton.adauction.example.Controller to javafx.fxml;
     opens uk.ac.soton.adauction.example to javafx.fxml;
     exports uk.ac.soton.adauction.example;
     exports uk.ac.soton.adauction.example.Controller;
