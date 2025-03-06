@@ -14,6 +14,8 @@
     <junit.version>5.10.2</junit.version>
   </properties>
 
+  <packaging>jar</packaging>
+
   <dependencies>
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -26,7 +28,16 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>8.0.26</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>21.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <version>21.0.2</version>
+    </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
@@ -171,7 +182,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>org.example.adauction/uk.ac.soton.adauction.example.App</mainClass>
+              <mainClass>uk.ac.soton.adauction.example.App</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
