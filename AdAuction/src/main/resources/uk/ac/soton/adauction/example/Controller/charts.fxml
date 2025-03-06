@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane style="-fx-background-color: #91b0d9;" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.ChartsSceneController">
+   <VBox prefHeight="713.0" prefWidth="156.0" BorderPane.alignment="CENTER">
+      <children>
+         <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@../assets/logo.png" />
+            </image>
+         </ImageView>
+         <VBox prefHeight="675.0" prefWidth="100.0" style="-fx-background-color: #1F263E;">
+            <children>
+               <Label alignment="CENTER" prefHeight="50.0" prefWidth="200.0" style="-fx-text-fill: white; -fx-font-weight: bold;" text="Quick Access">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+               </Label>
+               <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
+                  <children>
+                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../assets/house.png" />
+                        </image>
+                        <HBox.margin>
+                           <Insets right="20.0" />
+                        </HBox.margin>
+                     </ImageView>
+                     <Button mnemonicParsing="false" onAction="#switchToDashboard" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
+                        <font>
+                           <Font size="15.0" />
+                        </font></Button>
+                  </children>
+                  <opaqueInsets>
+                     <Insets />
+                  </opaqueInsets>
+                  <padding>
+                     <Insets bottom="10.0" left="5.0" right="45.0" top="10.0" />
+                  </padding>
+               </HBox>
+               <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
+                  <opaqueInsets>
+                     <Insets />
+                  </opaqueInsets>
+                  <padding>
+                     <Insets bottom="10.0" left="5.0" right="50.0" top="10.0" />
+                  </padding>
+                  <children>
+                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../assets/chart.png" />
+                        </image>
+                        <HBox.margin>
+                           <Insets right="28.0" />
+                        </HBox.margin>
+                     </ImageView>
+                     <Button mnemonicParsing="false" onAction="#switchToCharts" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Graphs">
+                        <font>
+                           <Font size="15.0" />
+                        </font></Button>
+                  </children>
+               </HBox>
+            </children>
+         </VBox>
+      </children>
+   </VBox>
+   <HBox layoutX="700.0" prefHeight="50.0" prefWidth="350.0">
+      <children>
+         <HBox prefHeight="50.0" prefWidth="100.0">
+            <children>
+               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/house_dark.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets bottom="10.0" left="5.0" top="10.0" />
+                  </HBox.margin>
+               </ImageView>
+               <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Home">
+                  <HBox.margin>
+                     <Insets bottom="10.0" top="10.0" />
+                  </HBox.margin>
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Button>
+            </children>
+         </HBox>
+         <HBox prefHeight="50.0" prefWidth="116.0">
+            <children>
+               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/phone-call.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets bottom="10.0" left="5.0" top="10.0" />
+                  </HBox.margin>
+               </ImageView>
+               <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="84.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Support">
+                  <HBox.margin>
+                     <Insets bottom="10.0" top="10.0" />
+                  </HBox.margin>
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Button>
+            </children>
+         </HBox>
+         <HBox prefHeight="50.0" prefWidth="100.0">
+            <children>
+               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/back.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets bottom="10.0" left="5.0" top="10.0" />
+                  </HBox.margin>
+               </ImageView>
+               <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Back">
+                  <HBox.margin>
+                     <Insets bottom="10.0" top="10.0" />
+                  </HBox.margin>
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Button>
+            </children>
+         </HBox>
+      </children>
+   </HBox>
+   <BorderPane layoutX="225.0" layoutY="250.0" prefHeight="450.0" prefWidth="570.0">
+      <top>
+         <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      </top></BorderPane>
+   <SplitPane dividerPositions="0.15" layoutX="225.0" layoutY="200.0" orientation="VERTICAL" prefHeight="480.0" prefWidth="770.0">
+     <items>
+       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+            <children>
+               <ChoiceBox fx:id="chartSelection" layoutX="14.0" layoutY="19.0" prefHeight="30" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" styleClass="choice-box" stylesheets="@assets/chart_styles.css" />
+               <ChoiceBox fx:id="metricSelection" layoutX="290.0" layoutY="19.0" prefHeight="30" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" styleClass="choice-box" stylesheets="@assets/chart_styles.css" />
+               <ChoiceBox fx:id="timeSelection" layoutX="557.0" layoutY="19.0" prefHeight="30" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" styleClass="choice-box" stylesheets="@assets/chart_styles.css" />
+            </children></AnchorPane>
+       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+            <StackPane fx:id="stackPaneGraph">
+               <PieChart fx:id="impressionPie" prefWidth="570.0" styleClass="chart-pie-gender"/>
+               <LineChart fx:id="metricsLine" axisSortingPolicy="NONE" legendVisible="false" prefWidth="700.0">
+                  <xAxis>
+                     <CategoryAxis fx:id="xAxis" />
+                  </xAxis>
+                  <yAxis>
+                     <NumberAxis fx:id="yAxis" />
+                  </yAxis>
+               </LineChart>
+            </StackPane>
+       </AnchorPane>
+     </items>
+   </SplitPane>
+</AnchorPane>
