@@ -29,6 +29,7 @@ public class SceneManager {
 
     public void switchTo(String name) {
         Scene scene = sceneCache.get(name);
+        primaryStage.setTitle("AdGuru - " + name);
 
         if (scene != null) {
 

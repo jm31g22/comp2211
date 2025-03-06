@@ -21,10 +21,9 @@ public class App extends Application {
     public void start(Stage stage) throws IOException, SQLException {
         sceneManager = new SceneManager(stage);
         initialise();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/uk/ac/soton/adauction/example/Controller/loginPage-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("AdGuru - Login");
-        stage.setScene(scene);
+
+        sceneManager.switchTo("login");
+
         stage.show();
 
     }
@@ -33,6 +32,7 @@ public class App extends Application {
         metricsLoader = new MetricsLoader();
         metricsLoader.loadMetrics();
 
+        sceneManager.loadScene("login", "Controller/loginPage-view.fxml");
         sceneManager.loadScene("dashboard", "Controller/dashboard.fxml");
         sceneManager.loadScene("charts", "Controller/charts.fxml");
     }

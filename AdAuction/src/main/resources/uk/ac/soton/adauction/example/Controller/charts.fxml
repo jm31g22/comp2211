@@ -60,7 +60,7 @@
                            <Insets right="28.0" />
                         </HBox.margin>
                      </ImageView>
-                     <Button mnemonicParsing="false" onAction="#switchToCharts" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Graphs">
+                     <Button mnemonicParsing="false" onAction="#switchToCharts" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
                         <font>
                            <Font size="15.0" />
                         </font></Button>
