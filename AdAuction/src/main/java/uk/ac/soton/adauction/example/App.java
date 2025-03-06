@@ -9,17 +9,17 @@ import java.sql.SQLException;
 
 public class App extends Application {
 
-    private static SceneManager sceneController;
+    private static SceneManager sceneManager;
     private static MetricsLoader metricsLoader;
 
 
     @Override
     public void start(Stage stage) throws IOException, SQLException {
-        sceneController = new SceneManager(stage);
+        sceneManager = new SceneManager(stage);
 
         initialise();
 
-        sceneController.switchTo("dashboard");
+        sceneManager.switchTo("dashboard");
 
         stage.show();
     }
@@ -28,8 +28,8 @@ public class App extends Application {
         metricsLoader = new MetricsLoader();
         metricsLoader.loadMetrics();
 
-        sceneController.loadScene("dashboard", "Controller/dashboard.fxml");
-        sceneController.loadScene("charts", "Controller/charts.fxml");
+        sceneManager.loadScene("dashboard", "Controller/dashboard.fxml");
+        sceneManager.loadScene("charts", "Controller/charts.fxml");
     }
 
     public static void main(String[] args) {
@@ -37,7 +37,7 @@ public class App extends Application {
     }
 
     public static SceneManager getSceneController() {
-        return sceneController;
+        return sceneManager;
     }
     public static MetricsLoader getMetricsLoader() {return metricsLoader;}
 }
