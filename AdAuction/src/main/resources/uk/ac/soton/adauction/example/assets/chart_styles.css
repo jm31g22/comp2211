@@ -1,0 +1,17 @@
+.choice-box .context-menu {
+    -fx-background-color: #EBEDF0;
+    -fx-background-radius: 5;
+    -fx-pref-width: 200;
+}
+
+.cb .menu-item:focused {
+    -fx-background-color: #1F263E ;
+}
+
+.default-color0.chart-pie-gender {
+    -fx-pie-color: #2748a7;
+}
+
+.default-color1.chart-pie-gender {
+    -fx-pie-color: #b81919;
+}
