@@ -375,6 +375,7 @@ public class ChartsSceneController extends SceneController {
         metricsLine.getData().add(series);
         metricsLine.setLegendVisible(false);
         metricsLine.setPrefWidth(770.0);
+        metricsLine.setPrefHeight(500.0);
         metricsLine.setHorizontalGridLinesVisible(false);
         metricsLine.setVerticalGridLinesVisible(false);
         metricsLine.setCreateSymbols(false);

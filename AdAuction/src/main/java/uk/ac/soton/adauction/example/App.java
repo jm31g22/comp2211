@@ -1,6 +1,8 @@
 package uk.ac.soton.adauction.example;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import uk.ac.soton.adauction.example.FetchData.MetricsLoader;
 
@@ -16,12 +18,15 @@ public class App extends Application {
     @Override
 
 
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/uk/ac/soton/adauction/example/loginPage-view.fxml"));
+    public void start(Stage stage) throws IOException, SQLException {
+        sceneManager = new SceneManager(stage);
+        initialise();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/uk/ac/soton/adauction/example/Controller/loginPage-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("AdGuru - Login");
         stage.setScene(scene);
         stage.show();
+
     }
 
     private void initialise() throws IOException, SQLException {

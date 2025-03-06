@@ -13,4 +13,5 @@ abstract class SceneController {
     public void switchToCharts(ActionEvent event) throws IOException {
         App.getSceneController().switchTo("charts");
     }
+
 }

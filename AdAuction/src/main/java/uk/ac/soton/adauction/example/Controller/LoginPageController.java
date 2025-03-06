@@ -11,6 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import uk.ac.soton.adauction.example.App;
+import uk.ac.soton.adauction.example.SceneManager;
 import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
 
 import java.io.IOException;
@@ -45,8 +47,9 @@ public class LoginPageController {
             loginMessageLabel.setText("Error retrieving user role.");
             return;
         }
-
+        App.getSceneController().switchTo("dashboard");
         loginMessageLabel.setText("Login success. user:" + username + " role:" + userRole);
+
     }
 
     private boolean userValidation(String username, String password) {
@@ -88,7 +91,7 @@ public class LoginPageController {
 
 
     private static void changeScene(String fxmlFileName, String windowTitle, ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(LoginPageController.class.getResource("/uk/ac/soton/adauction/example/loginPage-view.fxml"));
+        Parent root = FXMLLoader.load(LoginPageController.class.getResource("/uk/ac/soton/adauction/example/Controller/loginPage-view.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.setTitle(windowTitle);

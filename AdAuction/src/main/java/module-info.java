@@ -16,5 +16,4 @@ module uk.ac.soton.adauction {
     opens uk.ac.soton.adauction.example to javafx.fxml;
     exports uk.ac.soton.adauction.example;
     exports uk.ac.soton.adauction.example.Controller;
-    opens uk.ac.soton.adauction.example.Controller to javafx.fxml;
 }
