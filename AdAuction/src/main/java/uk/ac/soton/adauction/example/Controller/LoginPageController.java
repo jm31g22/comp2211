@@ -12,15 +12,15 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import uk.ac.soton.adauction.example.App;
-import uk.ac.soton.adauction.example.SceneManager;
 import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class LoginPageController {
+public class LoginPageController extends SceneController{
     @FXML
     private Label loginMessageLabel;
     @FXML
@@ -96,5 +96,11 @@ public class LoginPageController {
         stage.setScene(new Scene(root));
         stage.setTitle(windowTitle);
         stage.show();
+    }
+
+
+    @Override
+    public void refreshScene() throws SQLException {
+
     }
 }

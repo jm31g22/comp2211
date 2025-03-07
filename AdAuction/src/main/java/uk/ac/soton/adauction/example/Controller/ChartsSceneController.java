@@ -404,6 +404,11 @@ public class ChartsSceneController extends SceneController {
     }
 
 
+    /**
+     * Include anything that needs to be done EACH time the scene is opened
+     */
+    @Override
+    public void refreshScene() {
 
-
+    }
 }

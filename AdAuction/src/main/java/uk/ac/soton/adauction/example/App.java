@@ -1,8 +1,6 @@
 package uk.ac.soton.adauction.example;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import uk.ac.soton.adauction.example.FetchData.MetricsLoader;
 
@@ -14,27 +12,22 @@ public class App extends Application {
     private static SceneManager sceneManager;
     private static MetricsLoader metricsLoader;
 
-
     @Override
 
 
     public void start(Stage stage) throws IOException, SQLException {
-        sceneManager = new SceneManager(stage);
-        initialise();
 
-        sceneManager.switchTo("login");
-
+        initialise(stage);
+        sceneManager.switchTo("settings");
         stage.show();
 
     }
 
-    private void initialise() throws IOException, SQLException {
+    private void initialise(Stage stage) throws IOException, SQLException {
+        sceneManager = new SceneManager(stage);
         metricsLoader = new MetricsLoader();
-        metricsLoader.loadMetrics();
 
-        sceneManager.loadScene("login", "Controller/loginPage-view.fxml");
-        sceneManager.loadScene("dashboard", "Controller/dashboard.fxml");
-        sceneManager.loadScene("charts", "Controller/charts.fxml");
+        loadScenes();
     }
 
     public static void main(String[] args) {
@@ -46,4 +39,11 @@ public class App extends Application {
     }
 
     public static MetricsLoader getMetricsLoader() {return metricsLoader;}
+
+    private void loadScenes() throws IOException {
+        sceneManager.loadScene("login", "Controller/loginPage-view.fxml");
+        sceneManager.loadScene("dashboard", "Controller/dashboard.fxml");
+        sceneManager.loadScene("charts", "Controller/charts.fxml");
+        sceneManager.loadScene("settings", "Controller/settings.fxml");
+    }
 }

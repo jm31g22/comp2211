@@ -1,0 +1,35 @@
+.custom-button {
+    -fx-background-color: #0055A4; /* Lighter Blue */
+    -fx-text-fill: white; /* White text */
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+
+    /* Reduce padding (top, right, bottom, left) */
+    -fx-padding: 4px 10px 4px 10px;
+
+    /* Remove extra spacing inside the button */
+    -fx-graphic-text-gap: 2px; /* If using icons */
+    -fx-alignment: center; /* Center text properly */
+
+    /* Border styling */
+    -fx-border-radius: 0px;
+    -fx-background-radius: 0px;
+    -fx-border-color: #003D7A;
+    -fx-border-width: 2px;
+
+    /* Cursor */
+    -fx-cursor: hand;
+
+    /* Shadow effect */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 5, 0, 0, 2);
+}
+
+/* Hover effect */
+.custom-button:hover {
+    -fx-background-color: #004A93;
+}
+
+/* Pressed effect */
+.custom-button:pressed {
+    -fx-background-color: #003D7A;
+}

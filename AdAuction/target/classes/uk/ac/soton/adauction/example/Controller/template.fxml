@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.gluonhq.charm.glisten.control.Icon?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -123,70 +124,5 @@
          </HBox>
       </VBox>
    </VBox>
-
-
-   <VBox layoutX="299.0" layoutY="140.0" prefHeight="500.0" prefWidth="300.0">
-      <children>
-         <Label fx:id="impressionsLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Impressions: 2778218321" textOverrun="CLIP">
-            <VBox.margin>
-               <Insets />
-            </VBox.margin>
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label fx:id="conversionsLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Conversions: ">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label fx:id="clicksLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Clicks: ">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label fx:id="uniquesLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Uniques: ">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label fx:id="bouncesLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Bounces: TO BE IMPLEMENTED">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label fx:id="costLabel" prefHeight="45.0" prefWidth="245.0" text="Total Cost: ">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-      </children>
-   </VBox>
-   <VBox alignment="TOP_CENTER" layoutX="637" layoutY="144" prefHeight="500.0" prefWidth="300.0">
-      <Label fx:id="CTRLabel" prefHeight="45.0" prefWidth="245.0" text="CTR: ">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label fx:id="CPALabel" prefHeight="45.0" prefWidth="245.0" text="CPA: ">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label fx:id="CPCLabel" prefHeight="45.0" prefWidth="245.0" text="CPC: ">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label fx:id="CPMLabel" prefHeight="45.0" prefWidth="245.0" text="CPM: ">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label fx:id="bounceRateLabel" prefHeight="45.0" prefWidth="245.0" text="Bounce Rate: TO BE IMPLEMENTED">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-   </VBox>
+   <Icon content="HELP_OUTLINE" />
 </AnchorPane>
