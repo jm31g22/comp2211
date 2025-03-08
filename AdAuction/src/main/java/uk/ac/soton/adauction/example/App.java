@@ -4,8 +4,6 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import uk.ac.soton.adauction.example.FetchData.MetricsLoader;
 
-import java.io.IOException;
-import java.sql.SQLException;
 
 public class App extends Application {
 
@@ -15,7 +13,7 @@ public class App extends Application {
     @Override
 
 
-    public void start(Stage stage) throws IOException, SQLException {
+    public void start(Stage stage) {
 
         initialise(stage);
         sceneManager.switchTo("login");
@@ -23,7 +21,7 @@ public class App extends Application {
 
     }
 
-    private void initialise(Stage stage) throws IOException, SQLException {
+    private void initialise(Stage stage)  {
         sceneManager = new SceneManager(stage);
         metricsLoader = new MetricsLoader();
 

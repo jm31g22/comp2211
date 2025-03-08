@@ -5,9 +5,11 @@ uk/ac/soton/adauction/example/Utils/DatabaseConnection.class
 uk/ac/soton/adauction/example/Controller/DashboardController.class
 uk/ac/soton/adauction/example/Controller/LoginPageController.class
 module-info.class
+uk/ac/soton/adauction/example/Controller/SettingsController.class
 uk/ac/soton/adauction/example/FetchData/ImpressionLog.class
 uk/ac/soton/adauction/example/FetchData/MetricsLoader.class
 uk/ac/soton/adauction/example/SceneManager.class
+uk/ac/soton/adauction/example/SettingsState.class
 uk/ac/soton/adauction/example/FetchData/Impression.class
 uk/ac/soton/adauction/example/App.class
 uk/ac/soton/adauction/example/Controller/SceneController.class

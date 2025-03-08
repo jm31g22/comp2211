@@ -4,6 +4,7 @@
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/Controller/DashboardController.java
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/Controller/LoginPageController.java
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/Controller/SceneController.java
+/Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/Controller/SettingsController.java
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/FetchData/ClickLog.java
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/FetchData/DatabaseConnection.java
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/FetchData/Impression.java
@@ -11,5 +12,6 @@
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/FetchData/MetricsLoader.java
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/FetchData/ServerLog.java
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/SceneManager.java
+/Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/SettingsState.java
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/example/Utils/DatabaseConnection.java
 /Users/andykaspe/Documents/GitHub/comp2211/AdAuction/src/main/java/uk/ac/soton/adauction/importing/CampaignImporter.java
