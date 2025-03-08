@@ -26,7 +26,10 @@ public class SceneManager {
         this.primaryStage = stage;
     }
 
-    public void loadScenes() throws IOException {
+    /**
+     * Loads all the scenes beforehand to reduce lag during use.
+     */
+    public void loadScenes() {
         loadScene("login", "Controller/loginPage-view.fxml");
         loadScene("dashboard", "Controller/dashboard.fxml");
         loadScene("settings", "Controller/settings.fxml");
@@ -34,10 +37,20 @@ public class SceneManager {
 
     }
 
-    public void loadScene(String name, String fxmlPath) throws IOException {
+    /**
+     * Loads a scene by reading its fxml file
+     * @param name Name of the scene. will be saved as this from hereonwards
+     * @param fxmlPath Path to the relevant fxml file that the scene is loaaded from
+     */
+    public void loadScene(String name, String fxmlPath) {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Parent root = loader.load();
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         Scene scene = new Scene(root);
         SceneController controller = loader.getController();
@@ -47,6 +60,11 @@ public class SceneManager {
 
     }
 
+    /**
+     * Switches to a new scene with a given name.
+     *
+     * @param name Name of the scene. Must match the name in Hashmap sceneCache
+     */
     public void switchTo(String name) {
         lastScene = currentScene;
         currentScene = name;
@@ -66,6 +84,10 @@ public class SceneManager {
     }
 
 
+    /**
+     * Displays the scene using a fade transition. Used to make the transition between scenes smoother.
+     * @param scene Scene object that will now be loaded on the primaryStage
+     */
     private void fadeInScene(Scene scene) {
         scene.getRoot().setOpacity(0);
         primaryStage.setScene(scene);
@@ -75,6 +97,9 @@ public class SceneManager {
         fadeIn.play();
     }
 
+    /**
+     * Switches to last scene by calling switchTo on the lastScene field that we've stored. 
+     */
     public void switchToLastScene() {
         switchTo(lastScene);
     }

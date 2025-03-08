@@ -18,7 +18,18 @@ public abstract class SceneController {
     public void switchToSettings(ActionEvent event) throws IOException {
         App.getSceneController().switchTo("settings");
     }
+
+    /**
+     * Anything that needs to be done each time the scene is opened should be included in this method.
+     * @throws SQLException
+     */
     public abstract void refreshScene() throws SQLException;
+
+    /**
+     * Switches to the last used scene.
+     * @param event Mouse click (not really useful)
+     * @throws IOException
+     */
     public void switchToLastScene(ActionEvent event) throws IOException {
         App.getSceneController().switchToLastScene();
     }
