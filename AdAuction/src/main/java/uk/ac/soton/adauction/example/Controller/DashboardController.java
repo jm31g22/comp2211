@@ -51,7 +51,7 @@ public class DashboardController extends SceneController{
      */
     public void initialize() throws SQLException {
 
-        metricValuePairs = App.getMetricsLoader().loadMetrics();
+        metricValuePairs = App.getMetricsLoader().loadAllMetrics();
         initializeLabels();
 
     }
@@ -75,7 +75,7 @@ public class DashboardController extends SceneController{
                 metricValuePairs.get("NumberOfUniques")
         ));
         costLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "Total Cost: " + metricValuePairs.get("TotalCost").get(),
+                () -> "Total Cost: $" + metricValuePairs.get("TotalCost").get(),
                 metricValuePairs.get("TotalCost")
         ));
         CPALabel.textProperty().bind(Bindings.createStringBinding(
@@ -98,10 +98,14 @@ public class DashboardController extends SceneController{
                 () -> "Number of Bounces: " + metricValuePairs.get("NumberOfBounces").get(),
                 metricValuePairs.get("NumberOfBounces")
         ));
+        bounceRateLabel.textProperty().bind(Bindings.createStringBinding(
+                () -> "Bounce Rate: " + metricValuePairs.get("BounceRate").get(),
+                metricValuePairs.get("BounceRate")
+        ));
     }
 
     @Override
     public void refreshScene() throws SQLException {
-        metricValuePairs = App.getMetricsLoader().loadMetrics();
+        metricValuePairs = App.getMetricsLoader().loadBounceMetrics();
     }
 }

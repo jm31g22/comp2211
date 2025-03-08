@@ -37,22 +37,18 @@ public class SceneManager {
     }
 
     public void switchTo(String name) {
-
+        System.out.println("Switching to scene: " + name);
         Scene scene = sceneCache.get(name);
         primaryStage.setTitle("AdGuru - " + name);
 
-        if (scene != null) {
-            if (name.equals("settings")) {
-                try {
-                    controllerCache.get("settings").refreshScene();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            fadeInScene(scene);
-        } else {
-            System.out.println("Scene not found");
+        //Carries out any refreshing that needs to be done
+        try {
+            controllerCache.get(name).refreshScene();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        fadeInScene(scene);
+
     }
 
     private void fadeInScene(Scene scene) {

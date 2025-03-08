@@ -16,12 +16,13 @@ public class MetricsLoader extends DatabaseConnection{
 
 
 
-    public HashMap<String, SimpleStringProperty> loadMetrics() throws SQLException {
+    public HashMap<String, SimpleStringProperty> loadAllMetrics() throws SQLException {
 
         loadSimpleMetrics();
         loadTotalCost();
-        laodCostMetrics();
+        loadCostMetrics();
         loadBounceMetrics();
+
         return metricValuePairs;
     }
 
@@ -34,7 +35,8 @@ public class MetricsLoader extends DatabaseConnection{
 
             if (rs.next()) {
                 int count = rs.getInt(1);
-                metricValuePairs.put("NumberOfImpressions", new SimpleStringProperty(Integer.toString(count)));
+                metricValuePairs.computeIfAbsent("NumberOfImpressions", key -> new SimpleStringProperty())
+                        .set(Integer.toString(count));
             }
 
             //Query number of clicks
@@ -89,7 +91,7 @@ public class MetricsLoader extends DatabaseConnection{
         metricValuePairs.put("TotalCost", new SimpleStringProperty(Double.toString(cost/100)));
     }
 
-    private void laodCostMetrics() {
+    private void loadCostMetrics() {
         double CTR = Double.parseDouble(metricValuePairs.get("NumberOfClicks").get())/Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get());
         metricValuePairs.put("CTR", new SimpleStringProperty(Double.toString(CTR)));
 
@@ -103,18 +105,31 @@ public class MetricsLoader extends DatabaseConnection{
         metricValuePairs.put("CPM", new SimpleStringProperty(Double.toString(CPM)));
     }
 
-    private void loadBounceMetrics() throws SQLException {
+    public HashMap<String, SimpleStringProperty> loadBounceMetrics() throws SQLException {
+
         String definition = SettingsState.getBounceDefinitionBinding().get();
         int value = SettingsState.getBounceDefinitionNumberBinding().get();
+
+        //Change the query depending on the definition of bounce
         if (definition.equals("Pages")) {
            query ="SELECT COUNT(*) FROM server_log WHERE pages_viewed <= ?";
-           rs = executeQuery(query, value);
 
-           if (rs.next()) {
-               metricValuePairs.put("NumberOfBounces", new SimpleStringProperty(Integer.toString(rs.getInt(1))));
-           }
+
         } else {
+            query = "SELECT COUNT(*) FROM server_log " +
+                    "WHERE TIMESTAMPDIFF(SECOND, entry_date, exit_date) <= ?";
         }
+
+        rs = executeQuery(query, value);
+        if (rs.next()) {
+            metricValuePairs.computeIfAbsent("NumberOfBounces", key -> new SimpleStringProperty())
+                    .set(Integer.toString(rs.getInt(1)));           }
+
+        double bounceRate = Double.parseDouble(metricValuePairs.get("NumberOfBounces").get())/Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
+        metricValuePairs.computeIfAbsent("BounceRate", key -> new SimpleStringProperty())
+                .set(Double.toString(bounceRate));
+
+        return metricValuePairs;
     }
 
 
