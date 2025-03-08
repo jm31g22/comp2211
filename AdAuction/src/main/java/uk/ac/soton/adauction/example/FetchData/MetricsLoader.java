@@ -1,5 +1,8 @@
 package uk.ac.soton.adauction.example.FetchData;
 
+import javafx.beans.property.SimpleStringProperty;
+import uk.ac.soton.adauction.example.SettingsState;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,19 +10,20 @@ import java.util.HashMap;
 
 public class MetricsLoader extends DatabaseConnection{
 
-    private final HashMap<String, String> metricValuePairs = new HashMap<>();
+    private final HashMap<String, SimpleStringProperty> metricValuePairs = new HashMap<>();
     private String query;
     private ResultSet rs;
 
-    public HashMap<String, String> getMetricValuePairs() {
-        return metricValuePairs;
-    }
 
-    public void loadMetrics() throws SQLException {
+
+    public HashMap<String, SimpleStringProperty> loadAllMetrics() throws SQLException {
 
         loadSimpleMetrics();
         loadTotalCost();
-        laodCostMetrics();
+        loadCostMetrics();
+        loadBounceMetrics();
+
+        return metricValuePairs;
     }
 
     private void loadSimpleMetrics() {
@@ -31,7 +35,8 @@ public class MetricsLoader extends DatabaseConnection{
 
             if (rs.next()) {
                 int count = rs.getInt(1);
-                metricValuePairs.put("NumberOfImpressions", Integer.toString(count));
+                metricValuePairs.computeIfAbsent("NumberOfImpressions", key -> new SimpleStringProperty())
+                        .set(Integer.toString(count));
             }
 
             //Query number of clicks
@@ -40,7 +45,7 @@ public class MetricsLoader extends DatabaseConnection{
 
             if (rs.next()) {
                 int count = rs.getInt(1);
-                metricValuePairs.put("NumberOfClicks", Integer.toString(count));
+                metricValuePairs.put("NumberOfClicks", new SimpleStringProperty(Integer.toString(count)));
             }
 
             //Query number of conversions
@@ -49,7 +54,7 @@ public class MetricsLoader extends DatabaseConnection{
 
             if (rs.next()) {
                 int count = rs.getInt(1);
-                metricValuePairs.put("NumberOfConversions", Integer.toString(count));
+                metricValuePairs.put("NumberOfConversions", new SimpleStringProperty(Integer.toString(count)));
             }
 
             //Query number of uniques
@@ -58,7 +63,7 @@ public class MetricsLoader extends DatabaseConnection{
 
             if (rs.next()) {
                 int count = rs.getInt(1);
-                metricValuePairs.put("NumberOfUniques", Integer.toString(count));
+                metricValuePairs.put("NumberOfUniques", new SimpleStringProperty(Integer.toString(count)));
             }
 
 
@@ -67,16 +72,6 @@ public class MetricsLoader extends DatabaseConnection{
         }
     }
 
-    private ResultSet executeQuery(String query) {
-
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            return pstmt.executeQuery();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 
     private void loadTotalCost() throws SQLException {
 
@@ -93,21 +88,69 @@ public class MetricsLoader extends DatabaseConnection{
         if (rs.next()) {
             cost += rs.getDouble(1);
         }
-        metricValuePairs.put("TotalCost", Double.toString(cost/100));
+        metricValuePairs.put("TotalCost", new SimpleStringProperty(Double.toString(cost/100)));
     }
 
-    private void laodCostMetrics() {
-        Double CTR = Double.parseDouble(metricValuePairs.get("NumberOfClicks"))/Double.parseDouble(metricValuePairs.get("NumberOfImpressions"));
-        metricValuePairs.put("CTR", Double.toString(CTR));
+    private void loadCostMetrics() {
+        double CTR = Double.parseDouble(metricValuePairs.get("NumberOfClicks").get())/Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get());
+        metricValuePairs.put("CTR", new SimpleStringProperty(Double.toString(CTR)));
 
-        Double CPA = Double.parseDouble(metricValuePairs.get("TotalCost"))/Double.parseDouble(metricValuePairs.get("NumberOfConversions"));
-        metricValuePairs.put("CPA", Double.toString(CPA));
+        double CPA = Double.parseDouble(metricValuePairs.get("TotalCost").get())/Double.parseDouble(metricValuePairs.get("NumberOfConversions").get());
+        metricValuePairs.put("CPA", new SimpleStringProperty(Double.toString(CPA)));
 
-        Double CPC = Double.parseDouble(metricValuePairs.get("TotalCost"))/Double.parseDouble(metricValuePairs.get("NumberOfClicks"));
-        metricValuePairs.put("CPC", Double.toString(CPC));
+        double CPC = Double.parseDouble(metricValuePairs.get("TotalCost").get())/Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
+        metricValuePairs.put("CPC", new SimpleStringProperty(Double.toString(CPC)));
 
-        Double CPM = Double.parseDouble(metricValuePairs.get("TotalCost"))/(Double.parseDouble(metricValuePairs.get("NumberOfImpressions"))/1000);
-        metricValuePairs.put("CPM", Double.toString(CPM));
+        double CPM = Double.parseDouble(metricValuePairs.get("TotalCost").get())/(Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get())/1000);
+        metricValuePairs.put("CPM", new SimpleStringProperty(Double.toString(CPM)));
     }
 
+    public HashMap<String, SimpleStringProperty> loadBounceMetrics() throws SQLException {
+
+        String definition = SettingsState.getBounceDefinitionBinding().get();
+        int value = SettingsState.getBounceDefinitionNumberBinding().get();
+
+        //Change the query depending on the definition of bounce
+        if (definition.equals("Pages")) {
+           query ="SELECT COUNT(*) FROM server_log WHERE pages_viewed <= ?";
+
+
+        } else {
+            query = "SELECT COUNT(*) FROM server_log " +
+                    "WHERE TIMESTAMPDIFF(SECOND, entry_date, exit_date) <= ?";
+        }
+
+        rs = executeQuery(query, value);
+        if (rs.next()) {
+            metricValuePairs.computeIfAbsent("NumberOfBounces", key -> new SimpleStringProperty())
+                    .set(Integer.toString(rs.getInt(1)));           }
+
+        double bounceRate = Double.parseDouble(metricValuePairs.get("NumberOfBounces").get())/Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
+        metricValuePairs.computeIfAbsent("BounceRate", key -> new SimpleStringProperty())
+                .set(Double.toString(bounceRate));
+
+        return metricValuePairs;
+    }
+
+
+    private ResultSet executeQuery(String query) {
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            return pstmt.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private ResultSet executeQuery(String query, int x) {
+
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setInt(1, x);
+            return pstmt.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

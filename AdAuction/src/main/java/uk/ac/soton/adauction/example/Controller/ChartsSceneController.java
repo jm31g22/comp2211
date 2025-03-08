@@ -47,6 +47,7 @@ public class ChartsSceneController extends SceneController {
 
     //assume pie chart is shown after entering the scene
     public void initialize() {
+        super.initialize();
         stackPaneGraph.getChildren().clear();
         //load chart options into list
         chartSelection.getItems().add("Metrics by time");
@@ -404,6 +405,11 @@ public class ChartsSceneController extends SceneController {
     }
 
 
+    /**
+     * Include anything that needs to be done EACH time the scene is opened
+     */
+    @Override
+    public void refreshScene() {
 
-
+    }
 }

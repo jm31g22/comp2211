@@ -12,15 +12,15 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import uk.ac.soton.adauction.example.App;
-import uk.ac.soton.adauction.example.SceneManager;
 import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class LoginPageController {
+public class LoginPageController extends SceneController{
     @FXML
     private Label loginMessageLabel;
     @FXML
@@ -28,7 +28,7 @@ public class LoginPageController {
     @FXML
     private PasswordField passwordPasswordField;
 
-    public void loginButtonOnAction(ActionEvent event) throws IOException {
+    public void loginButtonOnAction() {
         String username = usernameTextField.getText();
         String password = passwordPasswordField.getText();
 
@@ -50,6 +50,7 @@ public class LoginPageController {
         App.getSceneController().switchTo("dashboard");
         loginMessageLabel.setText("Login success. user:" + username + " role:" + userRole);
 
+        loginMessageLabel.setVisible(true);
     }
 
     private boolean userValidation(String username, String password) {
@@ -91,10 +92,19 @@ public class LoginPageController {
 
 
     private static void changeScene(String fxmlFileName, String windowTitle, ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(LoginPageController.class.getResource("/uk/ac/soton/adauction/example/Controller/loginPage-view.fxml"));
+        Parent root = FXMLLoader.load(LoginPageController.class.getResource("/uk/ac/soton/adauction/example/Controller/login.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.setTitle(windowTitle);
         stage.show();
+    }
+
+
+    @Override
+    public void refreshScene() {
+        loginMessageLabel.setVisible(false);
+        usernameTextField.clear();
+        passwordPasswordField.clear();
+        usernameTextField.requestFocus();
     }
 }
