@@ -21,7 +21,7 @@
                <Insets bottom="10.0" left="5.0" top="10.0" />
             </HBox.margin>
          </ImageView>
-         <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Home">
+         <Button fx:id="homeButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Home">
             <HBox.margin>
                <Insets bottom="10.0" top="10.0" />
             </HBox.margin>
@@ -39,7 +39,7 @@
                <Insets bottom="10.0" left="5.0" top="10.0" />
             </HBox.margin>
          </ImageView>
-         <Button mnemonicParsing="false" onAction="#switchToSettings" prefHeight="50.0" prefWidth="84.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Settings">
+         <Button fx:id="settingsButton" mnemonicParsing="false"  prefHeight="50.0" prefWidth="84.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Settings">
             <HBox.margin>
                <Insets bottom="10.0" top="10.0" />
             </HBox.margin>
@@ -57,7 +57,7 @@
                <Insets bottom="10.0" left="5.0" top="10.0" />
             </HBox.margin>
          </ImageView>
-         <Button onAction="#switchToLastScene" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Back">
+         <Button fx:id="backButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Back">
             <HBox.margin>
                <Insets bottom="10.0" top="10.0" />
             </HBox.margin>
@@ -94,7 +94,7 @@
                   <Insets right="20.0" />
                </HBox.margin>
             </ImageView>
-            <Button mnemonicParsing="false" onAction="#switchToDashboard" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
+            <Button fx:id="dashboardButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
                <font>
                   <Font size="15.0" />
                </font>
@@ -115,11 +115,37 @@
                   <Insets right="36.0" />
                </HBox.margin>
             </ImageView>
-            <Button mnemonicParsing="false" onAction="#switchToCharts" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
+            <Button fx:id="chartsButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
                <font>
                   <Font size="15.0" />
                </font>
             </Button>
+         </HBox>
+         <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+            <padding>
+               <Insets bottom="10.0" left="5.0" right="55.0" top="10.0" />
+            </padding>
+            <children>
+               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/power.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" right="27.0" />
+                  </HBox.margin>
+               </ImageView>
+               <Button fx:id="logOutButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Log Out">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+               </Button>
+            </children>
+            <VBox.margin>
+               <Insets top="460.0" />
+            </VBox.margin>
          </HBox>
       </VBox>
    </VBox>

@@ -95,7 +95,7 @@
                   <Insets right="20.0" />
                </HBox.margin>
             </ImageView>
-            <Button mnemonicParsing="false" onAction="#switchToDashboard" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
+            <Button fx:id="dashboardButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
                <font>
                   <Font size="15.0" />
                </font>

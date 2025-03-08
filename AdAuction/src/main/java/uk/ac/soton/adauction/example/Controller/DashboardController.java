@@ -41,17 +41,16 @@ public class DashboardController extends SceneController{
 
     private HashMap<String, SimpleStringProperty> metricValuePairs;
 
-    public DashboardController() {
-
-    }
-
     /**
      * Include things that needs to be done on the first launch of this scene
-     * @throws SQLException
      */
-    public void initialize() throws SQLException {
-
-        metricValuePairs = App.getMetricsLoader().loadAllMetrics();
+    public void initialize() {
+        super.initialize();
+        try {
+            metricValuePairs = App.getMetricsLoader().loadAllMetrics();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         initializeLabels();
 
     }

@@ -30,22 +30,23 @@ public class SceneManager {
      * Loads all the scenes beforehand to reduce lag during use.
      */
     public void loadScenes() {
-        loadScene("login", "Controller/loginPage-view.fxml");
+        loadScene("login", "Controller/login.fxml");
         loadScene("dashboard", "Controller/dashboard.fxml");
         loadScene("settings", "Controller/settings.fxml");
         loadScene("charts", "Controller/charts.fxml");
+        loadScene("login", "Controller/login.fxml");
 
     }
 
     /**
      * Loads a scene by reading its fxml file
-     * @param name Name of the scene. will be saved as this from hereonwards
-     * @param fxmlPath Path to the relevant fxml file that the scene is loaaded from
+     * @param name Name of the scene. will be saved as this from here onwards
+     * @param fxmlPath Path to the relevant fxml file that the scene is loaded from
      */
     public void loadScene(String name, String fxmlPath) {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-        Parent root = null;
+        Parent root;
         try {
             root = loader.load();
         } catch (IOException e) {
@@ -98,7 +99,7 @@ public class SceneManager {
     }
 
     /**
-     * Switches to last scene by calling switchTo on the lastScene field that we've stored. 
+     * Switches to last scene by calling switchTo on the lastScene field that we've stored.
      */
     public void switchToLastScene() {
         switchTo(lastScene);

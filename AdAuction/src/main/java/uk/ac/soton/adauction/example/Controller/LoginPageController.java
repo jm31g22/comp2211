@@ -28,7 +28,7 @@ public class LoginPageController extends SceneController{
     @FXML
     private PasswordField passwordPasswordField;
 
-    public void loginButtonOnAction(ActionEvent event) throws IOException {
+    public void loginButtonOnAction() {
         String username = usernameTextField.getText();
         String password = passwordPasswordField.getText();
 
@@ -50,6 +50,7 @@ public class LoginPageController extends SceneController{
         App.getSceneController().switchTo("dashboard");
         loginMessageLabel.setText("Login success. user:" + username + " role:" + userRole);
 
+        loginMessageLabel.setVisible(true);
     }
 
     private boolean userValidation(String username, String password) {
@@ -91,7 +92,7 @@ public class LoginPageController extends SceneController{
 
 
     private static void changeScene(String fxmlFileName, String windowTitle, ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(LoginPageController.class.getResource("/uk/ac/soton/adauction/example/Controller/loginPage-view.fxml"));
+        Parent root = FXMLLoader.load(LoginPageController.class.getResource("/uk/ac/soton/adauction/example/Controller/login.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.setTitle(windowTitle);
@@ -100,7 +101,10 @@ public class LoginPageController extends SceneController{
 
 
     @Override
-    public void refreshScene() throws SQLException {
-
+    public void refreshScene() {
+        loginMessageLabel.setVisible(false);
+        usernameTextField.clear();
+        passwordPasswordField.clear();
+        usernameTextField.requestFocus();
     }
 }

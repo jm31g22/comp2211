@@ -13,6 +13,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import uk.ac.soton.adauction.example.SettingsState;
 
+import java.sql.SQLException;
 import java.util.Set;
 
 public class SettingsController extends SceneController{
@@ -32,11 +33,9 @@ public class SettingsController extends SceneController{
     private String bounceDefinition;
 
     @FXML
-    private void initialize() {
-
+    public void initialize() {
+        super.initialize();
         setupBindings();
-
-
     }
 
 

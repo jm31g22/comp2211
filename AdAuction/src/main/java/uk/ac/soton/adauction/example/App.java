@@ -18,7 +18,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException, SQLException {
 
         initialise(stage);
-        sceneManager.switchTo("dashboard");
+        sceneManager.switchTo("login");
         stage.show();
 
     }
