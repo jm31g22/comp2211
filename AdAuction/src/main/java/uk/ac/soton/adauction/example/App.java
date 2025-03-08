@@ -18,7 +18,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException, SQLException {
 
         initialise(stage);
-        sceneManager.switchTo("settings");
+        sceneManager.switchTo("dashboard");
         stage.show();
 
     }
@@ -27,7 +27,7 @@ public class App extends Application {
         sceneManager = new SceneManager(stage);
         metricsLoader = new MetricsLoader();
 
-        loadScenes();
+        sceneManager.loadScenes();
     }
 
     public static void main(String[] args) {
@@ -40,10 +40,4 @@ public class App extends Application {
 
     public static MetricsLoader getMetricsLoader() {return metricsLoader;}
 
-    private void loadScenes() throws IOException {
-        sceneManager.loadScene("login", "Controller/loginPage-view.fxml");
-        sceneManager.loadScene("dashboard", "Controller/dashboard.fxml");
-        sceneManager.loadScene("charts", "Controller/charts.fxml");
-        sceneManager.loadScene("settings", "Controller/settings.fxml");
-    }
 }

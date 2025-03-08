@@ -19,5 +19,7 @@ public abstract class SceneController {
         App.getSceneController().switchTo("settings");
     }
     public abstract void refreshScene() throws SQLException;
-
+    public void switchToLastScene(ActionEvent event) throws IOException {
+        App.getSceneController().switchToLastScene();
+    }
 }

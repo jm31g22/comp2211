@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import uk.ac.soton.adauction.example.Controller.SceneController;
-import uk.ac.soton.adauction.example.Controller.SettingsController;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,8 +18,20 @@ public class SceneManager {
 
     private final HashMap<String, Scene> sceneCache = new HashMap<>();
     private final HashMap<String, SceneController> controllerCache = new HashMap<>();
+
+    private String lastScene = "dashboard";
+    private String currentScene = "dashboard";
+
     public SceneManager(Stage stage) {
         this.primaryStage = stage;
+    }
+
+    public void loadScenes() throws IOException {
+        loadScene("login", "Controller/loginPage-view.fxml");
+        loadScene("dashboard", "Controller/dashboard.fxml");
+        loadScene("settings", "Controller/settings.fxml");
+        loadScene("charts", "Controller/charts.fxml");
+
     }
 
     public void loadScene(String name, String fxmlPath) throws IOException {
@@ -37,6 +48,10 @@ public class SceneManager {
     }
 
     public void switchTo(String name) {
+        lastScene = currentScene;
+        currentScene = name;
+
+
         System.out.println("Switching to scene: " + name);
         Scene scene = sceneCache.get(name);
         primaryStage.setTitle("AdGuru - " + name);
@@ -48,8 +63,8 @@ public class SceneManager {
             throw new RuntimeException(e);
         }
         fadeInScene(scene);
-
     }
+
 
     private void fadeInScene(Scene scene) {
         scene.getRoot().setOpacity(0);
@@ -58,5 +73,9 @@ public class SceneManager {
         FadeTransition fadeIn = new FadeTransition(Duration.millis(100), scene.getRoot());
         fadeIn.setToValue(1);
         fadeIn.play();
+    }
+
+    public void switchToLastScene() {
+        switchTo(lastScene);
     }
 }
