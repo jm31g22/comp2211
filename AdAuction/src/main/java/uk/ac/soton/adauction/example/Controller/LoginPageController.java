@@ -33,24 +33,22 @@ public class LoginPageController extends SceneController{
         String password = passwordPasswordField.getText();
 
         if (username.isBlank() || password.isBlank()) {
-            loginMessageLabel.setText("Please enter username and password!");
+            showErrorMessage("Please enter a username and password!");
             return;
         }
 
         if (!userValidation(username, password)) {
-            loginMessageLabel.setText("Invalid Login. Please try again.");
+            showErrorMessage("Invalid Login. Please try again.");
             return;
         }
 
         String userRole = getUserRole(username, password);
         if (userRole == null) {
-            loginMessageLabel.setText("Error retrieving user role.");
+            showErrorMessage("Error retrieving user role.");
             return;
         }
         App.getSceneController().switchTo("dashboard");
-        loginMessageLabel.setText("Login success. user:" + username + " role:" + userRole);
 
-        loginMessageLabel.setVisible(true);
     }
 
     private boolean userValidation(String username, String password) {
@@ -67,6 +65,10 @@ public class LoginPageController extends SceneController{
         }
     }
 
+    private void showErrorMessage(String message) {
+        loginMessageLabel.setText(message);
+        loginMessageLabel.setVisible(true);
+    }
     private String getUserRole(String username, String password) {
         String query = "SELECT role FROM users WHERE username = ? AND password = ?";
         try (Connection connectDB = DatabaseConnection.getConnection();
