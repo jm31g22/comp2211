@@ -1,13 +1,17 @@
 package uk.ac.soton.adauction.example.Controller;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
+import javafx.scene.layout.VBox;
 import uk.ac.soton.adauction.example.FetchData.ClickLog;
 import uk.ac.soton.adauction.example.FetchData.ServerLog;
 import uk.ac.soton.adauction.example.FetchData.ImpressionLog;
@@ -21,7 +25,6 @@ public class ChartsSceneController extends SceneController {
     private LineChart<String, Number> metricsLine;
     @FXML
     private ChoiceBox<String> chartSelection = new ChoiceBox<>();
-    ;
     @FXML
     private ChoiceBox<String> metricSelection = new ChoiceBox<>();
     @FXML
@@ -32,6 +35,12 @@ public class ChartsSceneController extends SceneController {
     private NumberAxis yAxis;
     @FXML
     private StackPane stackPaneGraph;
+    @FXML
+    private VBox hoverPane;
+    @FXML
+    private Label timeLabel;
+    @FXML
+    private Label valueLabel;
     //variable to save what is the current page
     private int currentPage;
     private final ImpressionLog impressionLog;
@@ -369,19 +378,44 @@ public class ChartsSceneController extends SceneController {
         addToLineGraph(count, series);
     }
 
+
     private void addToLineGraph(HashMap<String, Integer> count, XYChart.Series<String, Number> series) {
         for (String date: count.keySet()){
-            series.getData().add(new XYChart.Data<String, Number>(date, count.getOrDefault(date, 0)));
+            XYChart.Data<String, Number> data = new XYChart.Data<>(date, count.getOrDefault(date, 0));
+            series.getData().add(data);
         }
         metricsLine.getData().add(series);
+        for (XYChart.Data<String, Number> data: series.getData()){
+            data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED,
+                    new EventHandler<MouseEvent>() {
+                        @Override public void handle(MouseEvent e) {
+                            double coordX = e.getX();
+                            double coordY = e.getY();
+                            addChartHoverPane(coordX, coordY, data.getXValue(), (Integer) data.getYValue());
+                        }
+                    });
+            data.getNode().addEventHandler(MouseEvent.MOUSE_EXITED,
+                    new EventHandler<MouseEvent>() {
+                        @Override public void handle(MouseEvent e) {
+                            hoverPane.opacityProperty().setValue(0);
+                        }
+                    });
+        }
         metricsLine.setLegendVisible(false);
         metricsLine.setPrefWidth(770.0);
         metricsLine.setPrefHeight(500.0);
         metricsLine.setHorizontalGridLinesVisible(false);
         metricsLine.setVerticalGridLinesVisible(false);
-        metricsLine.setCreateSymbols(false);
+        metricsLine.setAnimated(false);
+        metricsLine.setCreateSymbols(true);
         Node line = series.getNode().lookup(".chart-series-line");
         line.setStyle("-fx-stroke: #6677b2;");
+        for (XYChart.Data<String, Number> data: series.getData()){
+            Platform.runLater(()->{
+                Node symbol = data.getNode().lookup(".chart-line-symbol");
+                symbol.setStyle("-fx-background-color:  #1F263E, #FFFFFF");
+            });
+        }
         stackPaneGraph.getChildren().clear();
         stackPaneGraph.getChildren().add(metricsLine);
         System.out.println("Data Loaded");
@@ -404,12 +438,20 @@ public class ChartsSceneController extends SceneController {
         return min;
     }
 
+    private void addChartHoverPane(double coordX, double coordY, String date, Integer value){
+        hoverPane.setLayoutX(coordX+200);
+        hoverPane.setLayoutY(coordY+200);
+        hoverPane.opacityProperty().setValue(1);
+        timeLabel.setText(date);
+        valueLabel.setText(String.valueOf(value));
+    }
+
 
     /**
      * Include anything that needs to be done EACH time the scene is opened
      */
     @Override
     public void refreshScene() {
-
+        hoverPane.opacityProperty().setValue(0);
     }
 }
