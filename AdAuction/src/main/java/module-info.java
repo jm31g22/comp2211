@@ -11,6 +11,7 @@ module uk.ac.soton.adauction {
     //requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires java.sql;
+    requires java.desktop;
 
     opens uk.ac.soton.adauction.example.Controller to javafx.fxml;
     opens uk.ac.soton.adauction.example to javafx.fxml;
