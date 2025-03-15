@@ -34,6 +34,8 @@ public class LoginPageController extends SceneController{
 
     private String dynamicVerificationCode;
     private volatile boolean isCountingDown = false;
+    private final Connection conn = DatabaseConnection.getUserDataConnection();
+
 
     @FXML
     public void initialize() {
@@ -41,7 +43,7 @@ public class LoginPageController extends SceneController{
     }
 
 
-    public void sendMailButtonOnAction(ActionEvent event) throws Exception {
+    public void sendMailButtonOnAction(ActionEvent event) {
         String username = usernameTextField.getText();
 
         if (username.isBlank()) {
@@ -95,7 +97,7 @@ public class LoginPageController extends SceneController{
 
 
 
-    public void loginButtonOnAction(ActionEvent event) throws IOException {
+    public void loginButtonOnAction() {
         String username = usernameTextField.getText();
         String password = passwordPasswordField.getText();
         String code = verificationCodeField.getText();
@@ -143,8 +145,8 @@ public class LoginPageController extends SceneController{
     private String fetchUserEmail(String username) {
         String email = null;
         String query = "SELECT * FROM users WHERE username = ?";
-        try (Connection connectDB = DatabaseConnection.getConnection();
-             PreparedStatement statement = connectDB.prepareStatement(query)) {
+        try (
+             PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, username);
             ResultSet queryResult = statement.executeQuery();
             if (queryResult.next()) {
@@ -159,8 +161,7 @@ public class LoginPageController extends SceneController{
 
     private boolean userValidation(String username, String password) {
         String query = "SELECT COUNT(1) FROM users WHERE username = ? AND password = ?";
-        try (Connection connectDB = DatabaseConnection.getConnection();
-            PreparedStatement statement = connectDB.prepareStatement(query)) {
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, username);
             statement.setString(2, password);
             ResultSet queryResult = statement.executeQuery();
@@ -173,8 +174,7 @@ public class LoginPageController extends SceneController{
 
     private String getUserRole(String username, String password) {
         String query = "SELECT role FROM users WHERE username = ? AND password = ?";
-        try (Connection connectDB = DatabaseConnection.getConnection();
-             PreparedStatement statement = connectDB.prepareStatement(query)) {
+        try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, username);
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
@@ -185,13 +185,13 @@ public class LoginPageController extends SceneController{
         }
     }
 
-    private void showInformationAlert(String userRole) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Ad Auction Dashboard - " + userRole + " Page");
-        alert.setHeaderText(null);
-        alert.setContentText("Welcome!\nThis is the " + userRole.toLowerCase() + " page.");
-        alert.showAndWait();
-    }
+//    private void showInformationAlert(String userRole) {
+//        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+//        alert.setTitle("Ad Auction Dashboard - " + userRole + " Page");
+//        alert.setHeaderText(null);
+//        alert.setContentText("Welcome!\nThis is the " + userRole.toLowerCase() + " page.");
+//        alert.showAndWait();
+//    }
 
 
 
