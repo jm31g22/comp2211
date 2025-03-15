@@ -67,7 +67,7 @@ public class LoginPageController extends SceneController{
                 EmailUtils.Email(email, "comp2211cw course verification login system", "Hello " + username + ", Please use the following verification code to log in to the system: " + dynamicVerificationCode);
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    loginMessageLabel.setText("Send failed: " + e.getMessage());
+                    showErrorMessage("Send failed: " + e.getMessage());
                 });
             }
         }).start();
@@ -85,7 +85,7 @@ public class LoginPageController extends SceneController{
                 }
             } catch (Exception e) {
                 Platform.runLater(() -> {
-                    loginMessageLabel.setText("Send failed: " + e.getMessage());
+                    showErrorMessage("Send failed: " + e.getMessage());
                     sendEmailButton.setDisable(false);
                     sendEmailButton.setText(originalText);
                 });
