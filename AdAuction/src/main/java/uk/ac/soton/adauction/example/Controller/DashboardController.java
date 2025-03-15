@@ -104,12 +104,12 @@ public class DashboardController extends SceneController{
     }
 
     public void loadMaleMetrics() throws SQLException {
-        metricValuePairs = App.getMetricsLoader().loadMaleMetrics();
+        metricValuePairs = App.getGenderMetricsLoader().loadGenderMetrics("Male");
         loadLabels();
     }
 
     public void loadFemaleMetrics() throws SQLException {
-        metricValuePairs = App.getMetricsLoader().loadFemaleMetrics();
+        metricValuePairs = App.getGenderMetricsLoader().loadGenderMetrics("Female");
         loadLabels();
     }
 

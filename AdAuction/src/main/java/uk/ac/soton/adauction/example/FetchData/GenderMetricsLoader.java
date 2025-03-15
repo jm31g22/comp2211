@@ -8,40 +8,48 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class MetricsLoader extends DatabaseConnection{
+import static uk.ac.soton.adauction.example.FetchData.MetricsLoader.getCost;
+
+public class GenderMetricsLoader extends DatabaseConnection{
 
     private final HashMap<String, SimpleStringProperty> metricValuePairs = new HashMap<>();
     private String query;
     private ResultSet rs;
 
+    private ResultSet executeQuery(String query, String gender) {
 
+        try {
+            PreparedStatement pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, gender);
+            return pstmt.executeQuery();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    public HashMap<String, SimpleStringProperty> loadAllMetrics() throws SQLException {
-
-        loadSimpleMetrics();
-        loadTotalCost();
+    //load impression metrics when audience segment(gender) is set
+    public HashMap<String, SimpleStringProperty> loadGenderMetrics(String gender) throws SQLException {
+        loadSimpleGenderMetrics(gender);
+        loadTotalGenderCost(gender);
         loadCostMetrics();
-        loadBounceMetrics();
-
+        loadGenderBounceMetrics(gender);
         return metricValuePairs;
     }
 
-    private void loadSimpleMetrics() {
+    private void loadSimpleGenderMetrics(String gender){
         try {
-
             //Query number of impressions
-            query = "SELECT COUNT(*) FROM impression_log";
-            rs = executeQuery(query);
+            query = "SELECT COUNT(*) FROM impression_log WHERE gender = ?" ;
+            rs = executeQuery(query, gender);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
                 metricValuePairs.computeIfAbsent("NumberOfImpressions", key -> new SimpleStringProperty())
                         .set(Integer.toString(count));
             }
-
             //Query number of clicks
-            query = "SELECT COUNT(*) FROM click_log";
-            rs = executeQuery(query);
+            query = "SELECT COUNT(*) FROM click_log c LEFT JOIN impression_log i ON c.id = i.id WHERE i.gender = ?";
+            rs = executeQuery(query,gender);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -49,8 +57,9 @@ public class MetricsLoader extends DatabaseConnection{
             }
 
             //Query number of conversions
-            query = "SELECT COUNT(*) FROM server_log WHERE conversion = 'Yes'";
-            rs = executeQuery(query);
+            query = "SELECT COUNT(*)  FROM server_log s LEFT JOIN impression_log i ON s.id = i.id "+
+                    "WHERE s.conversion = 'Yes' and i.gender = ?" ;
+            rs = executeQuery(query, gender);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -58,32 +67,30 @@ public class MetricsLoader extends DatabaseConnection{
             }
 
             //Query number of uniques
-            query = "SELECT COUNT(DISTINCT id) FROM click_log;";
-            rs = executeQuery(query);
+            query = "SELECT COUNT(DISTINCT c.id) FROM click_log c LEFT JOIN impression_log i ON c.id = i.id WHERE i.gender = ?";
+            rs = executeQuery(query, gender);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
                 metricValuePairs.put("NumberOfUniques", new SimpleStringProperty(Integer.toString(count)));
             }
 
-
-        } catch (SQLException e) {
+        }catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private void loadTotalGenderCost(String gender) throws SQLException {
 
-    private void loadTotalCost() throws SQLException {
-
-        query = "SELECT SUM(click_cost) FROM click_log";
-        rs = executeQuery(query);
+        query = "SELECT SUM(click_cost) FROM click_log c LEFT JOIN impression_log i ON c.id = i.id WHERE i.gender = ?";
+        rs = executeQuery(query, gender);
 
         double cost = 0.0;
         if (rs.next()) {
             cost += rs.getDouble(1);
         }
-        query = "SELECT SUM(impression_cost) FROM impression_log";
-        rs = executeQuery(query);
+        query = "SELECT SUM(impression_cost) FROM impression_log WHERE gender = ?";
+        rs = executeQuery(query, gender);
 
         if (rs.next()) {
             cost += rs.getDouble(1);
@@ -95,54 +102,28 @@ public class MetricsLoader extends DatabaseConnection{
         getCost(metricValuePairs);
     }
 
-    static void getCost(HashMap<String, SimpleStringProperty> metricValuePairs) {
-        double CTR = Double.parseDouble(metricValuePairs.get("NumberOfClicks").get())/Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get());
-        metricValuePairs.put("CTR", new SimpleStringProperty(Double.toString(CTR)));
-
-        double CPA = Double.parseDouble(metricValuePairs.get("TotalCost").get())/Double.parseDouble(metricValuePairs.get("NumberOfConversions").get());
-        metricValuePairs.put("CPA", new SimpleStringProperty(Double.toString(CPA)));
-
-        double CPC = Double.parseDouble(metricValuePairs.get("TotalCost").get())/Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
-        metricValuePairs.put("CPC", new SimpleStringProperty(Double.toString(CPC)));
-
-        double CPM = Double.parseDouble(metricValuePairs.get("TotalCost").get())/(Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get())/1000);
-        metricValuePairs.put("CPM", new SimpleStringProperty(Double.toString(CPM)));
-    }
-
-    public HashMap<String, SimpleStringProperty> loadBounceMetrics() throws SQLException {
+    public void loadGenderBounceMetrics(String gender) throws SQLException {
 
         String definition = SettingsState.getBounceDefinitionBinding().get();
         int value = SettingsState.getBounceDefinitionNumberBinding().get();
 
         //Change the query depending on the definition of bounce
         if (definition.equals("Pages")) {
-           query ="SELECT COUNT(*) FROM server_log WHERE pages_viewed <= ?";
+            query ="SELECT COUNT(*) FROM server_log s LEFT JOIN impression_log i ON s.id = i.id "+
+                    "WHERE s.pages_viewed <= ? and i.gender = ?";
 
 
         } else {
-            query = "SELECT COUNT(*) FROM server_log " +
-                    "WHERE TIMESTAMPDIFF(SECOND, entry_date, exit_date) <= ?";
+            query = "SELECT COUNT(*) FROM server_log s LEFT JOIN impression_log i ON s.id = i.id" +
+                    "WHERE TIMESTAMPDIFF(SECOND, s.entry_date, s.exit_date) <= ? and i.gender = ?";
         }
 
-        retrieveBoundRate(value);
-
-        return metricValuePairs;
+        retrieveBoundRate(value, gender);
     }
 
 
-    private ResultSet executeQuery(String query) {
-
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            return pstmt.executeQuery();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-
-    private void retrieveBoundRate(int value) throws SQLException {
-        rs = executeQuery(query, value);
+    private void retrieveBoundRate(int value, String gender) throws SQLException {
+        rs = executeQuery(query, value, gender);
         if (rs.next()) {
             metricValuePairs.computeIfAbsent("NumberOfBounces", key -> new SimpleStringProperty())
                     .set(Integer.toString(rs.getInt(1)));           }
@@ -153,11 +134,14 @@ public class MetricsLoader extends DatabaseConnection{
     }
 
 
-    private ResultSet executeQuery(String query, int x) {
+
+
+    private ResultSet executeQuery(String query, int x, String gender) {
 
         try {
             PreparedStatement pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, x);
+            pstmt.setString(2, gender);
             return pstmt.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
