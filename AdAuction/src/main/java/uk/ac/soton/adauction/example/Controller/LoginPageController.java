@@ -1,24 +1,24 @@
 package uk.ac.soton.adauction.example.Controller;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import uk.ac.soton.adauction.example.App;
 import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
+import uk.ac.soton.adauction.example.Utils.EmailUtils;
 
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
 
 public class LoginPageController extends SceneController{
     @FXML
@@ -27,15 +27,99 @@ public class LoginPageController extends SceneController{
     private TextField usernameTextField;
     @FXML
     private PasswordField passwordPasswordField;
+    @FXML
+    private TextField verificationCodeField;
+    @FXML
+    private Button sendEmailButton;
 
-    public void loginButtonOnAction() {
+    private String dynamicVerificationCode;
+    private volatile boolean isCountingDown = false;
+
+    @FXML
+    public void initialize() {
+        dynamicVerificationCode = null;
+    }
+
+
+    public void sendMailButtonOnAction(ActionEvent event) throws Exception {
+        String username = usernameTextField.getText();
+
+        if (username.isBlank()) {
+            loginMessageLabel.setText("Please enter username!");
+            return;
+        }
+
+        String email = fetchUserEmail(username);
+        if (email == null || email.isEmpty()) {
+            loginMessageLabel.setText("Users whose email does not exist or is invalid!");
+            return;
+        }
+
+        dynamicVerificationCode = generateVerificationCode();
+
+        sendEmailButton.setDisable(true);
+        String originalText = sendEmailButton.getText();
+
+        new Thread(() -> {
+            try {
+                EmailUtils.Email(email, "comp2211cw course verification login system", "Hello " + username + ", Please use the following verification code to log in to the system: " + dynamicVerificationCode);
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    loginMessageLabel.setText("Send failed: " + e.getMessage());
+                });
+            }
+        }).start();
+
+        new Thread(() -> {
+            try {
+                isCountingDown = true;
+                for (int i = 30; i >= 0 && isCountingDown; i--) {
+                    final int remaining = i;
+                    Platform.runLater(() -> {
+                        sendEmailButton.setText(remaining > 0 ? remaining + " s" : originalText);
+                        sendEmailButton.setDisable(remaining > 0);
+                    });
+                    Thread.sleep(1000);
+                }
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    loginMessageLabel.setText("Send failed: " + e.getMessage());
+                    sendEmailButton.setDisable(false);
+                    sendEmailButton.setText(originalText);
+                });
+            } finally {
+                isCountingDown = false;
+            }
+        }).start();
+    }
+
+
+
+    public void loginButtonOnAction(ActionEvent event) throws IOException {
         String username = usernameTextField.getText();
         String password = passwordPasswordField.getText();
+        String code = verificationCodeField.getText();
 
         if (username.isBlank() || password.isBlank()) {
             loginMessageLabel.setText("Please enter username and password!");
             return;
         }
+
+        if (code.isBlank()) {
+            loginMessageLabel.setText("Please enter email verification code!");
+            return;
+        }
+
+        if (dynamicVerificationCode == null) {
+            loginMessageLabel.setText("You did not send the verification code!");
+            return;
+        }
+
+        if (!code.equals(dynamicVerificationCode)) {
+            loginMessageLabel.setText("Login failed. Incorrect email verification code!");
+            return;
+        }
+        dynamicVerificationCode = null;
 
         if (!userValidation(username, password)) {
             loginMessageLabel.setText("Invalid Login. Please try again.");
@@ -51,6 +135,23 @@ public class LoginPageController extends SceneController{
         loginMessageLabel.setText("Login success. user:" + username + " role:" + userRole);
 
         loginMessageLabel.setVisible(true);
+    }
+
+    private String fetchUserEmail(String username) {
+        String email = null;
+        String query = "SELECT * FROM users WHERE username = ?";
+        try (Connection connectDB = DatabaseConnection.getConnection();
+             PreparedStatement statement = connectDB.prepareStatement(query)) {
+            statement.setString(1, username);
+            ResultSet queryResult = statement.executeQuery();
+            if (queryResult.next()) {
+                email = queryResult.getString("email");
+            }
+            return email;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return email;
+        }
     }
 
     private boolean userValidation(String username, String password) {
@@ -99,12 +200,20 @@ public class LoginPageController extends SceneController{
         stage.show();
     }
 
-
+    public static String generateVerificationCode() {
+        Random random = new Random();
+        StringBuilder verificationCode = new StringBuilder();
+        for (int i = 0; i < 6; i++) {
+            verificationCode.append(random.nextInt(10));
+        }
+        return verificationCode.toString();
+    }
     @Override
     public void refreshScene() {
         loginMessageLabel.setVisible(false);
         usernameTextField.clear();
         passwordPasswordField.clear();
+        verificationCodeField.clear();
         usernameTextField.requestFocus();
     }
 }
