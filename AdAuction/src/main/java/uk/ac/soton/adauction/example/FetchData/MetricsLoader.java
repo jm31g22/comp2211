@@ -2,17 +2,20 @@ package uk.ac.soton.adauction.example.FetchData;
 
 import javafx.beans.property.SimpleStringProperty;
 import uk.ac.soton.adauction.example.SettingsState;
+import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-public class MetricsLoader extends DatabaseConnection{
+public class MetricsLoader {
 
     private final HashMap<String, SimpleStringProperty> metricValuePairs = new HashMap<>();
     private String query;
     private ResultSet rs;
+    private final Connection conn = DatabaseConnection.getLogsConnection();
 
 
 
