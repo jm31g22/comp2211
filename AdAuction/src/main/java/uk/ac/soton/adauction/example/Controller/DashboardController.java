@@ -51,11 +51,11 @@ public class DashboardController extends SceneController{
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        initializeLabels();
+        loadLabels();
 
     }
 
-    private void initializeLabels() {
+    private void loadLabels() {
 
         impressionsLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> "Number of Impressions: " + metricValuePairs.get("NumberOfImpressions").get(),
@@ -101,6 +101,16 @@ public class DashboardController extends SceneController{
                 () -> "Bounce Rate: " + metricValuePairs.get("BounceRate").get(),
                 metricValuePairs.get("BounceRate")
         ));
+    }
+
+    public void loadMaleMetrics() throws SQLException {
+        metricValuePairs = App.getMetricsLoader().loadMaleMetrics();
+        loadLabels();
+    }
+
+    public void loadFemaleMetrics() throws SQLException {
+        metricValuePairs = App.getMetricsLoader().loadFemaleMetrics();
+        loadLabels();
     }
 
     @Override

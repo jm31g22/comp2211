@@ -120,14 +120,7 @@ public class MetricsLoader extends DatabaseConnection{
                     "WHERE TIMESTAMPDIFF(SECOND, entry_date, exit_date) <= ?";
         }
 
-        rs = executeQuery(query, value);
-        if (rs.next()) {
-            metricValuePairs.computeIfAbsent("NumberOfBounces", key -> new SimpleStringProperty())
-                    .set(Integer.toString(rs.getInt(1)));           }
-
-        double bounceRate = Double.parseDouble(metricValuePairs.get("NumberOfBounces").get())/Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
-        metricValuePairs.computeIfAbsent("BounceRate", key -> new SimpleStringProperty())
-                .set(Double.toString(bounceRate));
+        retrieveBoundRate(value);
 
         return metricValuePairs;
     }
@@ -142,6 +135,160 @@ public class MetricsLoader extends DatabaseConnection{
             throw new RuntimeException(e);
         }
     }
+
+    //load impression metrics when audience segment(gender) is set
+    public HashMap<String, SimpleStringProperty> loadFemaleMetrics() throws SQLException {
+        loadSimpleFemaleMetrics();
+        loadCostMetrics();
+        loadFemaleBounceMetrics();
+        return metricValuePairs;
+    }
+
+    private void loadSimpleFemaleMetrics(){
+        try {
+            //Query number of impressions
+            query = "SELECT COUNT(*) FROM impression_log WHERE gender = 'Female'" ;
+            rs = executeQuery(query);
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                metricValuePairs.computeIfAbsent("NumberOfImpressions", key -> new SimpleStringProperty())
+                        .set(Integer.toString(count));
+            }
+            //Query number of clicks
+            query = "SELECT COUNT(*) FROM click_log c LEFT JOIN impression_log i ON c.id = i.id WHERE i.gender = 'Female'";
+            rs = executeQuery(query);
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                metricValuePairs.put("NumberOfClicks", new SimpleStringProperty(Integer.toString(count)));
+            }
+
+            //Query number of conversions
+            query = "SELECT COUNT(*)  FROM server_log s LEFT JOIN impression_log i ON s.id = i.id "+
+                    "WHERE s.conversion = 'Yes' and i.gender = 'Female'" ;
+            rs = executeQuery(query);
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                metricValuePairs.put("NumberOfConversions", new SimpleStringProperty(Integer.toString(count)));
+            }
+
+            //Query number of uniques
+            query = "SELECT COUNT(DISTINCT c.id) FROM click_log c LEFT JOIN impression_log i ON c.id = i.id WHERE i.gender = 'Female'";
+            rs = executeQuery(query);
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                metricValuePairs.put("NumberOfUniques", new SimpleStringProperty(Integer.toString(count)));
+            }
+
+        }catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void loadFemaleBounceMetrics() throws SQLException {
+
+        String definition = SettingsState.getBounceDefinitionBinding().get();
+        int value = SettingsState.getBounceDefinitionNumberBinding().get();
+
+        //Change the query depending on the definition of bounce
+        if (definition.equals("Pages")) {
+            query ="SELECT COUNT(*) FROM server_log s LEFT JOIN impression_log i ON s.id = i.id "+
+                    "WHERE s.pages_viewed <= ? and i.gender = 'Female'";
+
+
+        } else {
+            query = "SELECT COUNT(*) FROM server_log s LEFT JOIN impression_log i ON s.id = i.id" +
+                    "WHERE TIMESTAMPDIFF(SECOND, s.entry_date, s.exit_date) <= ? and i.gender = 'Female'";
+        }
+
+        retrieveBoundRate(value);
+    }
+
+
+    public HashMap<String, SimpleStringProperty> loadMaleMetrics() throws SQLException {
+        loadSimpleMaleMetrics();
+        loadCostMetrics();
+        loadMaleBounceMetrics();
+        return metricValuePairs;
+    }
+
+    private void loadSimpleMaleMetrics(){
+        try {
+            //Query number of impressions
+            query = "SELECT COUNT(*) FROM impression_log WHERE gender = 'Male'" ;
+            rs = executeQuery(query);
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                metricValuePairs.computeIfAbsent("NumberOfImpressions", key -> new SimpleStringProperty())
+                        .set(Integer.toString(count));
+            }
+            //Query number of clicks
+            query = "SELECT COUNT(*) FROM click_log c LEFT JOIN impression_log i ON c.id = i.id WHERE i.gender = 'Male'";
+            rs = executeQuery(query);
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                metricValuePairs.put("NumberOfClicks", new SimpleStringProperty(Integer.toString(count)));
+            }
+
+            //Query number of conversions
+            query = "SELECT COUNT(*)  FROM server_log s LEFT JOIN impression_log i ON s.id = i.id "+
+                    "WHERE s.conversion = 'Yes' and i.gender = 'Male'" ;
+            rs = executeQuery(query);
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                metricValuePairs.put("NumberOfConversions", new SimpleStringProperty(Integer.toString(count)));
+            }
+
+            //Query number of uniques
+            query = "SELECT COUNT(DISTINCT c.id) FROM click_log c LEFT JOIN impression_log i ON c.id = i.id WHERE i.gender = 'Male'";
+            rs = executeQuery(query);
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                metricValuePairs.put("NumberOfUniques", new SimpleStringProperty(Integer.toString(count)));
+            }
+
+        }catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void loadMaleBounceMetrics() throws SQLException {
+
+        String definition = SettingsState.getBounceDefinitionBinding().get();
+        int value = SettingsState.getBounceDefinitionNumberBinding().get();
+
+        //Change the query depending on the definition of bounce
+        if (definition.equals("Pages")) {
+            query ="SELECT COUNT(*) FROM server_log s LEFT JOIN impression_log i ON s.id = i.id "+
+                    "WHERE s.pages_viewed <= ? and i.gender = 'Male'";
+
+
+        } else {
+            query = "SELECT COUNT(*) FROM server_log s LEFT JOIN impression_log i ON s.id = i.id" +
+                    "WHERE TIMESTAMPDIFF(SECOND, s.entry_date, s.exit_date) <= ? and i.gender = 'Male'";
+        }
+
+        retrieveBoundRate(value);
+    }
+
+    private void retrieveBoundRate(int value) throws SQLException {
+        rs = executeQuery(query, value);
+        if (rs.next()) {
+            metricValuePairs.computeIfAbsent("NumberOfBounces", key -> new SimpleStringProperty())
+                    .set(Integer.toString(rs.getInt(1)));           }
+
+        double bounceRate = Double.parseDouble(metricValuePairs.get("NumberOfBounces").get())/Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
+        metricValuePairs.computeIfAbsent("BounceRate", key -> new SimpleStringProperty())
+                .set(Double.toString(bounceRate));
+    }
+
 
     private ResultSet executeQuery(String query, int x) {
 
