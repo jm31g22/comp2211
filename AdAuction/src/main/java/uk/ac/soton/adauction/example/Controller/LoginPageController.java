@@ -101,39 +101,42 @@ public class LoginPageController extends SceneController{
         String code = verificationCodeField.getText();
 
         if (username.isBlank() || password.isBlank()) {
-            loginMessageLabel.setText("Please enter username and password!");
+            showErrorMessage("Please enter username and password!");
             return;
         }
 
         if (code.isBlank()) {
-            loginMessageLabel.setText("Please enter email verification code!");
+            showErrorMessage("Please enter email verification code!");
             return;
         }
 
         if (dynamicVerificationCode == null) {
-            loginMessageLabel.setText("You did not send the verification code!");
+            showErrorMessage("You did not send the verification code!");
             return;
         }
 
         if (!code.equals(dynamicVerificationCode)) {
-            loginMessageLabel.setText("Login failed. Incorrect email verification code!");
+            showErrorMessage("Login failed. Incorrect email verification code!");
             return;
         }
         dynamicVerificationCode = null;
 
         if (!userValidation(username, password)) {
-            loginMessageLabel.setText("Invalid Login. Please try again.");
+            showErrorMessage("Invalid Login. Please try again.");
             return;
         }
 
         String userRole = getUserRole(username, password);
         if (userRole == null) {
-            loginMessageLabel.setText("Error retrieving user role.");
+            showErrorMessage("Error retrieving user role.");
             return;
         }
         App.getSceneController().switchTo("dashboard");
-        loginMessageLabel.setText("Login success. user:" + username + " role:" + userRole);
 
+    }
+
+    private void showErrorMessage(String error) {
+        loginMessageLabel.setText(error);
         loginMessageLabel.setVisible(true);
     }
 
