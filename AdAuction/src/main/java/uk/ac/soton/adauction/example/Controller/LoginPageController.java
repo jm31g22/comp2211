@@ -33,26 +33,23 @@ public class LoginPageController extends SceneController{
         String password = passwordPasswordField.getText();
 
         if (username.isBlank() || password.isBlank()) {
-            showErrorMessage("Please enter username and password!");
+            loginMessageLabel.setText("Please enter username and password!");
             return;
         }
 
         if (!userValidation(username, password)) {
-            showErrorMessage("Invalid Login. Please try again.");
+            loginMessageLabel.setText("Invalid Login. Please try again.");
             return;
         }
 
         String userRole = getUserRole(username, password);
         if (userRole == null) {
-            showErrorMessage("Error retrieving user role.");
+            loginMessageLabel.setText("Error retrieving user role.");
             return;
         }
         App.getSceneController().switchTo("dashboard");
+        loginMessageLabel.setText("Login success. user:" + username + " role:" + userRole);
 
-    }
-
-    private void showErrorMessage(String message) {
-        loginMessageLabel.setText(message);
         loginMessageLabel.setVisible(true);
     }
 
