@@ -1,5 +1,7 @@
 package uk.ac.soton.adauction.example.FetchData;
 
+import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,7 +9,9 @@ import java.util.HashMap;
 /**
  * Class to obtain data from the impression log
  */
-public class ImpressionLog extends DatabaseConnection{
+public class ImpressionLog{
+    private final Connection conn = DatabaseConnection.getLogsConnection();
+
     /**
      * Function to fetch all impression data
      *
