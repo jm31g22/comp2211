@@ -1,5 +1,6 @@
 package uk.ac.soton.adauction.example.FetchData;
 
+
 import javafx.beans.property.SimpleStringProperty;
 import uk.ac.soton.adauction.example.SettingsState;
 
@@ -10,37 +11,37 @@ import java.util.HashMap;
 
 import static uk.ac.soton.adauction.example.FetchData.MetricsLoader.getCost;
 
-public class GenderMetricsLoader extends DatabaseConnection{
-
+public class IncomeMetricsLoader extends DatabaseConnection{
     private final HashMap<String, SimpleStringProperty> metricValuePairs = new HashMap<>();
     private String query;
     private ResultSet rs;
 
-    private ResultSet executeQuery(String query, String gender) {
+    private ResultSet executeQuery(String query, String income) {
 
         try {
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, gender);
+            pstmt.setString(1, income);
             return pstmt.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    //load metrics when audience segment(gender) is set
-    public HashMap<String, SimpleStringProperty> loadGenderMetrics(String gender) throws SQLException {
-        loadSimpleGenderMetrics(gender);
-        loadTotalGenderCost(gender);
+    //load metrics when audience segment(income) is set
+    public HashMap<String, SimpleStringProperty> loadIncomeMetrics(String income) throws SQLException {
+        loadSimpleIncomeMetrics(income);
+        loadTotalIncomeCost(income);
         loadCostMetrics();
-        loadGenderBounceMetrics(gender);
+        loadAgeBounceMetrics(income);
         return metricValuePairs;
     }
 
-    private void loadSimpleGenderMetrics(String gender){
+    private void loadSimpleIncomeMetrics(String income){
         try {
             //Query number of impressions
-            query = "SELECT COUNT(*) FROM impression_log WHERE gender = ?" ;
-            rs = executeQuery(query, gender);
+
+            query = "SELECT COUNT(*) FROM impression_log WHERE income = ?" ;
+            rs = executeQuery(query, income);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -48,8 +49,8 @@ public class GenderMetricsLoader extends DatabaseConnection{
                         .set(Integer.toString(count));
             }
             //Query number of clicks
-            query = "SELECT COUNT(*) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.gender = ?";
-            rs = executeQuery(query,gender);
+            query = "SELECT COUNT(*) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.income = ?";
+            rs = executeQuery(query,income);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -58,8 +59,8 @@ public class GenderMetricsLoader extends DatabaseConnection{
 
             //Query number of conversions
             query = "SELECT COUNT(*)  FROM server_log s INNER JOIN user_log u ON s.id = u.id "+
-                    "WHERE s.conversion = 'Yes' and u.gender = ?" ;
-            rs = executeQuery(query, gender);
+                    "WHERE s.conversion = 'Yes' and u.income = ?" ;
+            rs = executeQuery(query, income);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -67,8 +68,8 @@ public class GenderMetricsLoader extends DatabaseConnection{
             }
 
             //Query number of uniques
-            query = "SELECT COUNT(DISTINCT c.id) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.gender = ?";
-            rs = executeQuery(query, gender);
+            query = "SELECT COUNT(DISTINCT c.id) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.income = ?";
+            rs = executeQuery(query, income);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -80,17 +81,17 @@ public class GenderMetricsLoader extends DatabaseConnection{
         }
     }
 
-    private void loadTotalGenderCost(String gender) throws SQLException {
+    private void loadTotalIncomeCost(String income) throws SQLException {
 
-        query = "SELECT SUM(click_cost) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.gender = ?";
-        rs = executeQuery(query, gender);
+        query = "SELECT SUM(click_cost) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.income = ?";
+        rs = executeQuery(query, income);
 
         double cost = 0.0;
         if (rs.next()) {
             cost += rs.getDouble(1);
         }
         query = "SELECT SUM(impression_cost) FROM impression_log WHERE gender = ?";
-        rs = executeQuery(query, gender);
+        rs = executeQuery(query, income);
 
         if (rs.next()) {
             cost += rs.getDouble(1);
@@ -102,7 +103,7 @@ public class GenderMetricsLoader extends DatabaseConnection{
         getCost(metricValuePairs);
     }
 
-    public void loadGenderBounceMetrics(String gender) throws SQLException {
+    public void loadAgeBounceMetrics(String income) throws SQLException {
 
         String definition = SettingsState.getBounceDefinitionBinding().get();
         int value = SettingsState.getBounceDefinitionNumberBinding().get();
@@ -110,20 +111,20 @@ public class GenderMetricsLoader extends DatabaseConnection{
         //Change the query depending on the definition of bounce
         if (definition.equals("Pages")) {
             query ="SELECT COUNT(*) FROM server_log s LEFT JOIN user_log u ON s.id = u.id "+
-                    "WHERE s.pages_viewed <= ? and u.gender = ?";
+                    "WHERE s.pages_viewed <= ? and u.income = ?";
 
 
         } else {
             query = "SELECT COUNT(*) FROM server_log s LEFT JOIN impression_log i ON s.id = i.id" +
-                    "WHERE TIMESTAMPDIFF(SECOND, s.entry_date, s.exit_date) <= ? and u.gender = ?";
+                    "WHERE TIMESTAMPDIFF(SECOND, s.entry_date, s.exit_date) <= ? and u.income = ?";
         }
 
-        retrieveBoundRate(value, gender);
+        retrieveBoundRate(value, income);
     }
 
 
-    private void retrieveBoundRate(int value, String gender) throws SQLException {
-        rs = executeQuery(query, value, gender);
+    private void retrieveBoundRate(int value, String income) throws SQLException {
+        rs = executeQuery(query, value, income);
         if (rs.next()) {
             metricValuePairs.computeIfAbsent("NumberOfBounces", key -> new SimpleStringProperty())
                     .set(Integer.toString(rs.getInt(1)));           }

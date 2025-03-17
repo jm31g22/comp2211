@@ -113,6 +113,47 @@ public class DashboardController extends SceneController{
         loadLabels();
     }
 
+    public void loadUnder25Metrics() throws SQLException {
+        metricValuePairs = App.getAgeMetricsLoader().loadAgeMetrics("<25");
+        loadLabels();
+    }
+
+
+    public void load25To34Metrics() throws SQLException {
+        metricValuePairs = App.getAgeMetricsLoader().loadAgeMetrics("25-34");
+        loadLabels();
+    }
+
+    public void load35To44Metrics() throws SQLException {
+        metricValuePairs = App.getAgeMetricsLoader().loadAgeMetrics("35-44");
+        loadLabels();
+    }
+
+    public void load45To54Metrics() throws SQLException {
+        metricValuePairs = App.getAgeMetricsLoader().loadAgeMetrics("45-54");
+        loadLabels();
+    }
+
+    public void loadAbove54Metrics() throws SQLException {
+        metricValuePairs = App.getAgeMetricsLoader().loadAgeMetrics(">54");
+        loadLabels();
+    }
+
+    public void loadLowMetrics() throws SQLException{
+        metricValuePairs = App.getIncomeMetricsLoader().loadIncomeMetrics("Low");
+        loadLabels();
+    }
+
+    public void loadMediumMetrics() throws SQLException{
+        metricValuePairs = App.getIncomeMetricsLoader().loadIncomeMetrics("Medium");
+        loadLabels();
+    }
+
+    public void loadHighMetrics() throws SQLException{
+        metricValuePairs = App.getIncomeMetricsLoader().loadIncomeMetrics("High");
+        loadLabels();
+    }
+
     @Override
     public void refreshScene() throws SQLException {
         metricValuePairs = App.getMetricsLoader().loadBounceMetrics();

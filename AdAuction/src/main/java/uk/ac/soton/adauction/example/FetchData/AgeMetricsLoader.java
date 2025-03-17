@@ -10,37 +10,36 @@ import java.util.HashMap;
 
 import static uk.ac.soton.adauction.example.FetchData.MetricsLoader.getCost;
 
-public class GenderMetricsLoader extends DatabaseConnection{
-
+public class AgeMetricsLoader extends DatabaseConnection{
     private final HashMap<String, SimpleStringProperty> metricValuePairs = new HashMap<>();
     private String query;
     private ResultSet rs;
 
-    private ResultSet executeQuery(String query, String gender) {
+    private ResultSet executeQuery(String query, String age) {
 
         try {
             PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setString(1, gender);
+            pstmt.setString(1, age);
             return pstmt.executeQuery();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    //load metrics when audience segment(gender) is set
-    public HashMap<String, SimpleStringProperty> loadGenderMetrics(String gender) throws SQLException {
-        loadSimpleGenderMetrics(gender);
-        loadTotalGenderCost(gender);
+    //load metrics when audience segment(age) is set
+    public HashMap<String, SimpleStringProperty> loadAgeMetrics(String age) throws SQLException {
+        loadSimpleAgeMetrics(age);
+        loadTotalAgeCost(age);
         loadCostMetrics();
-        loadGenderBounceMetrics(gender);
+        loadAgeBounceMetrics(age);
         return metricValuePairs;
     }
 
-    private void loadSimpleGenderMetrics(String gender){
+    private void loadSimpleAgeMetrics(String age){
         try {
             //Query number of impressions
-            query = "SELECT COUNT(*) FROM impression_log WHERE gender = ?" ;
-            rs = executeQuery(query, gender);
+            query = "SELECT COUNT(*) FROM impression_log WHERE age = ?" ;
+            rs = executeQuery(query, age);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -48,8 +47,8 @@ public class GenderMetricsLoader extends DatabaseConnection{
                         .set(Integer.toString(count));
             }
             //Query number of clicks
-            query = "SELECT COUNT(*) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.gender = ?";
-            rs = executeQuery(query,gender);
+            query = "SELECT COUNT(*) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.age = ?";
+            rs = executeQuery(query,age);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -58,8 +57,8 @@ public class GenderMetricsLoader extends DatabaseConnection{
 
             //Query number of conversions
             query = "SELECT COUNT(*)  FROM server_log s INNER JOIN user_log u ON s.id = u.id "+
-                    "WHERE s.conversion = 'Yes' and u.gender = ?" ;
-            rs = executeQuery(query, gender);
+                    "WHERE s.conversion = 'Yes' and u.age = ?" ;
+            rs = executeQuery(query, age);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -67,8 +66,8 @@ public class GenderMetricsLoader extends DatabaseConnection{
             }
 
             //Query number of uniques
-            query = "SELECT COUNT(DISTINCT c.id) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.gender = ?";
-            rs = executeQuery(query, gender);
+            query = "SELECT COUNT(DISTINCT c.id) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.age = ?";
+            rs = executeQuery(query, age);
 
             if (rs.next()) {
                 int count = rs.getInt(1);
@@ -80,17 +79,17 @@ public class GenderMetricsLoader extends DatabaseConnection{
         }
     }
 
-    private void loadTotalGenderCost(String gender) throws SQLException {
+    private void loadTotalAgeCost(String age) throws SQLException {
 
-        query = "SELECT SUM(click_cost) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.gender = ?";
-        rs = executeQuery(query, gender);
+        query = "SELECT SUM(click_cost) FROM click_log c INNER JOIN user_log u ON c.id = u.id WHERE u.age = ?";
+        rs = executeQuery(query, age);
 
         double cost = 0.0;
         if (rs.next()) {
             cost += rs.getDouble(1);
         }
         query = "SELECT SUM(impression_cost) FROM impression_log WHERE gender = ?";
-        rs = executeQuery(query, gender);
+        rs = executeQuery(query, age);
 
         if (rs.next()) {
             cost += rs.getDouble(1);
@@ -102,7 +101,7 @@ public class GenderMetricsLoader extends DatabaseConnection{
         getCost(metricValuePairs);
     }
 
-    public void loadGenderBounceMetrics(String gender) throws SQLException {
+    public void loadAgeBounceMetrics(String age) throws SQLException {
 
         String definition = SettingsState.getBounceDefinitionBinding().get();
         int value = SettingsState.getBounceDefinitionNumberBinding().get();
@@ -110,20 +109,20 @@ public class GenderMetricsLoader extends DatabaseConnection{
         //Change the query depending on the definition of bounce
         if (definition.equals("Pages")) {
             query ="SELECT COUNT(*) FROM server_log s LEFT JOIN user_log u ON s.id = u.id "+
-                    "WHERE s.pages_viewed <= ? and u.gender = ?";
+                    "WHERE s.pages_viewed <= ? and u.age = ?";
 
 
         } else {
             query = "SELECT COUNT(*) FROM server_log s LEFT JOIN impression_log i ON s.id = i.id" +
-                    "WHERE TIMESTAMPDIFF(SECOND, s.entry_date, s.exit_date) <= ? and u.gender = ?";
+                    "WHERE TIMESTAMPDIFF(SECOND, s.entry_date, s.exit_date) <= ? and u.age = ?";
         }
 
-        retrieveBoundRate(value, gender);
+        retrieveBoundRate(value, age);
     }
 
 
-    private void retrieveBoundRate(int value, String gender) throws SQLException {
-        rs = executeQuery(query, value, gender);
+    private void retrieveBoundRate(int value, String age) throws SQLException {
+        rs = executeQuery(query, value, age);
         if (rs.next()) {
             metricValuePairs.computeIfAbsent("NumberOfBounces", key -> new SimpleStringProperty())
                     .set(Integer.toString(rs.getInt(1)));           }

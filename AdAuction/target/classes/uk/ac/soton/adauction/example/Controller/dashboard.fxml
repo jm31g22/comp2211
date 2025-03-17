@@ -7,298 +7,322 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.DashboardController">
-   <HBox layoutX="700.0" prefHeight="50.0" prefWidth="350.0">
-      <HBox prefHeight="50.0" prefWidth="100.0">
-         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@../assets/house_dark.png" />
-            </image>
-            <HBox.margin>
-               <Insets bottom="10.0" left="5.0" top="10.0" />
-            </HBox.margin>
-         </ImageView>
-         <Button fx:id="homeButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Home">
-            <HBox.margin>
-               <Insets bottom="10.0" top="10.0" />
-            </HBox.margin>
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Button>
-      </HBox>
-      <HBox prefHeight="50.0" prefWidth="116.0">
-         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@../assets/settings.png" />
-            </image>
-            <HBox.margin>
-               <Insets bottom="10.0" left="5.0" top="10.0" />
-            </HBox.margin>
-         </ImageView>
-         <Button fx:id="settingsButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="84.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Settings">
-            <HBox.margin>
-               <Insets bottom="10.0" top="10.0" />
-            </HBox.margin>
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Button>
-      </HBox>
-      <HBox prefHeight="50.0" prefWidth="100.0">
-         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@../assets/back.png" />
-            </image>
-            <HBox.margin>
-               <Insets bottom="10.0" left="5.0" top="10.0" />
-            </HBox.margin>
-         </ImageView>
-         <Button fx:id="backButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Back">
-            <HBox.margin>
-               <Insets bottom="10.0" top="10.0" />
-            </HBox.margin>
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Button>
-      </HBox>
-   </HBox>
-   <VBox alignment="BOTTOM_CENTER" prefHeight="713.0" prefWidth="200.0">
-      <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../assets/logo.png" />
-         </image>
-      </ImageView>
-      <VBox alignment="TOP_CENTER" prefHeight="675.0" prefWidth="100.0" style="-fx-background-color: #1F263E;">
-         <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="199.0" style="-fx-font-weight: bold;" text="Quick Access" textAlignment="CENTER" textFill="WHITE">
-            <font>
-               <Font size="18.0" />
-            </font>
-         </Label>
-         <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
-            <opaqueInsets>
-               <Insets />
-            </opaqueInsets>
-            <padding>
-               <Insets bottom="10.0" left="5.0" right="45.0" top="10.0" />
-            </padding>
+    <HBox layoutX="700.0" prefHeight="50.0" prefWidth="350.0">
+        <HBox prefHeight="50.0" prefWidth="100.0">
             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../assets/house.png" />
-               </image>
-               <HBox.margin>
-                  <Insets right="20.0" />
-               </HBox.margin>
+                <image>
+                    <Image url="@../assets/house_dark.png" />
+                </image>
+                <HBox.margin>
+                    <Insets bottom="10.0" left="5.0" top="10.0" />
+                </HBox.margin>
             </ImageView>
-            <Button fx:id="dashboardButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
-               <font>
-                  <Font size="15.0" />
-               </font>
+            <Button fx:id="homeButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Home">
+                <HBox.margin>
+                    <Insets bottom="10.0" top="10.0" />
+                </HBox.margin>
+                <font>
+                    <Font size="15.0" />
+                </font>
             </Button>
-         </HBox>
-         <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
-            <opaqueInsets>
-               <Insets />
-            </opaqueInsets>
-            <padding>
-               <Insets bottom="10.0" left="5.0" right="57.0" top="10.0" />
-            </padding>
+        </HBox>
+        <HBox prefHeight="50.0" prefWidth="116.0">
             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../assets/chart.png" />
-               </image>
-               <HBox.margin>
-                  <Insets right="36.0" />
-               </HBox.margin>
+                <image>
+                    <Image url="@../assets/settings.png" />
+                </image>
+                <HBox.margin>
+                    <Insets bottom="10.0" left="5.0" top="10.0" />
+                </HBox.margin>
             </ImageView>
-            <Button fx:id="chartsButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
-               <font>
-                  <Font size="15.0" />
-               </font>
+            <Button fx:id="settingsButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="84.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Settings">
+                <HBox.margin>
+                    <Insets bottom="10.0" top="10.0" />
+                </HBox.margin>
+                <font>
+                    <Font size="15.0" />
+                </font>
             </Button>
-         </HBox>
-         <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="279.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
-            <opaqueInsets>
-               <Insets />
-            </opaqueInsets>
-            <padding>
-               <Insets bottom="10.0" left="5.0" right="20.0" top="10.0" />
-            </padding>
-            <children>
-               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@../assets/power.png" />
-                  </image>
-                  <HBox.margin>
-                     <Insets left="10.0" right="27.0" />
-                  </HBox.margin>
-               </ImageView>
-               <Button fx:id="logOutButton" mnemonicParsing="false" prefHeight="65.0" prefWidth="147.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Log Out">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Button>
-            </children>
-            <VBox.margin>
-               <Insets top="460.0" />
-            </VBox.margin>
-         </HBox>
-      </VBox>
-   </VBox>
-   <VBox layoutX="252.0" layoutY="56.0" prefHeight="500.0" prefWidth="731.0">
-      <children>
-         <AnchorPane prefHeight="36.0" prefWidth="729.0">
-            <children>
-               <MenuButton layoutX="606.0" layoutY="4.0" mnemonicParsing="false" onMouseClicked="#initialize" style="-fx-background-color: transparent;">
-                  <items>
-                     <MenuItem mnemonicParsing="false" onAction="#loadMaleMetrics" text="below 25" />
-                     <MenuItem mnemonicParsing="false" onAction="#loadFemaleMetrics" text="25-34" />
-                     <MenuItem mnemonicParsing="false" onAction="#loadFemaleMetrics" text="35-44" />
-                     <MenuItem mnemonicParsing="false" onAction="#loadFemaleMetrics" text="45-54" />
-                     <MenuItem mnemonicParsing="false" onAction="#loadFemaleMetrics" text="above 54" />
-                  </items>
-                  <graphic>
-                     <ImageView fitHeight="29.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+        </HBox>
+        <HBox prefHeight="50.0" prefWidth="100.0">
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../assets/back.png" />
+                </image>
+                <HBox.margin>
+                    <Insets bottom="10.0" left="5.0" top="10.0" />
+                </HBox.margin>
+            </ImageView>
+            <Button fx:id="backButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Back">
+                <HBox.margin>
+                    <Insets bottom="10.0" top="10.0" />
+                </HBox.margin>
+                <font>
+                    <Font size="15.0" />
+                </font>
+            </Button>
+        </HBox>
+    </HBox>
+    <VBox alignment="BOTTOM_CENTER" prefHeight="713.0" prefWidth="200.0">
+        <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../assets/logo.png" />
+            </image>
+        </ImageView>
+        <VBox alignment="TOP_CENTER" prefHeight="675.0" prefWidth="100.0" style="-fx-background-color: #1F263E;">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="199.0" style="-fx-font-weight: bold;" text="Quick Access" textAlignment="CENTER" textFill="WHITE">
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Label>
+            <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <padding>
+                    <Insets bottom="10.0" left="5.0" right="45.0" top="10.0" />
+                </padding>
+                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../assets/house.png" />
+                    </image>
+                    <HBox.margin>
+                        <Insets right="20.0" />
+                    </HBox.margin>
+                </ImageView>
+                <Button fx:id="dashboardButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <padding>
+                    <Insets bottom="10.0" left="5.0" right="57.0" top="10.0" />
+                </padding>
+                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../assets/chart.png" />
+                    </image>
+                    <HBox.margin>
+                        <Insets right="36.0" />
+                    </HBox.margin>
+                </ImageView>
+                <Button fx:id="chartsButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="279.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <padding>
+                    <Insets bottom="10.0" left="5.0" right="20.0" top="10.0" />
+                </padding>
+                <children>
+                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                           <Image url="@../assets/filter.png" />
+                            <Image url="@../assets/power.png" />
                         </image>
-                     </ImageView>
-                  </graphic>
-               </MenuButton>
-               <MenuButton layoutX="666.0" layoutY="4.0" mnemonicParsing="false" onMouseClicked="#initialize" style="-fx-background-color: transparent;">
-                 <items>
-                   <MenuItem mnemonicParsing="false" onAction="#loadMaleMetrics" text="Male" />
-                   <MenuItem mnemonicParsing="false" onAction="#loadFemaleMetrics" text="Female" />
-                 </items>
-                  <graphic>
-                     <ImageView fitHeight="29.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                           <Image url="@../assets/filter.png" />
-                        </image>
-                     </ImageView>
-                  </graphic>
-               </MenuButton>
-               <DatePicker layoutX="57.0" layoutY="7.0" />
-               <Label layoutX="2.0" layoutY="7.0" text="From:">
-                  <font>
-                     <Font size="16.0" />
-                  </font>
-               </Label>
-               <Label layoutX="248.0" layoutY="6.0" text="To:">
-                  <font>
-                     <Font size="16.0" />
-                  </font>
-               </Label>
-               <DatePicker layoutX="281.0" layoutY="6.0" />
-            </children>
-         </AnchorPane>
-         <Label text="Impression">
-            <font>
-               <Font name="System Bold" size="24.0" />
-            </font>
-         </Label>
-         <GridPane prefHeight="140.0" prefWidth="731.0">
-           <columnConstraints>
-             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-           </columnConstraints>
-           <rowConstraints>
-             <RowConstraints maxHeight="95.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
-             <RowConstraints maxHeight="130.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
-           </rowConstraints>
-            <children>
-               <Label fx:id="CTRLabel" prefHeight="45.0" prefWidth="245.0" text="CTR: " GridPane.rowIndex="1">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Label>
-               <Label fx:id="CPMLabel" prefHeight="45.0" prefWidth="245.0" text="CPM: " GridPane.columnIndex="1">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Label>
-               <Label fx:id="impressionsLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Impressions: 2778218321" textOverrun="CLIP">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Label>
-            </children>
-         </GridPane>
-         <Label text="Click">
-            <font>
-               <Font name="System Bold" size="24.0" />
-            </font>
-         </Label>
-         <GridPane prefHeight="140.0" prefWidth="731.0">
-            <columnConstraints>
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints maxHeight="95.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
-               <RowConstraints maxHeight="130.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
-            </rowConstraints>
-            <children>
-               <Label fx:id="clicksLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Clicks: ">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Label>
-               <Label fx:id="uniquesLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Uniques: " GridPane.columnIndex="1">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Label>
-               <Label fx:id="CPCLabel" prefHeight="45.0" prefWidth="245.0" text="CPC: " GridPane.rowIndex="1">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Label>
-            </children>
-         </GridPane>
-         <Label text="Conversion &amp; Bounces">
-            <font>
-               <Font name="System Bold" size="24.0" />
-            </font>
-         </Label>
-         <GridPane prefHeight="140.0" prefWidth="731.0">
-            <columnConstraints>
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            </columnConstraints>
-            <rowConstraints>
-               <RowConstraints maxHeight="95.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
-               <RowConstraints maxHeight="130.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
-            </rowConstraints>
-            <children>
-               <Label fx:id="conversionsLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Conversions: ">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Label>
-               <Label fx:id="CPALabel" prefHeight="45.0" prefWidth="245.0" text="CPA: " GridPane.columnIndex="1">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Label>
-               <Label fx:id="bouncesLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Bounces: TO BE IMPLEMENTED" GridPane.rowIndex="1">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Label>
-               <Label fx:id="bounceRateLabel" prefHeight="45.0" prefWidth="245.0" text="Bounce Rate: TO BE IMPLEMENTED" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
-               </Label>
-            </children>
+                        <HBox.margin>
+                            <Insets left="10.0" right="27.0" />
+                        </HBox.margin>
+                    </ImageView>
+                    <Button fx:id="logOutButton" mnemonicParsing="false" prefHeight="65.0" prefWidth="147.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Log Out">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Button>
+                </children>
+                <VBox.margin>
+                    <Insets top="460.0" />
+                </VBox.margin>
+            </HBox>
+        </VBox>
+    </VBox>
+    <VBox layoutX="252.0" layoutY="56.0" prefHeight="500.0" prefWidth="731.0">
+        <children>
+            <AnchorPane prefHeight="36.0" prefWidth="729.0">
+                <children>
+                    <Button layoutX="726.0" layoutY="4.0" mnemonicParsing="false" onMouseClicked="#refreshScene" style="-fx-background-color: transparent;">
+                        <graphic>
+                            <ImageView fitHeight="29.0" fitWidth="21.0" onMouseClicked="#refreshScene" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../assets/refresh.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
 
-         </GridPane>
-      </children>
-   </VBox>
-   <Label fx:id="costLabel" layoutX="495.0" layoutY="598.0" prefHeight="45.0" prefWidth="245.0" text="Total Cost: ">
-      <font>
-         <Font size="15.0" />
-      </font>
-   </Label>
+                    </Button>
+                    <MenuButton layoutX="571.0" layoutY="4.0" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                        <items>
+                            <MenuItem mnemonicParsing="false" onAction="#loadLowMetrics" text="Low" />
+                            <MenuItem mnemonicParsing="false" onAction="#loadMediumMetrics" text="Medium" />
+                            <MenuItem mnemonicParsing="false" onAction="#loadHighMetrics" text="High" />
+                        </items>
+                        <graphic>
+                            <ImageView fitHeight="29.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../assets/filter.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </MenuButton>
+                    <MenuButton layoutX="626.0" layoutY="4.0" mnemonicParsing="false" style="-fx-background-color: transparent;">
+                        <items>
+                            <MenuItem mnemonicParsing="false" onAction="#loadUnder25Metrics" text="below 25" />
+                            <MenuItem mnemonicParsing="false" onAction="#load25To34Metrics" text="25-34" />
+                            <MenuItem mnemonicParsing="false" onAction="#load35To44Metrics" text="35-44" />
+                            <MenuItem mnemonicParsing="false" onAction="#load45To54Metrics" text="45-54" />
+                            <MenuItem mnemonicParsing="false" onAction="#loadAbove54Metrics" text="above 54" />
+                        </items>
+                        <graphic>
+                            <ImageView fitHeight="29.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../assets/filter.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </MenuButton>
+                    <MenuButton layoutX="676.0" layoutY="4.0" mnemonicParsing="false" onMouseClicked="#initialize" style="-fx-background-color: transparent;">
+                        <items>
+                            <MenuItem mnemonicParsing="false" onAction="#loadMaleMetrics" text="Male" />
+                            <MenuItem mnemonicParsing="false" onAction="#loadFemaleMetrics" text="Female" />
+                        </items>
+                        <graphic>
+                            <ImageView fitHeight="29.0" fitWidth="21.0" pickOnBounds="true" preserveRatio="true">
+                                <image>
+                                    <Image url="@../assets/filter.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </MenuButton>
+                    <DatePicker layoutX="57.0" layoutY="7.0" />
+                    <Label layoutX="2.0" layoutY="7.0" text="From:">
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                    </Label>
+                    <Label layoutX="248.0" layoutY="6.0" text="To:">
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                    </Label>
+                    <DatePicker layoutX="281.0" layoutY="6.0" />
+                </children>
+            </AnchorPane>
+            <Label text="Impression">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+            <GridPane prefHeight="140.0" prefWidth="731.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints maxHeight="95.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="130.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+                <children>
+                    <Label fx:id="CTRLabel" prefHeight="45.0" prefWidth="245.0" text="CTR: " GridPane.rowIndex="1">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="CPMLabel" prefHeight="45.0" prefWidth="245.0" text="CPM: " GridPane.columnIndex="1">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="impressionsLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Impressions: 2778218321" textOverrun="CLIP">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+                </children>
+            </GridPane>
+            <Label text="Click">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+            <GridPane prefHeight="140.0" prefWidth="731.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints maxHeight="95.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="130.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+                <children>
+                    <Label fx:id="clicksLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Clicks: ">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="uniquesLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Uniques: " GridPane.columnIndex="1">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="CPCLabel" prefHeight="45.0" prefWidth="245.0" text="CPC: " GridPane.rowIndex="1">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+                </children>
+            </GridPane>
+            <Label text="Conversion &amp; Bounces">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+            <GridPane prefHeight="140.0" prefWidth="731.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints maxHeight="95.0" minHeight="10.0" prefHeight="68.0" vgrow="SOMETIMES" />
+                    <RowConstraints maxHeight="130.0" minHeight="10.0" prefHeight="72.0" vgrow="SOMETIMES" />
+                </rowConstraints>
+                <children>
+                    <Label fx:id="conversionsLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Conversions: ">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="CPALabel" prefHeight="45.0" prefWidth="245.0" text="CPA: " GridPane.columnIndex="1">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="bouncesLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Bounces: TO BE IMPLEMENTED" GridPane.rowIndex="1">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="bounceRateLabel" prefHeight="45.0" prefWidth="245.0" text="Bounce Rate: TO BE IMPLEMENTED" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+                </children>
+
+            </GridPane>
+        </children>
+    </VBox>
+    <Label fx:id="costLabel" layoutX="495.0" layoutY="598.0" prefHeight="45.0" prefWidth="245.0" text="Total Cost: ">
+        <font>
+            <Font size="15.0" />
+        </font>
+    </Label>
 </AnchorPane>
