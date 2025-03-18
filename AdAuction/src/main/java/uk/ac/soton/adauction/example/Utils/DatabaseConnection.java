@@ -27,10 +27,10 @@ public class DatabaseConnection {
         }
     }
 
-    public static Connection getRemoteUsersConnection() throws SQLException {
+    public static Connection getRemoteUsersConnection() {
         return usersConnection;
     }
-    public static Connection getRemoteLogsConnection() throws SQLException {
+    public static Connection getRemoteLogsConnection() {
         return remoteLogsConnection;
     }
     public static Connection getLocalLogsConnection() {

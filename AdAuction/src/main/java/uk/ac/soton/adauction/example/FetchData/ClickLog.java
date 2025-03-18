@@ -1,9 +1,11 @@
 package uk.ac.soton.adauction.example.FetchData;
 
+import uk.ac.soton.adauction.example.FetchData.Queriers.RemoteQuerier;
+
 import java.sql.*;
 import java.util.HashMap;
 
-public class ClickLog extends Querier{
+public class ClickLog extends RemoteQuerier {
 
 
     public HashMap<String, Integer> fetchClickDateCount(){

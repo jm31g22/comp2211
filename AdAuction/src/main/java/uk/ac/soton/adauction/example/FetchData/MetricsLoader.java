@@ -2,6 +2,7 @@ package uk.ac.soton.adauction.example.FetchData;
 
 import javafx.beans.property.SimpleStringProperty;
 import uk.ac.soton.adauction.example.AppState;
+import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,8 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.spi.LocaleNameProvider;
 
-public class MetricsLoader extends Querier {
+public class MetricsLoader extends LocalQuerier {
 
     private final HashMap<String, SimpleStringProperty> metricValuePairs = new HashMap<>();
     private String query;

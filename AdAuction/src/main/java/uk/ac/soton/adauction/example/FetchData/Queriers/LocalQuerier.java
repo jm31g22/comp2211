@@ -1,12 +1,11 @@
-package uk.ac.soton.adauction.example.FetchData;
+package uk.ac.soton.adauction.example.FetchData.Queriers;
 
 import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
 
 import java.sql.Connection;
 
-abstract class Querier {
+public abstract class LocalQuerier {
 
     protected final Connection conn = DatabaseConnection.getLocalLogsConnection();
-
 
 }
