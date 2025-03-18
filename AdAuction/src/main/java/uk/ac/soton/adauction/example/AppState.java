@@ -1,12 +1,11 @@
 package uk.ac.soton.adauction.example;
 
-import javafx.beans.binding.StringBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class SettingsState {
+public class AppState {
 
     private static final StringProperty bounceDefinition = new SimpleStringProperty("Pages");
     private static final IntegerProperty bounceDefinitionNumber = new SimpleIntegerProperty(5);
