@@ -1,11 +1,11 @@
 package uk.ac.soton.adauction.example.FetchData;
 
-import uk.ac.soton.adauction.example.FetchData.Queriers.RemoteQuerier;
+import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
 
 import java.sql.*;
 import java.util.HashMap;
 
-public class ServerLog extends RemoteQuerier {
+public class ServerLog extends LocalQuerier {
 
 
 

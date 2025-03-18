@@ -41,6 +41,8 @@ public class ChartsSceneController extends SceneController {
     private Label timeLabel;
     @FXML
     private Label valueLabel;
+    @FXML
+    private Label timeOrCatLabel;
     //variable to save what is the current page
     private int currentPage;
     private final ImpressionLog impressionLog;
@@ -66,6 +68,7 @@ public class ChartsSceneController extends SceneController {
         chartSelection.setOnAction((event) -> {
             int selectedIndex = chartSelection.getSelectionModel().getSelectedIndex();
             Object selectedItem = chartSelection.getSelectionModel().getSelectedItem();
+            hoverPane.opacityProperty().setValue(0);
             if (selectedIndex == 0) {
                 currentPage = 0;
                 loadLineChartPage();
@@ -76,7 +79,6 @@ public class ChartsSceneController extends SceneController {
                 timeSelection.opacityProperty().setValue(0);
             } else if (selectedIndex == 2) {
                 currentPage = 2;
-
             }
             System.out.println("Selection made: [" + selectedIndex + "] " + selectedItem);
         });
@@ -88,6 +90,7 @@ public class ChartsSceneController extends SceneController {
     public void loadPieChartPage() {
         metricSelection.getItems().clear();
         stackPaneGraph.getChildren().clear();
+        impressionPie.getData().clear();
         stackPaneGraph.getChildren().add(impressionPie);
         //load chart options into list
         metricSelection.getItems().add("Gender");
@@ -95,15 +98,29 @@ public class ChartsSceneController extends SceneController {
         metricSelection.getItems().add("Income");
         metricSelection.setOnAction((event) -> {
             int selectedIndex = metricSelection.getSelectionModel().getSelectedIndex();
+            hoverPane.opacityProperty().setValue(0);
             if (selectedIndex == 0) {
                 loadGenderPieData();
             } else if (selectedIndex == 1) {
-                System.out.println("Age Pie selected");
+                loadAgePieData();
             } else if (selectedIndex == 2) {
-                System.out.println("Income Pie selected");
+                loadIncomePieData();
             }
         });
         timeSelection.hide();
+    }
+
+    private void hoverImpressionPane(String cat){
+        impressionPie.getData().stream().forEach(data ->{
+            data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED,
+                    new EventHandler<MouseEvent>() {
+                        @Override public void handle(MouseEvent e) {
+                            double coordX = e.getX();
+                            double coordY = e.getY();
+                            addChartHoverPane(coordX, coordY, cat, data.getName(), (int) data.getPieValue());
+                        }
+                    });
+        });
     }
 
     /**
@@ -118,9 +135,49 @@ public class ChartsSceneController extends SceneController {
                         new PieChart.Data("Female", femaleCount),
                         new PieChart.Data("Male", maleCount));
         impressionPie.setData(pieChartData);
+        hoverImpressionPane("Gender :");
         pieChartData.get(0).getNode().setStyle("-fx-pie-color: #b81370;");
         pieChartData.get(1).getNode().setStyle("-fx-pie-color: #2d58d6;");
         impressionPie.setPrefWidth(770.0);
+        impressionPie.setPrefHeight(500.0);
+        impressionPie.setLegendVisible(false);
+    }
+
+    public void loadAgePieData() {
+        HashMap<String, Integer> counts = impressionLog.fetchImpressionAgeCount();
+        double age1Count = Math.round((float) counts.get("<25") / counts.get("total") * 100);
+        double age2Count = Math.round((float) counts.get("25-34") / counts.get("total") * 100);
+        double age3Count = Math.round((float) counts.get("35-44") / counts.get("total") * 100);
+        double age4Count = Math.round((float) counts.get("45-54") / counts.get("total") * 100);
+        double age5Count = Math.round((float) counts.get(">54") / counts.get("total") * 100);
+        ObservableList<PieChart.Data> pieChartData =
+                FXCollections.observableArrayList(
+                        new PieChart.Data("<25", age1Count),
+                        new PieChart.Data("25-34", age2Count),
+                        new PieChart.Data("35-44", age3Count),
+                        new PieChart.Data("45-54", age4Count),
+                        new PieChart.Data(">54", age5Count));
+        impressionPie.setData(pieChartData);
+        hoverImpressionPane("Age :");
+        impressionPie.setPrefWidth(770.0);
+        impressionPie.setPrefHeight(500.0);
+        impressionPie.setLegendVisible(false);
+    }
+
+    public void loadIncomePieData() {
+        HashMap<String, Integer> counts = impressionLog.fetchImpressionIncomeCount();
+        double income1Count = Math.round((float) counts.get("low") / counts.get("total") * 100);
+        double income2Count = Math.round((float) counts.get("medium") / counts.get("total") * 100);
+        double income3Count = Math.round((float) counts.get("high") / counts.get("total") * 100);
+        ObservableList<PieChart.Data> pieChartData =
+                FXCollections.observableArrayList(
+                        new PieChart.Data("Low", income1Count),
+                        new PieChart.Data("Medium", income2Count),
+                        new PieChart.Data("High", income3Count));
+        impressionPie.setData(pieChartData);
+        hoverImpressionPane("Income :");
+        impressionPie.setPrefWidth(770.0);
+        impressionPie.setPrefHeight(500.0);
         impressionPie.setLegendVisible(false);
     }
 
@@ -391,7 +448,7 @@ public class ChartsSceneController extends SceneController {
                         @Override public void handle(MouseEvent e) {
                             double coordX = e.getX();
                             double coordY = e.getY();
-                            addChartHoverPane(coordX, coordY, data.getXValue(), (Integer) data.getYValue());
+                            addChartHoverPane(coordX, coordY, "Time: ", data.getXValue(), (Integer) data.getYValue());
                         }
                     });
             data.getNode().addEventHandler(MouseEvent.MOUSE_EXITED,
@@ -438,10 +495,11 @@ public class ChartsSceneController extends SceneController {
         return min;
     }
 
-    private void addChartHoverPane(double coordX, double coordY, String date, Integer value){
+    private void addChartHoverPane(double coordX, double coordY, String cat, String date, Integer value){
         hoverPane.setLayoutX(coordX+200);
         hoverPane.setLayoutY(coordY+200);
         hoverPane.opacityProperty().setValue(1);
+        timeOrCatLabel.setText(cat);
         timeLabel.setText(date);
         valueLabel.setText(String.valueOf(value));
     }

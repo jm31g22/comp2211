@@ -189,12 +189,12 @@
                <children>
                   <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                      <children>
-                        <Label prefHeight="50.0" prefWidth="55.0" text="Time:">
+                        <Label fx:id="timeOrCatLabel" prefHeight="50.0" prefWidth="87.0" text="Time:">
                            <font>
                               <Font name="System Bold" size="16.0" />
                            </font>
                         </Label>
-                        <Label fx:id="timeLabel" prefHeight="50.0" prefWidth="196.0" text="Label">
+                        <Label fx:id="timeLabel" prefHeight="50.0" prefWidth="163.0" text="Label">
                            <font>
                               <Font size="16.0" />
                            </font>
