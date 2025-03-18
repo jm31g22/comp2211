@@ -1,1 +1,4 @@
 *.class
+*.db
+*.db-wal
+*.db-shm

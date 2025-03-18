@@ -16,11 +16,11 @@ public class MetricsLoader extends Querier {
     private final HashMap<String, SimpleStringProperty> metricValuePairs = new HashMap<>();
     private String query;
     private StringBuilder queryBuilder = new StringBuilder();
-    private ResultSet rs;
     private HashMap<String, String> parameters = new HashMap<>();
     List<Object> values = new ArrayList<>();
 
     public HashMap<String, SimpleStringProperty> loadAllMetrics(String age, String gender, String income, String context) throws SQLException {
+        System.out.println("Updating metrics");
         parseParameters(age, gender, income, context);
 
         loadSimpleMetrics();
@@ -39,11 +39,12 @@ public class MetricsLoader extends Querier {
         if (!gender.equals("All")) parameters.put("gender", gender);
         if (!income.equals("All")) parameters.put("income", income);
         if (!context.equals("All")) parameters.put("context", context);
+        if (!age.equals("All")) parameters.put("age", age);
     }
 
     private void loadSimpleMetrics() {
         values.clear();
-        parameters.values().forEach(values::add);
+        values.addAll(parameters.values());
 
         try {
             // NumberOfImpressions

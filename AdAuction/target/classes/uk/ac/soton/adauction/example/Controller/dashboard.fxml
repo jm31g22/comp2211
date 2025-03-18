@@ -243,10 +243,10 @@
    <Text layoutX="283.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Context" translateX="3.0" wrappingWidth="52.50496042441688" />
    <RadioButton fx:id="socialMediaContextButton" layoutX="560.0" layoutY="238.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="97.0" text="Social Media" translateX="3.0" />
    <RadioButton fx:id="allContextButton" layoutX="665.0" layoutY="238.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" text="All" translateX="3.0" />
-   <RadioButton fx:id="maleGenderButton2" layoutX="344.0" layoutY="144.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="59.0" text="&lt;25" />
-   <RadioButton fx:id="maleGenderButton21" layoutX="411.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="68.0" text="25-34" />
-   <RadioButton fx:id="maleGenderButton22" layoutX="480.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="71.0" text="35-44" />
-   <RadioButton fx:id="maleGenderButton23" layoutX="553.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="68.0" text="45-54" />
-   <RadioButton fx:id="maleGenderButton231" layoutX="624.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="54.0" text="55&lt;" />
-   <RadioButton fx:id="bothGenderButton113" layoutX="682.0" layoutY="144.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" text="All" />
+   <RadioButton fx:id="ageButton1" layoutX="344.0" layoutY="144.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="59.0" text="&lt;25" />
+   <RadioButton fx:id="ageButton2" layoutX="411.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="68.0" text="25-34" />
+   <RadioButton fx:id="ageButton3" layoutX="480.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="71.0" text="35-44" />
+   <RadioButton fx:id="ageButton4" layoutX="553.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="68.0" text="45-54" />
+   <RadioButton fx:id="ageButton5" layoutX="624.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="54.0" text="55&lt;" />
+   <RadioButton fx:id="ageButton6" layoutX="682.0" layoutY="144.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" text="All" />
 </AnchorPane>

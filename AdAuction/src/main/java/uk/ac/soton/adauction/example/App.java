@@ -24,8 +24,7 @@ public class App extends Application {
 
     }
 
-    private void initialise(Stage stage) throws SQLException {
-        DatabaseCacher.cacheDatabase(DatabaseConnection.getRemoteLogsConnection());
+    private void initialise(Stage stage) {
         sceneManager = new SceneManager(stage);
         metricsLoader = new MetricsLoader();
         sceneManager.loadScenes();

@@ -44,7 +44,11 @@ public class DatabaseCacher {
                     + ")";
 
     public static void main(String[] args) {
-
+        try {
+            cacheDatabase(DatabaseConnection.getRemoteLogsConnection());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void createSQLiteTable(String createTableSQL, String tableName) throws SQLException {

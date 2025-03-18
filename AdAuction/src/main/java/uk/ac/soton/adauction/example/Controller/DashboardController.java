@@ -58,7 +58,18 @@ public class DashboardController extends SceneController{
     private RadioButton shoppingContextButton;
     @FXML
     private RadioButton allIncomeButton;
-
+    @FXML
+    private RadioButton ageButton1;
+    @FXML
+    private RadioButton ageButton2;
+    @FXML
+    private RadioButton ageButton3;
+    @FXML
+    private RadioButton ageButton4;
+    @FXML
+    private RadioButton ageButton5;
+    @FXML
+    private RadioButton ageButton6;
 
     private HashMap<String, SimpleStringProperty> metricValuePairs;
     private final ToggleGroup genderToggleGroup = new ToggleGroup();
@@ -103,6 +114,12 @@ public class DashboardController extends SceneController{
         socialMediaContextButton.setToggleGroup(contextToggleGroup);
         allContextButton.setToggleGroup(contextToggleGroup);
 
+        ageButton1.setToggleGroup(ageToggleGroup);
+        ageButton2.setToggleGroup(ageToggleGroup);
+        ageButton3.setToggleGroup(ageToggleGroup);
+        ageButton4.setToggleGroup(ageToggleGroup);
+        ageButton5.setToggleGroup(ageToggleGroup);
+        ageButton6.setToggleGroup(ageToggleGroup);
     }
 
     private void initializeLabels() {
@@ -169,7 +186,9 @@ public class DashboardController extends SceneController{
         RadioButton selectedContextRadio = (RadioButton) contextToggleGroup.getSelectedToggle();
         String context = (selectedContextRadio != null) ? selectedContextRadio.getText() : "All";
 
-        System.out.println(gender);
-        metricValuePairs = App.getMetricsLoader().loadAllMetrics("All", gender, income, context);
+        RadioButton selectedAgeRadio = (RadioButton) ageToggleGroup.getSelectedToggle();
+        String age = (selectedAgeRadio != null) ? selectedAgeRadio.getText() : "All";
+
+        metricValuePairs = App.getMetricsLoader().loadAllMetrics(age, gender, income, context);
     }
 }
