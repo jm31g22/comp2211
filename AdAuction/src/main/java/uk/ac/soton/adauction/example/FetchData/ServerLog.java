@@ -1,12 +1,9 @@
 package uk.ac.soton.adauction.example.FetchData;
 
-import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
-
 import java.sql.*;
 import java.util.HashMap;
 
-public class ServerLog{
-    private final Connection conn = DatabaseConnection.getLogsConnection();
+public class ServerLog extends Querier{
 
 
 

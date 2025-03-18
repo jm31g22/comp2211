@@ -1,159 +1,185 @@
 package uk.ac.soton.adauction.example.FetchData;
 
 import javafx.beans.property.SimpleStringProperty;
-import uk.ac.soton.adauction.example.SettingsState;
-import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
+import uk.ac.soton.adauction.example.AppState;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class MetricsLoader {
+public class MetricsLoader extends Querier {
 
     private final HashMap<String, SimpleStringProperty> metricValuePairs = new HashMap<>();
     private String query;
+    private StringBuilder queryBuilder = new StringBuilder();
     private ResultSet rs;
-    private final Connection conn = DatabaseConnection.getLogsConnection();
+    private HashMap<String, String> parameters = new HashMap<>();
+    List<Object> values = new ArrayList<>();
 
-
-
-    public HashMap<String, SimpleStringProperty> loadAllMetrics() throws SQLException {
+    public HashMap<String, SimpleStringProperty> loadAllMetrics(String age, String gender, String income, String context) throws SQLException {
+        parseParameters(age, gender, income, context);
 
         loadSimpleMetrics();
         loadTotalCost();
         loadCostMetrics();
         loadBounceMetrics();
 
+        System.out.println("Metrics loaded");
         return metricValuePairs;
     }
 
+    private void parseParameters(String age, String gender, String income, String context) throws SQLException {
+        parameters.clear();
+
+        if (!age.equals("All")) parameters.put("age", age);
+        if (!gender.equals("All")) parameters.put("gender", gender);
+        if (!income.equals("All")) parameters.put("income", income);
+        if (!context.equals("All")) parameters.put("context", context);
+    }
+
     private void loadSimpleMetrics() {
+        values.clear();
+        parameters.values().forEach(values::add);
+
         try {
+            // NumberOfImpressions
+            StringBuilder queryBuilder = new StringBuilder("SELECT COUNT(*) FROM impression_log i WHERE 1=1");
+            addFilters(queryBuilder);
+            metricValuePairs.computeIfAbsent("NumberOfImpressions", key -> new SimpleStringProperty())
+                    .set(Integer.toString((int) executeFilteredQuery(queryBuilder.toString(), "int")));
 
-            //Query number of impressions
-            query = "SELECT COUNT(*) FROM impression_log";
-            rs = executeQuery(query);
+            // NumberOfClicks
+            queryBuilder = new StringBuilder(
+                    "SELECT COUNT(*) FROM click_log c JOIN unique_users i ON c.id = i.id WHERE c.click_cost >= 0"
+            );
+            addFilters(queryBuilder);
+            metricValuePairs.computeIfAbsent("NumberOfClicks", key -> new SimpleStringProperty())
+                    .set(Integer.toString((int) executeFilteredQuery(queryBuilder.toString(), "int")));
 
-            if (rs.next()) {
-                int count = rs.getInt(1);
-                metricValuePairs.computeIfAbsent("NumberOfImpressions", key -> new SimpleStringProperty())
-                        .set(Integer.toString(count));
-            }
+            // NumberOfConversions
+            queryBuilder = new StringBuilder(
+                    "SELECT COUNT(*) FROM server_log c JOIN unique_users i ON c.id = i.id WHERE conversion = 'Yes'"
+            );
+            addFilters(queryBuilder);
+            metricValuePairs.computeIfAbsent("NumberOfConversions", key -> new SimpleStringProperty())
+                    .set(Integer.toString((int) executeFilteredQuery(queryBuilder.toString(), "int")));
 
-            //Query number of clicks
-            query = "SELECT COUNT(*) FROM click_log";
-            rs = executeQuery(query);
-
-            if (rs.next()) {
-                int count = rs.getInt(1);
-                metricValuePairs.put("NumberOfClicks", new SimpleStringProperty(Integer.toString(count)));
-            }
-
-            //Query number of conversions
-            query = "SELECT COUNT(*) FROM server_log WHERE conversion = 'Yes'";
-            rs = executeQuery(query);
-
-            if (rs.next()) {
-                int count = rs.getInt(1);
-                metricValuePairs.put("NumberOfConversions", new SimpleStringProperty(Integer.toString(count)));
-            }
-
-            //Query number of uniques
-            query = "SELECT COUNT(DISTINCT id) FROM click_log;";
-            rs = executeQuery(query);
-
-            if (rs.next()) {
-                int count = rs.getInt(1);
-                metricValuePairs.put("NumberOfUniques", new SimpleStringProperty(Integer.toString(count)));
-            }
-
+            // Number of Uniques
+            queryBuilder = new StringBuilder(
+                    "SELECT COUNT(DISTINCT c.id) FROM click_log c JOIN unique_users i ON c.id = i.id WHERE 1=1"
+            );
+            addFilters(queryBuilder);
+            metricValuePairs.computeIfAbsent("NumberOfUniques", key -> new SimpleStringProperty())
+                    .set(Integer.toString((int) executeFilteredQuery(queryBuilder.toString(), "int")));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private void addFilters(StringBuilder query) {
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            query.append(" AND i.").append(entry.getKey()).append(" = ?");
+        }
+    }
 
     private void loadTotalCost() throws SQLException {
-
-        query = "SELECT SUM(click_cost) FROM click_log";
-        rs = executeQuery(query);
-
         double cost = 0.0;
-        if (rs.next()) {
-            cost += rs.getDouble(1);
-        }
-        query = "SELECT SUM(impression_cost) FROM impression_log";
-        rs = executeQuery(query);
 
-        if (rs.next()) {
-            cost += rs.getDouble(1);
-        }
-        metricValuePairs.put("TotalCost", new SimpleStringProperty(Double.toString(cost/100)));
+        StringBuilder queryBuilder = new StringBuilder(
+                "SELECT SUM(click_cost) FROM click_log c JOIN unique_users i ON c.id = i.id WHERE 1=1"
+        );
+        addFilters(queryBuilder);
+        cost += (double) executeFilteredQuery(queryBuilder.toString(), "double");
+
+        queryBuilder = new StringBuilder(
+                "SELECT SUM(impression_cost) FROM impression_log i WHERE 1=1"
+        );
+        addFilters(queryBuilder);
+        cost += (double) executeFilteredQuery(queryBuilder.toString(), "double");
+
+        metricValuePairs.computeIfAbsent("TotalCost", key -> new SimpleStringProperty())
+                .set(Double.toString(cost/100));
     }
 
     private void loadCostMetrics() {
-        double CTR = Double.parseDouble(metricValuePairs.get("NumberOfClicks").get())/Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get());
-        metricValuePairs.put("CTR", new SimpleStringProperty(Double.toString(CTR)));
+        double CTR = Double.parseDouble(metricValuePairs.get("NumberOfClicks").get()) /
+                Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get());
+        metricValuePairs.computeIfAbsent("CTR", key -> new SimpleStringProperty())
+                .set(Double.toString(CTR));
 
-        double CPA = Double.parseDouble(metricValuePairs.get("TotalCost").get())/Double.parseDouble(metricValuePairs.get("NumberOfConversions").get());
-        metricValuePairs.put("CPA", new SimpleStringProperty(Double.toString(CPA)));
+        double CPA = Double.parseDouble(metricValuePairs.get("TotalCost").get()) /
+                Double.parseDouble(metricValuePairs.get("NumberOfConversions").get());
+        metricValuePairs.computeIfAbsent("CPA", key -> new SimpleStringProperty())
+                .set(Double.toString(CPA));
 
-        double CPC = Double.parseDouble(metricValuePairs.get("TotalCost").get())/Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
-        metricValuePairs.put("CPC", new SimpleStringProperty(Double.toString(CPC)));
+        double CPC = Double.parseDouble(metricValuePairs.get("TotalCost").get()) /
+                Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
+        metricValuePairs.computeIfAbsent("CPC", key -> new SimpleStringProperty())
+                .set(Double.toString(CPC));
 
-        double CPM = Double.parseDouble(metricValuePairs.get("TotalCost").get())/(Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get())/1000);
-        metricValuePairs.put("CPM", new SimpleStringProperty(Double.toString(CPM)));
+        double CPM = Double.parseDouble(metricValuePairs.get("TotalCost").get()) /
+                (Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get()) / 1000);
+        metricValuePairs.computeIfAbsent("CPM", key -> new SimpleStringProperty())
+                .set(Double.toString(CPM));
     }
 
     public HashMap<String, SimpleStringProperty> loadBounceMetrics() throws SQLException {
+        String definition = AppState.getBounceDefinitionBinding().get();
+        int value = AppState.getBounceDefinitionNumberBinding().get();
 
-        String definition = SettingsState.getBounceDefinitionBinding().get();
-        int value = SettingsState.getBounceDefinitionNumberBinding().get();
-
-        //Change the query depending on the definition of bounce
+        // Change the query depending on the definition of bounce
         if (definition.equals("Pages")) {
-           query ="SELECT COUNT(*) FROM server_log WHERE pages_viewed <= ?";
-
-
+            queryBuilder = new StringBuilder(
+                    "SELECT COUNT(*) FROM server_log c JOIN unique_users i ON c.id = i.id WHERE 1=1"
+            );
+            addFilters(queryBuilder);
+            queryBuilder.append(" AND pages_viewed >= ").append(value);
         } else {
-            query = "SELECT COUNT(*) FROM server_log " +
-                    "WHERE TIMESTAMPDIFF(SECOND, entry_date, exit_date) <= ?";
+            queryBuilder = new StringBuilder(
+                    "SELECT COUNT(*) FROM server_log c JOIN unique_users i ON c.id = i.id WHERE 1=1"
+            );
+            addFilters(queryBuilder);
+            queryBuilder.append(" AND TIMESTAMPDIFF(SECOND, entry_date, exit_date) <= ").append(value);
         }
 
-        rs = executeQuery(query, value);
-        if (rs.next()) {
-            metricValuePairs.computeIfAbsent("NumberOfBounces", key -> new SimpleStringProperty())
-                    .set(Integer.toString(rs.getInt(1)));           }
+        metricValuePairs.computeIfAbsent("NumberOfBounces", key -> new SimpleStringProperty())
+                .set(Integer.toString((int) executeFilteredQuery(queryBuilder.toString(), "int")));
 
-        double bounceRate = Double.parseDouble(metricValuePairs.get("NumberOfBounces").get())/Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
+        double bounceRate = Double.parseDouble(metricValuePairs.get("NumberOfBounces").get()) /
+                Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
+
         metricValuePairs.computeIfAbsent("BounceRate", key -> new SimpleStringProperty())
                 .set(Double.toString(bounceRate));
 
         return metricValuePairs;
     }
 
+    private Number executeFilteredQuery(String query, String returnType) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            // Set values dynamically
+            for (int i = 0; i < values.size(); i++) {
+                stmt.setObject(i + 1, values.get(i));
+            }
 
-    private ResultSet executeQuery(String query) {
+            System.out.println("Executed SQL: " + stmt.toString());
 
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            return pstmt.executeQuery();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+            // Execute the query
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    if (returnType.equals("int")) {
+                        return rs.getObject(1) != null ? rs.getInt(1) : 0; // Return 0 if NULL
+                    } else {
+                        return rs.getObject(1) != null ? rs.getDouble(1) : 0.0; // Return 0.0 if NULL
+                    }
+                }
+            }
         }
+        return returnType.equals("int") ? 0 : 0.0; // Return default value (no -1 to avoid errors)
     }
 
-    private ResultSet executeQuery(String query, int x) {
-
-        try {
-            PreparedStatement pstmt = conn.prepareStatement(query);
-            pstmt.setInt(1, x);
-            return pstmt.executeQuery();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

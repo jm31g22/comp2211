@@ -1,20 +1,12 @@
 package uk.ac.soton.adauction.example.Controller;
 
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.StringBinding;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import uk.ac.soton.adauction.example.SettingsState;
-
-import java.sql.SQLException;
-import java.util.Set;
+import uk.ac.soton.adauction.example.AppState;
 
 public class SettingsController extends SceneController{
     @FXML
@@ -87,8 +79,8 @@ public class SettingsController extends SceneController{
         }
 
         // Apply settings if all validations pass
-        SettingsState.setBounceDefinition(bounceDefinition);
-        SettingsState.setBounceDefinitionNumber(number);
+        AppState.setBounceDefinition(bounceDefinition);
+        AppState.setBounceDefinitionNumber(number);
         showBounceMessage("Success!");
     }
 
@@ -143,8 +135,8 @@ public class SettingsController extends SceneController{
     private void setupBindings() {
         //Binding current definition of a bounce to the variables in SettingsState
         currentDefinition.textProperty().bind(Bindings.createStringBinding(
-                () -> SettingsState.getBounceDefinitionBinding().get() + " (" + SettingsState.getBounceDefinitionNumberBinding().get() + ")", // Formatting
-                SettingsState.getBounceDefinitionBinding(), SettingsState.getBounceDefinitionNumberBinding() // Observables
+                () -> AppState.getBounceDefinitionBinding().get() + " (" + AppState.getBounceDefinitionNumberBinding().get() + ")", // Formatting
+                AppState.getBounceDefinitionBinding(), AppState.getBounceDefinitionNumberBinding() // Observables
         ));
     }
 

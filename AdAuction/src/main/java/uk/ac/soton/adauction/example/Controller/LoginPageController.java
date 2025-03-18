@@ -34,7 +34,10 @@ public class LoginPageController extends SceneController{
 
     private String dynamicVerificationCode;
     private volatile boolean isCountingDown = false;
-    private final Connection conn = DatabaseConnection.getUserDataConnection();
+    private final Connection conn = DatabaseConnection.getRemoteUsersConnection();
+
+    public LoginPageController() throws SQLException {
+    }
 
 
     @FXML
@@ -133,6 +136,7 @@ public class LoginPageController extends SceneController{
             showErrorMessage("Error retrieving user role.");
             return;
         }
+
         App.getSceneController().switchTo("dashboard");
 
     }
