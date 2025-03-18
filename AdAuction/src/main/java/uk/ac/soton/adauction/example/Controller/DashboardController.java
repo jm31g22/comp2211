@@ -3,6 +3,7 @@ package uk.ac.soton.adauction.example.Controller;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -70,6 +71,10 @@ public class DashboardController extends SceneController{
     private RadioButton ageButton5;
     @FXML
     private RadioButton ageButton6;
+    @FXML
+    private DatePicker startDatePicker;
+    @FXML
+    private DatePicker endDatePicker;
 
     private HashMap<String, SimpleStringProperty> metricValuePairs;
     private final ToggleGroup genderToggleGroup = new ToggleGroup();
@@ -89,7 +94,7 @@ public class DashboardController extends SceneController{
 
         super.initialize();
         try {
-            metricValuePairs = App.getMetricsLoader().loadAllMetrics("All", "All", "All", "All");
+            metricValuePairs = App.getMetricsLoader().loadAllMetrics("All", "All", "All", "All", "Start", "End");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -189,6 +194,11 @@ public class DashboardController extends SceneController{
         RadioButton selectedAgeRadio = (RadioButton) ageToggleGroup.getSelectedToggle();
         String age = (selectedAgeRadio != null) ? selectedAgeRadio.getText() : "All";
 
-        metricValuePairs = App.getMetricsLoader().loadAllMetrics(age, gender, income, context);
+        String startDate = (startDatePicker.getValue() != null ) ? startDatePicker.getValue().toString() : "Start";
+        System.out.println("Start: " + startDate);
+        String endDate = (endDatePicker.getValue() != null ) ? endDatePicker.getValue().toString() : "End";
+        System.out.println("End: " + endDate);
+
+        metricValuePairs = App.getMetricsLoader().loadAllMetrics(age, gender, income, context, startDate, endDate);
     }
 }

@@ -13,9 +13,6 @@ public class App extends Application {
     private static SceneManager sceneManager;
     private static MetricsLoader metricsLoader;
 
-    @Override
-
-
     public void start(Stage stage) throws SQLException {
 
         initialise(stage);

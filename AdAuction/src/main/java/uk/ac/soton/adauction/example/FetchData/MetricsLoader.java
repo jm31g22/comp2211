@@ -4,26 +4,22 @@ import javafx.beans.property.SimpleStringProperty;
 import uk.ac.soton.adauction.example.AppState;
 import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.spi.LocaleNameProvider;
 
 public class MetricsLoader extends LocalQuerier {
 
     private final HashMap<String, SimpleStringProperty> metricValuePairs = new HashMap<>();
-    private String query;
     private StringBuilder queryBuilder = new StringBuilder();
     private HashMap<String, String> parameters = new HashMap<>();
     List<Object> values = new ArrayList<>();
 
-    public HashMap<String, SimpleStringProperty> loadAllMetrics(String age, String gender, String income, String context) throws SQLException {
+    public HashMap<String, SimpleStringProperty> loadAllMetrics(String age, String gender, String income, String context, String startDate, String endDate) throws SQLException {
         System.out.println("Updating metrics");
-        parseParameters(age, gender, income, context);
+        addParameters(age, gender, income, context, startDate, endDate);
 
         loadSimpleMetrics();
         loadTotalCost();
@@ -34,14 +30,29 @@ public class MetricsLoader extends LocalQuerier {
         return metricValuePairs;
     }
 
-    private void parseParameters(String age, String gender, String income, String context) throws SQLException {
+    private void addParameters(String age, String gender, String income, String context, String startDate, String endDate) throws SQLException {
         parameters.clear();
 
         if (!age.equals("All")) parameters.put("age", age);
         if (!gender.equals("All")) parameters.put("gender", gender);
         if (!income.equals("All")) parameters.put("income", income);
         if (!context.equals("All")) parameters.put("context", context);
-        if (!age.equals("All")) parameters.put("age", age);
+        if (!startDate.equals("Start")) parameters.put("startDate", startDate);
+        if (!endDate.equals("End")) parameters.put("endDate", endDate);
+
+
+    }
+
+    private String getFirstColumnName(String tableName) throws SQLException {
+        String query = "PRAGMA table_info(" + tableName + ")";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            if (rs.next()) {
+                return rs.getString("name"); // The "name" column contains the column name
+            }
+        }
+        return null; // Return null if no column is found
     }
 
     private void loadSimpleMetrics() {
@@ -51,7 +62,7 @@ public class MetricsLoader extends LocalQuerier {
         try {
             // NumberOfImpressions
             StringBuilder queryBuilder = new StringBuilder("SELECT COUNT(*) FROM impression_log i WHERE 1=1");
-            addFilters(queryBuilder);
+            addFilters(queryBuilder, "impression_log");
             metricValuePairs.computeIfAbsent("NumberOfImpressions", key -> new SimpleStringProperty())
                     .set(Integer.toString((int) executeFilteredQuery(queryBuilder.toString(), "int")));
 
@@ -59,7 +70,7 @@ public class MetricsLoader extends LocalQuerier {
             queryBuilder = new StringBuilder(
                     "SELECT COUNT(*) FROM click_log c JOIN unique_users i ON c.id = i.id WHERE c.click_cost >= 0"
             );
-            addFilters(queryBuilder);
+            addFilters(queryBuilder, "click_log");
             metricValuePairs.computeIfAbsent("NumberOfClicks", key -> new SimpleStringProperty())
                     .set(Integer.toString((int) executeFilteredQuery(queryBuilder.toString(), "int")));
 
@@ -67,7 +78,7 @@ public class MetricsLoader extends LocalQuerier {
             queryBuilder = new StringBuilder(
                     "SELECT COUNT(*) FROM server_log c JOIN unique_users i ON c.id = i.id WHERE conversion = 'Yes'"
             );
-            addFilters(queryBuilder);
+            addFilters(queryBuilder, "server_log");
             metricValuePairs.computeIfAbsent("NumberOfConversions", key -> new SimpleStringProperty())
                     .set(Integer.toString((int) executeFilteredQuery(queryBuilder.toString(), "int")));
 
@@ -75,7 +86,7 @@ public class MetricsLoader extends LocalQuerier {
             queryBuilder = new StringBuilder(
                     "SELECT COUNT(DISTINCT c.id) FROM click_log c JOIN unique_users i ON c.id = i.id WHERE 1=1"
             );
-            addFilters(queryBuilder);
+            addFilters(queryBuilder, "click_log");
             metricValuePairs.computeIfAbsent("NumberOfUniques", key -> new SimpleStringProperty())
                     .set(Integer.toString((int) executeFilteredQuery(queryBuilder.toString(), "int")));
 
@@ -84,11 +95,25 @@ public class MetricsLoader extends LocalQuerier {
         }
     }
 
-    private void addFilters(StringBuilder query) {
+    private void addFilters(StringBuilder query, String tableName) throws SQLException {
+        String firstColumnName = getFirstColumnName(tableName);
+
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            query.append(" AND i.").append(entry.getKey()).append(" = ?");
+            String key = entry.getKey();
+
+            if ("startDate".equalsIgnoreCase(key)) {
+                query.append(" AND DATE(").append(firstColumnName).append(") >= ?");
+            } else if ("endDate".equalsIgnoreCase(key)) {
+                query.append(" AND DATE(").append(firstColumnName).append(") <= ?");
+            } else {
+                query.append(" AND i.").append(key).append(" = ?");
+            }
         }
+
+        System.out.println(query);
     }
+
+
 
     private void loadTotalCost() throws SQLException {
         double cost = 0.0;
@@ -96,13 +121,13 @@ public class MetricsLoader extends LocalQuerier {
         StringBuilder queryBuilder = new StringBuilder(
                 "SELECT SUM(click_cost) FROM click_log c JOIN unique_users i ON c.id = i.id WHERE 1=1"
         );
-        addFilters(queryBuilder);
+        addFilters(queryBuilder, "click_log");
         cost += (double) executeFilteredQuery(queryBuilder.toString(), "double");
 
         queryBuilder = new StringBuilder(
                 "SELECT SUM(impression_cost) FROM impression_log i WHERE 1=1"
         );
-        addFilters(queryBuilder);
+        addFilters(queryBuilder, "impression_log");
         cost += (double) executeFilteredQuery(queryBuilder.toString(), "double");
 
         metricValuePairs.computeIfAbsent("TotalCost", key -> new SimpleStringProperty())
@@ -140,13 +165,13 @@ public class MetricsLoader extends LocalQuerier {
             queryBuilder = new StringBuilder(
                     "SELECT COUNT(*) FROM server_log c JOIN unique_users i ON c.id = i.id WHERE 1=1"
             );
-            addFilters(queryBuilder);
+            addFilters(queryBuilder, "server_log");
             queryBuilder.append(" AND pages_viewed >= ").append(value);
         } else {
             queryBuilder = new StringBuilder(
                     "SELECT COUNT(*) FROM server_log c JOIN unique_users i ON c.id = i.id WHERE 1=1"
             );
-            addFilters(queryBuilder);
+            addFilters(queryBuilder, "server_log");
             queryBuilder.append(" AND TIMESTAMPDIFF(SECOND, entry_date, exit_date) <= ").append(value);
         }
 
@@ -169,7 +194,7 @@ public class MetricsLoader extends LocalQuerier {
                 stmt.setObject(i + 1, values.get(i));
             }
 
-            System.out.println("Executed SQL: " + stmt.toString());
+            System.out.println(values);
 
             // Execute the query
             try (ResultSet rs = stmt.executeQuery()) {
