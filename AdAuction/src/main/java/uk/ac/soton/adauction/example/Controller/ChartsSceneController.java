@@ -98,9 +98,9 @@ public class ChartsSceneController extends SceneController {
             if (selectedIndex == 0) {
                 loadGenderPieData();
             } else if (selectedIndex == 1) {
-                System.out.println("Age Pie selected");
+                loadAgePieData();
             } else if (selectedIndex == 2) {
-                System.out.println("Income Pie selected");
+                loadIncomePieData();
             }
         });
         timeSelection.hide();
@@ -121,6 +121,43 @@ public class ChartsSceneController extends SceneController {
         pieChartData.get(0).getNode().setStyle("-fx-pie-color: #b81370;");
         pieChartData.get(1).getNode().setStyle("-fx-pie-color: #2d58d6;");
         impressionPie.setPrefWidth(770.0);
+        impressionPie.setPrefHeight(500.0);
+        impressionPie.setLegendVisible(false);
+    }
+
+    public void loadAgePieData() {
+        HashMap<String, Integer> counts = impressionLog.fetchImpressionAgeCount();
+        double age1Count = Math.round((float) counts.get("<25") / counts.get("total") * 100);
+        double age2Count = Math.round((float) counts.get("25-34") / counts.get("total") * 100);
+        double age3Count = Math.round((float) counts.get("35-44") / counts.get("total") * 100);
+        double age4Count = Math.round((float) counts.get("45-54") / counts.get("total") * 100);
+        double age5Count = Math.round((float) counts.get(">54") / counts.get("total") * 100);
+        ObservableList<PieChart.Data> pieChartData =
+                FXCollections.observableArrayList(
+                        new PieChart.Data("<25", age1Count),
+                        new PieChart.Data("25-34", age2Count),
+                        new PieChart.Data("35-44", age3Count),
+                        new PieChart.Data("45-54", age4Count),
+                        new PieChart.Data(">54", age5Count));
+        impressionPie.setData(pieChartData);
+        impressionPie.setPrefWidth(770.0);
+        impressionPie.setPrefHeight(500.0);
+        impressionPie.setLegendVisible(false);
+    }
+
+    public void loadIncomePieData() {
+        HashMap<String, Integer> counts = impressionLog.fetchImpressionIncomeCount();
+        double income1Count = Math.round((float) counts.get("low") / counts.get("total") * 100);
+        double income2Count = Math.round((float) counts.get("medium") / counts.get("total") * 100);
+        double income3Count = Math.round((float) counts.get("high") / counts.get("total") * 100);
+        ObservableList<PieChart.Data> pieChartData =
+                FXCollections.observableArrayList(
+                        new PieChart.Data("low", income1Count),
+                        new PieChart.Data("medium", income2Count),
+                        new PieChart.Data("high", income3Count));
+        impressionPie.setData(pieChartData);
+        impressionPie.setPrefWidth(770.0);
+        impressionPie.setPrefHeight(500.0);
         impressionPie.setLegendVisible(false);
     }
 
