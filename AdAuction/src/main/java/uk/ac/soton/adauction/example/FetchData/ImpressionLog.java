@@ -224,7 +224,7 @@ public class ImpressionLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "select date_format(impression_date, '%Y-%m-%d %H:00:00') as time, count(*) as count from impression_log group by time";
+            String strSelect = "select strftime('%Y-%m-%d %H:00:00', impression_date)\n as time, count(*) as count from impression_log group by time";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {

@@ -34,7 +34,7 @@ public class ServerLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement()
         ) {
-            String strSelect = "select date_format(server_log.entry_date, '%Y-%m-%d %H:00:00') as time, count(*) as count from server_log where conversion = 'Yes' group by time";
+            String strSelect = "select strftime('%Y-%m-%d %H:00:00', server_log.entry_date)\n as time, count(*) as count from server_log where conversion = 'Yes' group by time";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
