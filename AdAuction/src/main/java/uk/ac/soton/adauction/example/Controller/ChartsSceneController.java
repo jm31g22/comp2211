@@ -367,7 +367,7 @@ public class ChartsSceneController extends SceneController {
 
         metricsLine.setAnimated(false);
         metricsLine.setCreateSymbols(true);
-        Node line = series.getNode().lookup(".chart-series-line");
+        line = series.getNode().lookup(".chart-series-line");
         line.setStyle("-fx-stroke: #6677b2;");
         for (XYChart.Data<String, Number> data: series.getData()){
             Platform.runLater(()->{

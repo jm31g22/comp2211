@@ -1,5 +1,7 @@
 package uk.ac.soton.adauction.example.FetchData;
 
+import uk.ac.soton.adauction.example.FetchData.Queriers.RemoteQuerier;
+
 import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -7,7 +9,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 
-public class ClickLog extends DatabaseConnection{
+public class ClickLog extends RemoteQuerier {
 
     public HashMap<String, Integer> fetchClickCounts(String groupingGranularity, int tickIndex) {
         return fetchClickCounts(groupingGranularity, tickIndex, 0);

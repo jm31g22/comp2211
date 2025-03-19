@@ -61,7 +61,7 @@
                            <Insets right="36.0" />
                         </HBox.margin>
                      </ImageView>
-                     <Button fx:id="chartsButton" mnemonicParsing="false"  style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
+                     <Button fx:id="chartsButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
                         <font>
                            <Font size="15.0" />
                         </font>
@@ -190,7 +190,6 @@
         </VBox>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
             <StackPane fx:id="stackPaneGraph">
-               <PieChart fx:id="impressionPie" prefWidth="570.0" styleClass="chart-pie-gender" />
                <LineChart fx:id="metricsLine" axisSortingPolicy="NONE" legendVisible="false" prefWidth="700.0">
                   <xAxis>
                      <CategoryAxis fx:id="xAxis" />
@@ -199,7 +198,7 @@
                      <NumberAxis fx:id="yAxis" />
                   </yAxis>
                </LineChart>
-
+               <PieChart fx:id="impressionPie" prefWidth="570.0" styleClass="chart-pie-gender" />
             </StackPane>
             <VBox fx:id="hoverPane" layoutY="402.0" prefHeight="103.0" prefWidth="258.0" style="-fx-border-color: #1F263E; -fx-border-width: 2; -fx-background-color: white; -fx-border-radius: 10;">
                <children>

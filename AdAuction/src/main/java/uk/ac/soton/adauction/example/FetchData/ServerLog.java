@@ -1,6 +1,7 @@
 package uk.ac.soton.adauction.example.FetchData;
 
 import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
+import uk.ac.soton.adauction.example.FetchData.Queriers.RemoteQuerier;
 
 import java.sql.*;
 import java.time.*;
@@ -8,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.*;
 import java.util.HashMap;
 
-public class ServerLog extends LocalQuerier {
+public class ServerLog extends RemoteQuerier {
 
 
     /**

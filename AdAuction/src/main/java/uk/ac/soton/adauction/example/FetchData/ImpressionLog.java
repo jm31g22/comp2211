@@ -1,6 +1,7 @@
 package uk.ac.soton.adauction.example.FetchData;
 
 import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
+import uk.ac.soton.adauction.example.FetchData.Queriers.RemoteQuerier;
 
 
 import java.sql.*;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 /**
  * Class to obtain data from the impression log
  */
-public class ImpressionLog extends LocalQuerier {
+public class ImpressionLog extends RemoteQuerier {
 
     /**
      * Function to fetch all impression data
