@@ -17,7 +17,7 @@ public class App extends Application {
 
         sceneManager = new SceneManager(stage);
         sceneManager.loadScenes();
-        sceneManager.switchTo("login");
+        sceneManager.switchTo("dashboard");
         stage.show();
     }
 
