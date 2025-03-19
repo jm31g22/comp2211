@@ -1,5 +1,8 @@
 package uk.ac.soton.adauction.example.FetchData;
 
+import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
+
+
 import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +14,8 @@ import java.util.HashMap;
 /**
  * Class to obtain data from the impression log
  */
-public class ImpressionLog extends DatabaseConnection{
+public class ImpressionLog extends LocalQuerier {
+
     /**
      * Function to fetch all impression data
      *
@@ -50,33 +54,152 @@ public class ImpressionLog extends DatabaseConnection{
      */
     public HashMap<String, Integer> fetchImpressionGenderCount() {
         HashMap<String, Integer> counts = new HashMap<>();
-        Integer male = 0;
-        Integer female = 0;
-        Integer total = 0;
+        int val = 0;
         try (
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "SELECT gender FROM impression_log";
+            String strSelect = "SELECT COUNT(*) FROM impression_log WHERE gender = 'Male'";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
-                String gender = rs.getString("gender");
-                if (gender.equals("Male")) {
-                    male++;
-                } else {
-                    female++;
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("male", val);
+                    System.out.println("Male = " + val);
                 }
-                total++;
+            }
+            strSelect = "SELECT COUNT(*) FROM impression_log WHERE gender = 'Female'";
+            System.out.println("SQL statement " + strSelect + " called");
+            rs = stmt.executeQuery(strSelect);
+            while (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("female", val);
+                    System.out.println("Female = " + val);
+                }
+            }
+            strSelect = "SELECT COUNT(*) FROM impression_log";
+            System.out.println("SQL statement " + strSelect + " called");
+            rs = stmt.executeQuery(strSelect);
+            while (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("total", val);
+                    System.out.println("Total = " + val);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        counts.put("male", male);
-        System.out.println("Number of male: " + male);
-        counts.put("female", female);
-        System.out.println("Number of female: " + female);
-        counts.put("total", total);
-        System.out.println("Total amount of record: " + total);
+        return counts;
+    }
+
+    public HashMap<String, Integer> fetchImpressionAgeCount(){
+        HashMap<String, Integer> counts = new HashMap<>();
+        int val = 0;
+        try (
+                Statement stmt = conn.createStatement();
+        ) {
+            String strSelect = "SELECT COUNT(*) FROM impression_log WHERE age = '<25'";
+            System.out.println("SQL statement " + strSelect + " called");
+            ResultSet rs = stmt.executeQuery(strSelect);
+            if (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("<25", val);
+                }
+            }
+            strSelect = "SELECT COUNT(*) FROM impression_log WHERE age = '25-34'";
+            rs = stmt.executeQuery(strSelect);
+            if (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("25-34", val);
+                }
+            }
+            strSelect = "SELECT COUNT(*) FROM impression_log WHERE age = '35-44'";
+            rs = stmt.executeQuery(strSelect);
+            if (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("35-44", val);
+                }
+            }
+            strSelect = "SELECT COUNT(*) FROM impression_log WHERE age = '45-54'";
+            rs = stmt.executeQuery(strSelect);
+            if (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("45-54", val);
+                }
+            }
+            strSelect = "SELECT COUNT(*) FROM impression_log WHERE age = '>54'";
+            rs = stmt.executeQuery(strSelect);
+            if (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put(">54", val);
+                }
+            }
+            strSelect = "SELECT COUNT(*) FROM impression_log";
+            rs = stmt.executeQuery(strSelect);
+            if (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("total", val);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return counts;
+    }
+
+    public HashMap<String, Integer> fetchImpressionIncomeCount() {
+        HashMap<String, Integer> counts = new HashMap<>();
+        int val = 0;
+        try (
+                Statement stmt = conn.createStatement();
+        ) {
+            String strSelect = "SELECT COUNT(*) FROM impression_log WHERE income = 'Low'";
+            System.out.println("SQL statement " + strSelect + " called");
+            ResultSet rs = stmt.executeQuery(strSelect);
+            while (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("low", val);
+                }
+            }
+            strSelect = "SELECT COUNT(*) FROM impression_log WHERE income = 'Medium'";
+            System.out.println("SQL statement " + strSelect + " called");
+            rs = stmt.executeQuery(strSelect);
+            while (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("medium", val);
+                }
+            }
+            strSelect = "SELECT COUNT(*) FROM impression_log WHERE income = 'High'";
+            System.out.println("SQL statement " + strSelect + " called");
+            rs = stmt.executeQuery(strSelect);
+            while (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("high", val);
+                }
+            }
+            strSelect = "SELECT COUNT(*) FROM impression_log";
+            System.out.println("SQL statement " + strSelect + " called");
+            rs = stmt.executeQuery(strSelect);
+            while (rs.next()) {
+                if (rs.getObject(1) != null) {
+                    val = rs.getInt(1);
+                    counts.put("total", val);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         return counts;
     }
 

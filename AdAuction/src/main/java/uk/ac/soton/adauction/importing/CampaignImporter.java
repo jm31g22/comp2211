@@ -12,9 +12,9 @@ public class CampaignImporter {
 
     // Connection details - rewriteBatchedStatements groups insert statements leading to huge optimisation
     // MAKE SURE TO LEAVE REWRITEBATCHEDSTATEMENTS IN THE URL IF YOU REPLACE IT WITH YOUR SQL SERVER
-    private static final String JDBC_URL      = "jdbc:mysql://localhost:3306/testcampaign?rewriteBatchedStatements=true";
+    private static final String JDBC_URL      = "jdbc:mysql://185.247.116.78:3306/2month_campaign?user=root&password=Group34Southampton!&rewriteBatchedStatements=true";
     private static final String JDBC_USER     = "root";
-    private static final String JDBC_PASSWORD = "root";
+    private static final String JDBC_PASSWORD = "Group34Southampton!";
 
     private static final String CREATE_CLICK_LOG_TABLE =
             "CREATE TABLE IF NOT EXISTS click_log ("
@@ -60,11 +60,11 @@ public class CampaignImporter {
 
     /**
      * Expects three arguments: <br>
-     * 1) click_log.csv <br>
-     * 2) impression_log.csv <br>
-     * 3) server_log.csv
+     * 1) 2_week_click_log.csv <br>
+     * 2) 2_week_impression_log.csv <br>
+     * 3) 2_week_server_log.csv
      *
-     * @param args click_log.csv, impression_log.csv, server_log.csv
+     * @param args 2_week_click_log.csv, 2_week_impression_log.csv, 2_week_server_log.csv
      */
     public static void main(String[] args) {
         if (args.length < 3) {

@@ -1,12 +1,15 @@
 package uk.ac.soton.adauction.example.FetchData;
 
+import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
+
 import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.*;
 import java.util.HashMap;
 
-public class ServerLog extends DatabaseConnection {
+public class ServerLog extends LocalQuerier {
+
 
     /**
      * Overload without offset for conversions.

@@ -35,6 +35,13 @@
                     <graphic>
                     </graphic>
                 </Label>
+                <Label fx:id="verificationCodeLabel" alignment="CENTER" graphicTextGap="10.0" layoutX="32.0" layoutY="325.0" prefHeight="40.0" prefWidth="120.0" text="Verify">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                    <graphic>
+                    </graphic>
+                </Label>
                 <TextField fx:id="usernameTextField" layoutX="140.0" layoutY="205.0" prefHeight="40.0" prefWidth="285.0" promptText="Enter your username">
                     <font>
                         <Font size="14.0" />
@@ -45,10 +52,20 @@
                         <Font size="14.0" />
                     </font>
                 </PasswordField>
-                <Button id="login" fx:id="loginButton" alignment="BASELINE_LEFT" contentDisplay="RIGHT" defaultButton="true" layoutX="154.0" layoutY="345.0" mnemonicParsing="false" onAction="#loginButtonOnAction" prefHeight="56.0" prefWidth="147.0" text=" login" textFill="#2c2b2b">
-               <font>
-                  <Font size="36.0" />
-               </font>
+                <TextField fx:id="verificationCodeField" layoutX="140.0" layoutY="325.0" prefHeight="40.0" prefWidth="285.0" promptText="Enter Email Verification Code">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </TextField>
+                <Button id="sendEmail" fx:id="sendEmailButton" alignment="BASELINE_LEFT" contentDisplay="RIGHT" defaultButton="true" layoutX="440.0" layoutY="325.0" mnemonicParsing="false" onAction="#sendMailButtonOnAction" prefHeight="30.0" prefWidth="70.0" text="send" textFill="#2c2b2b">
+                    <font>
+                        <Font size="18.0" />
+                    </font>
+                </Button>
+                <Button id="login" fx:id="loginButton" alignment="BASELINE_LEFT" contentDisplay="RIGHT" defaultButton="true" layoutX="154.0" layoutY="405.0" mnemonicParsing="false" onAction="#loginButtonOnAction" prefHeight="56.0" prefWidth="147.0" text=" login" textFill="#2c2b2b">
+                    <font>
+                        <Font size="36.0" />
+                    </font>
                 </Button>
                 <Label fx:id="loginMessageLabel" alignment="CENTER" layoutY="160.0" prefHeight="20.0" prefWidth="452.0" textFill="#d0312d">
                     <font>
@@ -64,3 +81,4 @@
         </AnchorPane>
     </right>
 </BorderPane>
+
