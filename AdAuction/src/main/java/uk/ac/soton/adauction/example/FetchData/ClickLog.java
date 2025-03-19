@@ -101,7 +101,7 @@ public class ClickLog extends LocalQuerier {
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
-                String date = rs.getDate("unique_date").toString();
+                String date = rs.getString("unique_date");
                 int count = rs.getInt("count");
                 counts.put(date,count);
                 System.out.println("unique date: " + date + " count: " + count);
@@ -117,7 +117,7 @@ public class ClickLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement()
         ) {
-            String strSelect = "with first_date as (select id, min(strftime('%Y-%m-%d %H:00:00', click_date)\n) as date from click_log group by id) select strftime('%Y-%m-%d %H:00:00', first_date.date_time) as time, count(*) as count from first_date group by time";
+            String strSelect = "WITH first_date AS ( SELECT id, MIN(strftime('%Y-%m-%d %H:00:00', click_date)) AS first_click_time FROM click_log GROUP BY id) SELECT first_click_time AS time, COUNT(*) AS count FROM first_date GROUP BY first_click_time";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
@@ -137,7 +137,7 @@ public class ClickLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement()
         ) {
-            String strSelect = "with first_date as (select id, min(week(click_date)) as date from click_log group by id) select first_date.date as week, count(*) as count from first_date group by first_date.date";
+            String strSelect = "with first_date as (select id, min(strftime('%W', click_date)) as date from click_log group by id) select first_date.date as week, count(*) as count from first_date group by first_date.date";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
@@ -158,7 +158,7 @@ public class ClickLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement()
         ) {
-            String strSelect = "with first_date as (select id, min(month(click_date)) as date from click_log group by id) select first_date.date as month, count(*) as count from first_date group by first_date.date";
+            String strSelect = "with first_date as (select id, min(strftime('%m', click_date)) as date from click_log group by id) select first_date.date as month, count(*) as count from first_date group by first_date.date";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {

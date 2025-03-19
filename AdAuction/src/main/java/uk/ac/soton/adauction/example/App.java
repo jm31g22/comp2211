@@ -11,21 +11,16 @@ import java.sql.SQLException;
 public class App extends Application {
 
     private static SceneManager sceneManager;
-    private static MetricsLoader metricsLoader;
+    private static MetricsLoader metricsLoader = new MetricsLoader();
 
     public void start(Stage stage) throws SQLException {
 
-        initialise(stage);
-        sceneManager.switchTo("login");
-        stage.show();
-
-    }
-
-    private void initialise(Stage stage) {
         sceneManager = new SceneManager(stage);
-        metricsLoader = new MetricsLoader();
         sceneManager.loadScenes();
+        sceneManager.switchTo("dashboard");
+        stage.show();
     }
+
 
     public static void main(String[] args) {
         launch(args);
