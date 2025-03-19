@@ -101,7 +101,7 @@ public class ClickLog extends LocalQuerier {
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
-                String date = rs.getDate("unique_date").toString();
+                String date = rs.getString("unique_date");
                 int count = rs.getInt("count");
                 counts.put(date,count);
                 System.out.println("unique date: " + date + " count: " + count);

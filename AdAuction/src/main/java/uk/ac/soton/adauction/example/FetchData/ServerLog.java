@@ -18,7 +18,7 @@ public class ServerLog extends LocalQuerier {
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
-                String date = rs.getDate("date").toString();
+                String date = rs.getString("date");
                 int count = rs.getInt("count");
                 counts.put(date,count);
                 System.out.println("Conversion date: " + date + " Count: " + count);
@@ -54,7 +54,7 @@ public class ServerLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "select extract(week from server_log.entry_date) as week, count(*) as count from server_log where conversion = 'Yes' group by week";
+            String strSelect = "select strftime('%W', server_log.entry_date) as week, count(*) as count from server_log where conversion = 'Yes' group by week";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
@@ -75,7 +75,7 @@ public class ServerLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "select extract(month from server_log.entry_date) as month, count(*) as count from server_log where conversion = 'Yes' group by month";
+            String strSelect = "select strftime('%m',server_log.entry_date) as month, count(*) as count from server_log where conversion = 'Yes' group by month";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
@@ -99,7 +99,7 @@ public class ServerLog extends LocalQuerier {
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
-                String date = rs.getDate("date").toString();
+                String date = rs.getString("date");
                 int count = rs.getInt("count");
                 counts.put(date,count);
                 System.out.println("Server date: " + date + " Count: " + count);
@@ -115,7 +115,7 @@ public class ServerLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "select date_format(server_log.entry_date, '%Y-%m-%d %H:00:00') as time, count(*) as count from server_log where timediff(server_log.exit_date, server_log.entry_date) <= time('00:00:10') or pages_viewed = 1 group by time";
+            String strSelect = "select strftime('%Y-%m-%d %H:00:00', server_log.entry_date) as time, count(*) as count from server_log where timediff(server_log.exit_date, server_log.entry_date) <= time('00:00:10') or pages_viewed = 1 group by time";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
@@ -135,7 +135,7 @@ public class ServerLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "select extract(week from server_log.entry_date) as week, count(*) as count from server_log where timediff(server_log.exit_date, server_log.entry_date) <= time('00:00:10') or pages_viewed = 1 group by week";
+            String strSelect = "select strftime('%W', server_log.entry_date) as week, count(*) as count from server_log where timediff(server_log.exit_date, server_log.entry_date) <= time('00:00:10') or pages_viewed = 1 group by week";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
@@ -156,7 +156,7 @@ public class ServerLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "select extract(month from server_log.entry_date) as month, count(*) as count from server_log where timediff(server_log.exit_date, server_log.entry_date) <= time('00:00:10') or pages_viewed = 1 group by month";
+            String strSelect = "select strftime('%m', server_log.entry_date) as month, count(*) as count from server_log where timediff(server_log.exit_date, server_log.entry_date) <= time('00:00:10') or pages_viewed = 1 group by month";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {

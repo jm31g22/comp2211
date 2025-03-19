@@ -208,7 +208,7 @@ public class ImpressionLog extends LocalQuerier {
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
-                String date = rs.getDate("date").toString();
+                String date = rs.getString("date");
                 int count = rs.getInt("count");
                 counts.put(date,count);
                 System.out.println("impression date: " + date + " count: " + count);
@@ -244,7 +244,7 @@ public class ImpressionLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "select extract(week from impression_date) as week, count(*) as count from impression_log group by week";
+            String strSelect = "select strftime('%W', impression_date) as week, count(*) as count from impression_log group by week";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
@@ -265,7 +265,7 @@ public class ImpressionLog extends LocalQuerier {
         try (
              Statement stmt = conn.createStatement();
         ) {
-            String strSelect = "select extract(month from impression_date) as month, count(*) as count from impression_log group by month";
+            String strSelect = "select strftime('%m', impression_date) as month, count(*) as count from impression_log group by month";
             System.out.println("SQL statement " + strSelect + " called");
             ResultSet rs = stmt.executeQuery(strSelect);
             while (rs.next()) {
