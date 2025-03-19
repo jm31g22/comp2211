@@ -18,6 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.chart.Axis?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.ChartsSceneController">
    <VBox prefHeight="713.0" prefWidth="156.0" BorderPane.alignment="CENTER">
       <children>
@@ -178,13 +179,27 @@
       </top></BorderPane>
    <SplitPane dividerPositions="0.15" layoutX="225.0" layoutY="70.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="770.0">
      <items>
-       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-            <children>
-               <ChoiceBox fx:id="chartSelection" layoutX="17.0" layoutY="29.0" prefHeight="30" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" styleClass="choice-box" stylesheets="@../assets/chart_styles.css" />
-               <ChoiceBox fx:id="metricSelection" layoutX="290.0" layoutY="28.0" prefHeight="30" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" styleClass="choice-box" stylesheets="@../assets/chart_styles.css" />
-               <ChoiceBox fx:id="timeSelection" layoutX="554.0" layoutY="28.0" prefHeight="30" prefWidth="200.0" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" styleClass="choice-box" stylesheets="@../assets/chart_styles.css" />
-            </children></AnchorPane>
-       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+        <VBox spacing="10" alignment="CENTER">
+           <HBox spacing="10" alignment="CENTER">
+              <ChoiceBox fx:id="chartSelection" prefWidth="200" prefHeight="30"
+                         style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;"
+                         stylesheets="@../assets/chart_styles.css" />
+              <ChoiceBox fx:id="metricSelection" prefWidth="200" prefHeight="30"
+                         style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;"
+                         stylesheets="@../assets/chart_styles.css" />
+              <ChoiceBox fx:id="timeSelection" prefWidth="200" prefHeight="30"
+                         style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;"
+                         stylesheets="@../assets/chart_styles.css" />
+              <ChoiceBox fx:id="granSelection" prefWidth="200" prefHeight="30"
+                         style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;"
+                         stylesheets="@../assets/chart_styles.css" />
+           </HBox>
+        <HBox layoutX="300.0" layoutY="350.0" spacing="15.0" alignment="CENTER">
+           <Button fx:id="panLeftButton" text="←" />
+           <Button fx:id="panRightButton" text="→" />
+        </HBox>
+        </VBox>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
             <StackPane fx:id="stackPaneGraph">
                <PieChart fx:id="impressionPie" prefWidth="570.0" styleClass="chart-pie-gender" />
                <LineChart fx:id="metricsLine" axisSortingPolicy="NONE" legendVisible="false" prefWidth="700.0">
@@ -195,7 +210,9 @@
                      <NumberAxis fx:id="yAxis" />
                   </yAxis>
                </LineChart>
+
             </StackPane>
+
        </AnchorPane>
      </items>
    </SplitPane>
