@@ -31,7 +31,7 @@ public class BootupTests extends ApplicationTest {
     }
 
     @Test
-    void testAppOpensDashboard() throws IOException {
+    void testAppOpensLoginpage() throws IOException {
         // Load the expected root from 'login.fxml'
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/uk/ac/soton/adauction/example/Controller/login.fxml"));
         Parent expectedRoot = loader.load();

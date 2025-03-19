@@ -6,10 +6,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.testfx.api.FxToolkit;
 import uk.ac.soton.adauction.example.Controller.LoginPageController;
 
@@ -34,10 +36,9 @@ public class LoginPageControllerTests {
         FxToolkit.registerPrimaryStage();
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         controller = new LoginPageController();
-
 
         setField("conn", null);
 
@@ -55,7 +56,7 @@ public class LoginPageControllerTests {
         latch.await(TIMEOUT, TimeUnit.SECONDS);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         FxToolkit.cleanupStages();
     }
