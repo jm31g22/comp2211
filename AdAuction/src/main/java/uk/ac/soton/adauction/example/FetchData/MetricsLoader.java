@@ -40,7 +40,6 @@ public class MetricsLoader extends LocalQuerier {
         if (!startDate.equals("Start")) parameters.put("startDate", startDate);
         if (!endDate.equals("End")) parameters.put("endDate", endDate);
 
-
     }
 
     private String getFirstColumnName(String tableName) throws SQLException {
@@ -94,25 +93,6 @@ public class MetricsLoader extends LocalQuerier {
             throw new RuntimeException(e);
         }
     }
-
-    private void addFilters(StringBuilder query, String tableName) throws SQLException {
-        String firstColumnName = getFirstColumnName(tableName);
-
-        for (Map.Entry<String, String> entry : parameters.entrySet()) {
-            String key = entry.getKey();
-
-            if ("startDate".equalsIgnoreCase(key)) {
-                query.append(" AND DATE(").append(firstColumnName).append(") >= ?");
-            } else if ("endDate".equalsIgnoreCase(key)) {
-                query.append(" AND DATE(").append(firstColumnName).append(") <= ?");
-            } else {
-                query.append(" AND i.").append(key).append(" = ?");
-            }
-        }
-
-        System.out.println(query);
-    }
-
 
 
     private void loadTotalCost() throws SQLException {
@@ -185,6 +165,22 @@ public class MetricsLoader extends LocalQuerier {
                 .set(Double.toString(bounceRate));
 
         return metricValuePairs;
+    }
+
+    private void addFilters(StringBuilder query, String tableName) throws SQLException {
+        String firstColumnName = getFirstColumnName(tableName);
+
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String key = entry.getKey();
+
+            if ("startDate".equalsIgnoreCase(key)) {
+                query.append(" AND DATE(").append(firstColumnName).append(") >= ?");
+            } else if ("endDate".equalsIgnoreCase(key)) {
+                query.append(" AND DATE(").append(firstColumnName).append(") <= ?");
+            } else {
+                query.append(" AND i.").append(key).append(" = ?");
+            }
+        }
     }
 
     private Number executeFilteredQuery(String query, String returnType) throws SQLException {

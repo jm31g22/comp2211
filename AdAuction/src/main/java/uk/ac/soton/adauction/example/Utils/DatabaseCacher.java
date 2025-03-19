@@ -60,7 +60,6 @@ public class DatabaseCacher {
             stmt = localConnection.prepareStatement(createTableSQL);
             stmt.executeUpdate();
 
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -88,7 +87,7 @@ public class DatabaseCacher {
             migrateTable(mysqlconn, "SELECT DISTINCT id, gender, age, income, context FROM impression_log", "unique_users");
 
 
-//            indexTables();
+            indexTables();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -158,11 +157,9 @@ public class DatabaseCacher {
             indexingstmt.execute(indexingQuery);
 
             indexingQuery = "CREATE INDEX IF NOT EXISTS idx_timestamp ON impression_log (id);";
-            indexingstmt = localConnection.createStatement();
             indexingstmt.execute(indexingQuery);
 
             indexingQuery = "CREATE INDEX IF NOT EXISTS idx_timestamp ON server_log (id);";
-            indexingstmt = localConnection.createStatement();
             indexingstmt.execute(indexingQuery);
 
         } catch (SQLException e) {
