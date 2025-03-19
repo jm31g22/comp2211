@@ -142,7 +142,9 @@ public class ChartsSceneController extends SceneController {
         impressionPie.setPrefHeight(500.0);
         impressionPie.setLegendVisible(false);
     }
-
+    /**
+     * Function to load impression group by age pie chart
+     */
     public void loadAgePieData() {
         HashMap<String, Integer> counts = impressionLog.fetchImpressionAgeCount();
         double age1Count = Math.round((float) counts.get("<25") / counts.get("total") * 100);
@@ -164,6 +166,9 @@ public class ChartsSceneController extends SceneController {
         impressionPie.setLegendVisible(false);
     }
 
+    /**
+     * Function to load impression group by income pie chart
+     */
     public void loadIncomePieData() {
         HashMap<String, Integer> counts = impressionLog.fetchImpressionIncomeCount();
         double income1Count = Math.round((float) counts.get("low") / counts.get("total") * 100);
@@ -495,12 +500,21 @@ public class ChartsSceneController extends SceneController {
         return min;
     }
 
-    private void addChartHoverPane(double coordX, double coordY, String cat, String date, Integer value){
+    /**
+     * Function to add chart hovering pane
+     * @param coordX x-coordinate of the hovering pane
+     * @param coordY y-coordinate of the hovering pane
+     * @param cat category of the data
+     * @param key key of the data
+     * @param value value of the data
+     */
+
+    private void addChartHoverPane(double coordX, double coordY, String cat, String key, Integer value){
         hoverPane.setLayoutX(coordX+200);
         hoverPane.setLayoutY(coordY+200);
         hoverPane.opacityProperty().setValue(1);
         timeOrCatLabel.setText(cat);
-        timeLabel.setText(date);
+        timeLabel.setText(key);
         valueLabel.setText(String.valueOf(value));
     }
 
