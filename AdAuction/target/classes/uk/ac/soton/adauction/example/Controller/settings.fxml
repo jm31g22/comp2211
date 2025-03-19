@@ -131,7 +131,7 @@
                <Insets />
             </opaqueInsets>
             <padding>
-               <Insets bottom="10.0" left="5.0" right="55.0" top="10.0" />
+               <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
             </padding>
             <children>
                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
@@ -139,13 +139,16 @@
                      <Image url="@../assets/power.png" />
                   </image>
                   <HBox.margin>
-                     <Insets left="10.0" right="27.0" />
+                     <Insets left="10.0" right="30.0" />
                   </HBox.margin>
                </ImageView>
                <Button fx:id="logOutButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Log Out">
                   <font>
                      <Font size="15.0" />
                   </font>
+                  <HBox.margin>
+                     <Insets right="30.0" />
+                  </HBox.margin>
                </Button>
             </children>
             <VBox.margin>
