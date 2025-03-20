@@ -189,8 +189,7 @@ public class MetricsLoader extends LocalQuerier {
             for (int i = 0; i < values.size(); i++) {
                 stmt.setObject(i + 1, values.get(i));
             }
-
-            System.out.println(values);
+            System.out.println(stmt.toString());
 
             // Execute the query
             try (ResultSet rs = stmt.executeQuery()) {
