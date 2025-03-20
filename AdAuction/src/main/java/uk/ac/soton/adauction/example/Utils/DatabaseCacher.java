@@ -1,10 +1,12 @@
 package uk.ac.soton.adauction.example.Utils;
 
 import java.sql.*;
+import java.io.File;
 
 public class DatabaseCacher {
     private static Connection localConnection = DatabaseConnection.getLocalLogsConnection();
     private static Connection remoteConnection;
+    private static final String DB_FILE_PATH = "logs.db"; // Path to the SQLite database file
     private static final String CREATE_CLICK_LOG_TABLE =
             "CREATE TABLE click_log ("
                     + "  click_date DATETIME, "
@@ -67,11 +69,18 @@ public class DatabaseCacher {
 
 
     public static void cacheDatabase(Connection mysqlconn) throws SQLException {
+        File dbFile = new File(DB_FILE_PATH);
+        if (dbFile.exists()) {
+            System.out.println("logs.db already exists. Skipping database caching.");
+            return;
+        }
 
         try (Statement pragmaStmt = localConnection.createStatement()) {
             pragmaStmt.execute("PRAGMA synchronous = OFF;");  // Faster inserts, less disk I/O
             pragmaStmt.execute("PRAGMA journal_mode = OFF;"); // Disables rollback logging for speed
         }
+
+
         remoteConnection = mysqlconn;
         try {
 

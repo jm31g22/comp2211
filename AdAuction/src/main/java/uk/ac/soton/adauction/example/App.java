@@ -17,7 +17,7 @@ public class App extends Application {
 
         // COMMENT THIS LINE OUT IF YOU ALREADY HAVE THE DATABASE ON YOUR MACHINE
         DatabaseCacher.cacheDatabase(DatabaseConnection.getLocalLogsConnection());
-        
+
         sceneManager = new SceneManager(stage);
         sceneManager.loadScenes();
         sceneManager.switchTo("dashboard");
