@@ -16,6 +16,7 @@ public class MetricsLoader extends LocalQuerier {
     private StringBuilder queryBuilder = new StringBuilder();
     private HashMap<String, String> parameters = new HashMap<>();
     List<Object> values = new ArrayList<>();
+    private double cost;
 
     public HashMap<String, SimpleStringProperty> loadAllMetrics(String age, String gender, String income, String context, String startDate, String endDate) throws SQLException {
         System.out.println("Updating metrics");
@@ -60,10 +61,17 @@ public class MetricsLoader extends LocalQuerier {
 
         try {
             // NumberOfImpressions
-            StringBuilder queryBuilder = new StringBuilder("SELECT COUNT(*) FROM impression_log i WHERE 1=1");
+            StringBuilder queryBuilder = new StringBuilder("SELECT SUM(i.impression_cost) AS total_cost, COUNT(*) " +
+                    "AS total_count FROM impression_log i WHERE 1=1");
             addFilters(queryBuilder, "impression_log");
+
+
+            Object[] result = executeFilteredDoubleQuery(queryBuilder.toString());
+            cost = (double) result[0];
+            int count = (int) result[1];
+
             metricValuePairs.computeIfAbsent("NumberOfImpressions", key -> new SimpleStringProperty())
-                    .set(Integer.toString((int) executeFilteredQuery(queryBuilder.toString(), "int")));
+                    .set(Integer.toString(count));
 
             // NumberOfClicks
             queryBuilder = new StringBuilder(
@@ -96,7 +104,6 @@ public class MetricsLoader extends LocalQuerier {
 
 
     private void loadTotalCost() throws SQLException {
-        double cost = 0.0;
 
         StringBuilder queryBuilder = new StringBuilder(
                 "SELECT SUM(click_cost) FROM click_log c JOIN unique_users i ON c.id = i.id WHERE 1=1"
@@ -104,11 +111,11 @@ public class MetricsLoader extends LocalQuerier {
         addFilters(queryBuilder, "click_log");
         cost += (double) executeFilteredQuery(queryBuilder.toString(), "double");
 
-        queryBuilder = new StringBuilder(
-                "SELECT SUM(impression_cost) FROM impression_log i WHERE 1=1"
-        );
-        addFilters(queryBuilder, "impression_log");
-        cost += (double) executeFilteredQuery(queryBuilder.toString(), "double");
+//        queryBuilder = new StringBuilder(
+//                "SELECT SUM(impression_cost) FROM impression_log i WHERE 1=1"
+//        );
+//        addFilters(queryBuilder, "impression_log");
+//        cost += (double) executeFilteredQuery(queryBuilder.toString(), "double");
 
         metricValuePairs.computeIfAbsent("TotalCost", key -> new SimpleStringProperty())
                 .set(Double.toString(cost/100));
@@ -205,4 +212,24 @@ public class MetricsLoader extends LocalQuerier {
         return returnType.equals("int") ? 0 : 0.0; // Return default value (no -1 to avoid errors)
     }
 
+    private Object[] executeFilteredDoubleQuery(String query) throws SQLException {
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            // Set values dynamically
+            for (int i = 0; i < values.size(); i++) {
+                stmt.setObject(i + 1, values.get(i));
+            }
+            System.out.println(stmt.toString());
+
+            // Execute the query
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    // Handling SUM(impression_cost) and COUNT(*)
+                    Double totalCost = rs.getObject(1) != null ? rs.getDouble(1) : 0.0;
+                    Integer totalCount = rs.getObject(2) != null ? rs.getInt(2) : 0;
+                    return new Object[]{totalCost, totalCount};
+                }
+            }
+        }
+        return new Object[]{0.0, 0}; // Default return values if no data is found
+    }
 }
