@@ -24,8 +24,6 @@ public class ChartsSceneController extends SceneController {
     @FXML
     private PieChart impressionPie;
     @FXML
-    private LineChart<String, Number> metricsLine;
-    @FXML
     private ChoiceBox<String> chartSelection = new ChoiceBox<>();
     @FXML
     private ChoiceBox<String> metricSelection = new ChoiceBox<>();
@@ -33,10 +31,6 @@ public class ChartsSceneController extends SceneController {
     private ChoiceBox<String> timeSelection = new ChoiceBox<>();
     @FXML
     private ChoiceBox<String> granSelection = new ChoiceBox<>();
-    @FXML
-    private CategoryAxis xAxis;
-    @FXML
-    private NumberAxis yAxis;
     @FXML
     private StackPane stackPaneGraph;
     @FXML
@@ -136,8 +130,9 @@ public class ChartsSceneController extends SceneController {
     private void hoverImpressionPane(String cat){
         impressionPie.getData().stream().forEach(data ->{
             data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED,
-                    new EventHandler<MouseEvent>() {
-                        @Override public void handle(MouseEvent e) {
+                    new EventHandler<>() {
+                        @Override
+                        public void handle(MouseEvent e) {
                             double coordX = e.getX();
                             double coordY = e.getY();
                             addChartHoverPane(coordX, coordY, cat, data.getName(), (int) data.getPieValue());
@@ -464,7 +459,7 @@ public class ChartsSceneController extends SceneController {
         );
     }
 
-    public long getMaxCount(HashMap<String,Integer> count){
+    private long getMaxCount(HashMap<String,Integer> count){
         long max = 0;
         for (String date: count.keySet()){
             max = Math.max(max, count.get(date));
@@ -472,7 +467,7 @@ public class ChartsSceneController extends SceneController {
         return max;
     }
 
-    public long getMinCount(HashMap<String,Integer> count){
+    private long getMinCount(HashMap<String,Integer> count){
         long min = Integer.MAX_VALUE;
         for (String date: count.keySet()){
             min = Math.min(min, count.get(date));

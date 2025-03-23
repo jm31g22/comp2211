@@ -25,7 +25,7 @@ public class ImpressionLog extends RemoteQuerier {
     public ArrayList<Impression> fetchAll() {
         ArrayList<Impression> impressions = new ArrayList<>();
         try (
-             Statement stmt = conn.createStatement();
+                Statement stmt = conn.createStatement();
         ) {
             String strSelect = "select * from impression_log";
             System.out.println("SQL statement " + strSelect + " called");
@@ -57,7 +57,7 @@ public class ImpressionLog extends RemoteQuerier {
         HashMap<String, Integer> counts = new HashMap<>();
         int val = 0;
         try (
-             Statement stmt = conn.createStatement();
+                Statement stmt = conn.createStatement();
         ) {
             String strSelect = "SELECT COUNT(*) FROM impression_log WHERE gender = 'Male'";
             System.out.println("SQL statement " + strSelect + " called");
@@ -95,7 +95,12 @@ public class ImpressionLog extends RemoteQuerier {
         return counts;
     }
 
-    public HashMap<String, Integer> fetchImpressionAgeCount(){
+    /**
+     * Function for fetching the age count of the impression
+     *
+     * @return HashMap of age count
+     */
+    public HashMap<String, Integer> fetchImpressionAgeCount() {
         HashMap<String, Integer> counts = new HashMap<>();
         int val = 0;
         try (
@@ -156,6 +161,11 @@ public class ImpressionLog extends RemoteQuerier {
         return counts;
     }
 
+    /**
+     * Function for fetching the income count of the impression
+     *
+     * @return HashMap of income count
+     */
     public HashMap<String, Integer> fetchImpressionIncomeCount() {
         HashMap<String, Integer> counts = new HashMap<>();
         int val = 0;
@@ -390,7 +400,6 @@ public class ImpressionLog extends RemoteQuerier {
             return tickPattern;
         }
     }
-
 
 
 }
