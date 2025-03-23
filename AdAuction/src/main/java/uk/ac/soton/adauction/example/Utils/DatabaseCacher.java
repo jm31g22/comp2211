@@ -1,5 +1,9 @@
 package uk.ac.soton.adauction.example.Utils;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.io.File;
 
@@ -68,12 +72,7 @@ public class DatabaseCacher {
     }
 
 
-    public static void cacheDatabase(Connection mysqlconn) throws SQLException {
-        File dbFile = new File(DB_FILE_PATH);
-        if (dbFile.exists()) {
-            System.out.println("logs.db already exists. Skipping database caching.");
-            return;
-        }
+    public static void cacheDatabase(Connection mysqlconn) throws SQLException{
 
         try (Statement pragmaStmt = localConnection.createStatement()) {
             pragmaStmt.execute("PRAGMA synchronous = OFF;");  // Faster inserts, less disk I/O
@@ -110,6 +109,7 @@ public class DatabaseCacher {
 
 
         String insertSQL = getInsertSQL(tableName);
+        System.out.println("Current migrating:" + tableName);
 
         try (
                 PreparedStatement mysqlStmt = mysqlConn.prepareStatement(selectSQL);
