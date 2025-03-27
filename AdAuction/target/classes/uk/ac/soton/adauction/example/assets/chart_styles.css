@@ -8,6 +8,18 @@
     -fx-background-color: #1F263E ;
 }
 
+.click-pane {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: linear-gradient(to bottom left, #5266A4, #1F263E);
+    -fx-border-width: 2;
+}
+
+.click-pane-header {
+    -fx-background-color: linear-gradient(to bottom left, #5266A4, #1F263E);
+    -fx-background-radius: 5;
+}
 
 .default-color0.chart-pie-gender {
     -fx-pie-color: #2748a7;

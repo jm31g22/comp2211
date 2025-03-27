@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<AnchorPane prefHeight="450.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.ImportController">
+   <children>
+      <VBox prefHeight="351.0" prefWidth="249.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="101.0" AnchorPane.topAnchor="100.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+               <children>
+                  <Button fx:id="fileLabel1" mnemonicParsing="false" onAction="#selectClickLog" text="click_log" />
+                  <Label fx:id="clickLabel" text="None">
+                     <HBox.margin>
+                        <Insets top="6.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="fileLabel2" mnemonicParsing="false" onAction="#selectImpressionLog" text="impression_log" />
+                  <Label fx:id="impressionLabel" text="None">
+                     <HBox.margin>
+                        <Insets left="10.0" top="6.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Button fx:id="fileLabel3" mnemonicParsing="false" onAction="#selectServerLog" text="server_log" />
+                  <Label fx:id="serverLabel" text="None">
+                     <HBox.margin>
+                        <Insets left="10.0" top="6.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+            </HBox>
+            <Button mnemonicParsing="false" onAction="#uploadFiles" text="Upload" />
+         </children>
+      </VBox>
+      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="200.0" text="Upload CSV Files" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="20.0" />
+   </children>
+</AnchorPane>

@@ -137,7 +137,7 @@ public class LoginPageController extends SceneController{
             return;
         }
 
-        App.getSceneController().switchTo("dashboard");
+        App.getSceneManager().switchTo("dashboard");
 
     }
 

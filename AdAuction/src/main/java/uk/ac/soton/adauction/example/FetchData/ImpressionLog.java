@@ -15,7 +15,7 @@ import java.util.HashMap;
 /**
  * Class to obtain data from the impression log
  */
-public class ImpressionLog extends RemoteQuerier {
+public class ImpressionLog extends LocalQuerier {
 
     /**
      * Function to fetch all impression data
@@ -237,13 +237,15 @@ public class ImpressionLog extends RemoteQuerier {
         String sql = "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
                 "FROM impression_log " +
                 "WHERE impression_date BETWEEN ? AND ? " +
-                "GROUP BY " + tickInfo.getTickExpression();
+                "GROUP BY tick";
         System.out.println("SQL statement: " + sql);
         System.out.println("Boundaries: " + startBoundary + " to " + endBoundary);
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setTimestamp(1, Timestamp.valueOf(startBoundary));
-            stmt.setTimestamp(2, Timestamp.valueOf(endBoundary));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+            stmt.setString(2, endBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 String tick = rs.getString("tick");
@@ -317,18 +319,19 @@ public class ImpressionLog extends RemoteQuerier {
 
     private TickInfo getTickInfo(int tickIndex) {
         switch (tickIndex) {
-            case 0:
-                return new TickInfo("DATE_FORMAT(impression_date, '%Y-%m-%d %H:00:00')", "yyyy-MM-dd HH:00:00");
-            case 1:
-                return new TickInfo("DATE_FORMAT(impression_date, '%Y-%m-%d')", "yyyy-MM-dd");
-            case 2:
-                return new TickInfo("CONCAT(YEAR(impression_date), '-W', LPAD(WEEK(impression_date, 1), 2, '0'))", "YYYY-'W'ww");
-            case 3:
-                return new TickInfo("DATE_FORMAT(impression_date, '%Y-%m')", "yyyy-MM");
+            case 0: // hourly
+                return new TickInfo("strftime('%Y-%m-%d %H:00:00', impression_date)", "yyyy-MM-dd HH:00:00");
+            case 1: // daily
+                return new TickInfo("strftime('%Y-%m-%d', impression_date)", "yyyy-MM-dd");
+            case 2: // weekly
+                return new TickInfo("strftime('%Y-W%W', impression_date)", "yyyy-'W'ww");
+            case 3: // monthly
+                return new TickInfo("strftime('%Y-%m', impression_date)", "yyyy-MM");
             default:
                 throw new IllegalArgumentException("Invalid tick index: " + tickIndex);
         }
     }
+
 
     // ensure continuous x axis
     private HashMap<String, Integer> generateFullSeries(HashMap<String, Integer> counts,
