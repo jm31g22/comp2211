@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
 
 public class ImportController {
     private File file1, file2, file3;
@@ -79,7 +80,11 @@ public class ImportController {
 
         directory += "/";
         CampaignImporter.importCampaign(directory + file1.getName(), directory + file2.getName(), directory + file3.getName());
-        App.getSceneManager().switchTo("dashboard");
+        try {
+            App.getSceneManager().getControllerCache().get("dashboard").refreshScene();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         Stage stage = (Stage) clickLabel.getScene().getWindow();
         stage.close();

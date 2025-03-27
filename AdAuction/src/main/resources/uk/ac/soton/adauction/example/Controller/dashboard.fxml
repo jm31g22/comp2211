@@ -297,4 +297,15 @@
          </Label>
         </children>
     </VBox>
+   <Button fx:id="exportCSVButton" layoutX="580.0" layoutY="654.0" mnemonicParsing="false" onAction="#exportCSV" prefHeight="22.0" prefWidth="83.0" styleClass="custom-button" text="Export to CSV">
+      <font>
+         <Font size="11.0" />
+      </font>
+   </Button>
+   <Button fx:id="exportPDFButton" layoutX="705.0" layoutY="654.0" mnemonicParsing="false" onAction="#exportPDF" prefHeight="22.0" prefWidth="83.0" styleClass="custom-button" text="Export to PDF">
+      <font>
+         <Font size="11.0" />
+      </font>
+   </Button>
+   <Label fx:id="exportLabel" layoutX="832.0" layoutY="657.0" text="Export message" visible="false" />
 </AnchorPane>

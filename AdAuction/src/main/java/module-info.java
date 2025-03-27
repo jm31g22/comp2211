@@ -2,6 +2,7 @@ module uk.ac.soton.adauction {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
+    requires itextpdf;
 
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;

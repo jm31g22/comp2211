@@ -122,4 +122,8 @@ public class SceneManager {
     public void switchToLastScene() {
         switchTo(lastScene);
     }
+
+    public HashMap<String, SceneController> getControllerCache() {
+        return controllerCache;
+    }
 }
