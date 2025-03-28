@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import uk.ac.soton.adauction.example.App;
 import uk.ac.soton.adauction.example.AppState;
 
 public class SettingsController extends SceneController{
@@ -79,8 +80,8 @@ public class SettingsController extends SceneController{
         }
 
         // Apply settings if all validations pass
-        AppState.setBounceDefinition(bounceDefinition);
-        AppState.setBounceDefinitionNumber(number);
+        App.getAppState().setBounceDefinition(bounceDefinition);
+        App.getAppState().setBounceDefinitionNumber(number);
         showBounceMessage("Success!");
     }
 
@@ -135,8 +136,8 @@ public class SettingsController extends SceneController{
     private void setupBindings() {
         //Binding current definition of a bounce to the variables in SettingsState
         currentDefinition.textProperty().bind(Bindings.createStringBinding(
-                () -> AppState.getBounceDefinitionBinding().get() + " (" + AppState.getBounceDefinitionNumberBinding().get() + ")", // Formatting
-                AppState.getBounceDefinitionBinding(), AppState.getBounceDefinitionNumberBinding() // Observables
+                () -> App.getAppState().getBounceDefinitionBinding().get() + " (" + App.getAppState().getBounceDefinitionNumberBinding().get() + ")", // Formatting
+                App.getAppState().getBounceDefinitionBinding(), App.getAppState().getBounceDefinitionNumberBinding() // Observables
         ));
     }
 

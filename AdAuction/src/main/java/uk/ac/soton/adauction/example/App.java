@@ -12,6 +12,7 @@ public class App extends Application {
 
     private static SceneManager sceneManager;
     private static MetricsLoader metricsLoader = new MetricsLoader();
+    private static AppState appState = new AppState();
 
     public void start(Stage stage) throws SQLException {
 
@@ -45,4 +46,7 @@ public class App extends Application {
 
     public static MetricsLoader getMetricsLoader() {return metricsLoader;}
 
+    public static AppState getAppState() {
+        return appState;
+    }
 }
