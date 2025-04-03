@@ -33,3 +33,55 @@
 .custom-button:pressed {
     -fx-background-color: #003D7A;
 }
+
+.date-picker .cell {
+    -fx-border-radius: 10;
+    -fx-border-color: transparent;
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+
+}
+
+.date-picker .cell:hover {
+    -fx-background-color: #d0d0d0;
+    -fx-text-fill: #1F263E;
+}
+
+.date-picker .cell:focused {
+    -fx-border-color: #003D7A;
+}
+
+.date-picker-popup{
+    -fx-border-color: #1F263E;
+    -fx-border-radius: 10;
+}
+
+.date-picker-popup .month-year-pane {
+    -fx-background-color: white;
+    -fx-border-radius: 10 10 10 10;
+}
+
+.date-picker-popup .week-number-cell {
+    -fx-text-fill: white;
+}
+
+.date-picker-popup .calendar-grid {
+    -fx-background-color: white;
+    -fx-border-radius: 10;
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: white;
+}
+
+.date-picker .arrow-button .arrow {
+    -fx-background-color: #1F263E;
+}
+
+.radio-button .radio {
+    -fx-background-color: transparent;
+    -fx-border-color: #1F263E;
+    -fx-border-radius: 50;
+}
+
+

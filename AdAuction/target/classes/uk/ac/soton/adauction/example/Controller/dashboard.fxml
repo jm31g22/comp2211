@@ -7,242 +7,618 @@
 <?import javafx.scene.text.*?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.DashboardController">
-   <HBox layoutX="700.0" prefHeight="50.0" prefWidth="350.0">
-      <HBox prefHeight="50.0" prefWidth="100.0">
-         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@../assets/house_dark.png" />
-            </image>
-            <HBox.margin>
-               <Insets bottom="10.0" left="5.0" top="10.0" />
-            </HBox.margin>
-         </ImageView>
-         <Button fx:id="homeButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Home">
-            <HBox.margin>
-               <Insets bottom="10.0" top="10.0" />
-            </HBox.margin>
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Button>
-      </HBox>
-      <HBox prefHeight="50.0" prefWidth="116.0">
-         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@../assets/settings.png" />
-            </image>
-            <HBox.margin>
-               <Insets bottom="10.0" left="5.0" top="10.0" />
-            </HBox.margin>
-         </ImageView>
-         <Button fx:id="settingsButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="84.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Settings">
-            <HBox.margin>
-               <Insets bottom="10.0" top="10.0" />
-            </HBox.margin>
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Button>
-      </HBox>
-      <HBox prefHeight="50.0" prefWidth="100.0">
-         <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-               <Image url="@../assets/back.png" />
-            </image>
-            <HBox.margin>
-               <Insets bottom="10.0" left="5.0" top="10.0" />
-            </HBox.margin>
-         </ImageView>
-         <Button fx:id="backButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Back">
-            <HBox.margin>
-               <Insets bottom="10.0" top="10.0" />
-            </HBox.margin>
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Button>
-      </HBox>
-   </HBox>
-   <VBox alignment="BOTTOM_CENTER" prefHeight="713.0" prefWidth="200.0">
-      <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../assets/logo.png" />
-         </image>
-      </ImageView>
-      <VBox alignment="TOP_CENTER" prefHeight="675.0" prefWidth="100.0" style="-fx-background-color: #1F263E;">
-         <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="199.0" style="-fx-font-weight: bold;" text="Quick Access" textAlignment="CENTER" textFill="WHITE">
-            <font>
-               <Font size="18.0" />
-            </font>
-         </Label>
-         <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
-            <opaqueInsets>
-               <Insets />
-            </opaqueInsets>
-            <padding>
-               <Insets bottom="10.0" left="5.0" right="45.0" top="10.0" />
-            </padding>
+    <HBox layoutX="700.0" prefHeight="50.0" prefWidth="350.0">
+        <HBox prefHeight="50.0" prefWidth="100.0">
             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../assets/house.png" />
-               </image>
-               <HBox.margin>
-                  <Insets right="20.0" />
-               </HBox.margin>
+                <image>
+                    <Image url="@../assets/house_dark.png" />
+                </image>
+                <HBox.margin>
+                    <Insets bottom="10.0" left="5.0" top="10.0" />
+                </HBox.margin>
             </ImageView>
-            <Button fx:id="dashboardButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
-               <font>
-                  <Font size="15.0" />
-               </font>
+            <Button fx:id="homeButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Home">
+                <HBox.margin>
+                    <Insets bottom="10.0" top="10.0" />
+                </HBox.margin>
+                <font>
+                    <Font size="15.0" />
+                </font>
             </Button>
-         </HBox>
-         <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
-            <opaqueInsets>
-               <Insets />
-            </opaqueInsets>
-            <padding>
-               <Insets bottom="10.0" left="5.0" right="57.0" top="10.0" />
-            </padding>
+        </HBox>
+        <HBox prefHeight="50.0" prefWidth="116.0">
             <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-               <image>
-                  <Image url="@../assets/chart.png" />
-               </image>
-               <HBox.margin>
-                  <Insets right="36.0" />
-               </HBox.margin>
+                <image>
+                    <Image url="@../assets/settings.png" />
+                </image>
+                <HBox.margin>
+                    <Insets bottom="10.0" left="5.0" top="10.0" />
+                </HBox.margin>
             </ImageView>
-            <Button fx:id="chartsButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
-               <font>
-                  <Font size="15.0" />
-               </font>
+            <Button fx:id="settingsButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="84.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Settings">
+                <HBox.margin>
+                    <Insets bottom="10.0" top="10.0" />
+                </HBox.margin>
+                <font>
+                    <Font size="15.0" />
+                </font>
             </Button>
-         </HBox>
-         <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
-            <opaqueInsets>
-               <Insets />
-            </opaqueInsets>
-            <padding>
-               <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
-            </padding>
+        </HBox>
+        <HBox prefHeight="50.0" prefWidth="100.0">
+            <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../assets/back.png" />
+                </image>
+                <HBox.margin>
+                    <Insets bottom="10.0" left="5.0" top="10.0" />
+                </HBox.margin>
+            </ImageView>
+            <Button fx:id="backButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" style="-fx-background-color: transparent; -fx-text-fill: black; -fx-font-weight: bold" text="Back">
+                <HBox.margin>
+                    <Insets bottom="10.0" top="10.0" />
+                </HBox.margin>
+                <font>
+                    <Font size="15.0" />
+                </font>
+            </Button>
+        </HBox>
+    </HBox>
+    <VBox alignment="BOTTOM_CENTER" prefHeight="713.0" prefWidth="200.0">
+        <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../assets/logo.png" />
+            </image>
+        </ImageView>
+        <VBox alignment="TOP_CENTER" prefHeight="675.0" prefWidth="100.0" style="-fx-background-color: #1F263E;">
+            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="50.0" prefWidth="199.0" style="-fx-font-weight: bold;" text="Quick Access" textAlignment="CENTER" textFill="WHITE">
+                <font>
+                    <Font size="18.0" />
+                </font>
+            </Label>
+            <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <padding>
+                    <Insets bottom="10.0" left="5.0" right="45.0" top="10.0" />
+                </padding>
+                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../assets/house.png" />
+                    </image>
+                    <HBox.margin>
+                        <Insets right="20.0" />
+                    </HBox.margin>
+                </ImageView>
+                <Button fx:id="dashboardButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <padding>
+                    <Insets bottom="10.0" left="5.0" right="57.0" top="10.0" />
+                </padding>
+                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../assets/chart.png" />
+                    </image>
+                    <HBox.margin>
+                        <Insets right="36.0" />
+                    </HBox.margin>
+                </ImageView>
+                <Button fx:id="chartsButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </Button>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
+                <opaqueInsets>
+                    <Insets />
+                </opaqueInsets>
+                <padding>
+                    <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
+                </padding>
+                <children>
+                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                            <Image url="@../assets/power.png" />
+                        </image>
+                        <HBox.margin>
+                            <Insets left="10.0" right="30.0" />
+                        </HBox.margin>
+                    </ImageView>
+                    <Button fx:id="logOutButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Log Out">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                        <HBox.margin>
+                            <Insets right="30.0" />
+                        </HBox.margin>
+                    </Button>
+                </children>
+                <VBox.margin>
+                    <Insets top="460.0" />
+                </VBox.margin>
+            </HBox>
+        </VBox>
+    </VBox>
+    <DatePicker fx:id="startDatePicker" layoutX="344.0" layoutY="45.0" style="-fx-background-color: transparent; -fx-border-color: #1F263E; -fx-border-radius: 5;" styleClass="date-picker" stylesheets="@style.css" />
+    <DatePicker fx:id="endDatePicker" layoutX="583.0" layoutY="45.0" style="-fx-background-color: transparent; -fx-border-color: #1F263E; -fx-border-radius: 5;" styleClass="date-picker" stylesheets="@style.css" />
+    <Button fx:id="applyButtonDashboard" layoutX="820.0" layoutY="186.0" mnemonicParsing="false" onAction="#applyFilters" prefHeight="22.0" prefWidth="153.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Apply">
+        <font>
+            <Font size="11.0" />
+        </font>
+    </Button>
+    <Text layoutX="282.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From">
+      <font>
+         <Font name="System Bold" size="14.0" />
+      </font></Text>
+    <Text layoutX="548.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To">
+      <font>
+         <Font name="System Bold" size="14.0" />
+      </font></Text>
+   <HBox layoutX="282.0" layoutY="80.0" prefHeight="103.0" prefWidth="628.0">
+      <children>
+         <VBox prefHeight="102.0" prefWidth="44.0" spacing="10.0">
             <children>
-               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 14" text="Age" />
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 14" text="Gender" wrappingWidth="52.50496042441688" />
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 14" text="Income" wrappingWidth="52.50496042441688" />
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold; -fx-font-size: 14" text="Context" wrappingWidth="71.0" />
+            </children>
+         </VBox>
+         <VBox prefHeight="102.0" prefWidth="65.0" spacing="10.0">
+            <children>
+                <RadioButton fx:id="ageButton1" mnemonicParsing="false" prefHeight="17.0" prefWidth="59.0" stylesheets="@style.css" text="&lt;25" />
+                <RadioButton fx:id="maleGenderButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="59.0" stylesheets="@style.css" text="Male" />
+                <RadioButton fx:id="lowIncomeButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="59.0" stylesheets="@style.css" text="Low" />
+                <RadioButton fx:id="newsContextButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="59.0" stylesheets="@style.css" text="News" />
+            </children>
+         </VBox>
+         <VBox prefHeight="102.0" prefWidth="84.0" spacing="10.0">
+            <children>
+                <RadioButton fx:id="ageButton2" mnemonicParsing="false" prefHeight="18.0" prefWidth="68.0" stylesheets="@style.css" text="25-34" />
+                <RadioButton fx:id="femaleGenderButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="68.0" stylesheets="@style.css" text="Female" />
+                <RadioButton fx:id="mediumIncomeButton" mnemonicParsing="false" prefHeight="18.0" prefWidth="79.0" stylesheets="@style.css" text="Medium" />
+                <RadioButton fx:id="blogContextButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="68.0" stylesheets="@style.css" text="Blog" />
+            </children>
+         </VBox>
+         <VBox prefHeight="103.0" prefWidth="93.0" spacing="10.0">
+            <children>
+                <RadioButton fx:id="ageButton3" mnemonicParsing="false" prefHeight="18.0" prefWidth="71.0" stylesheets="@style.css" text="35-44" />
+                <RadioButton fx:id="bothGenderButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" stylesheets="@style.css" text="All" />
+                <RadioButton fx:id="highIncomeButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" stylesheets="@style.css" text="High" />
+                <RadioButton fx:id="shoppingContextButton" mnemonicParsing="false" prefHeight="18.0" prefWidth="84.0" stylesheets="@style.css" text="Shopping" />
+            </children>
+         </VBox>
+         <VBox prefHeight="104.0" prefWidth="117.0" spacing="10.0">
+            <children>
+                <RadioButton fx:id="ageButton4" mnemonicParsing="false" prefHeight="18.0" prefWidth="68.0" stylesheets="@style.css" text="45-54" />
+               <Label text="     ">
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Label>
+                <RadioButton fx:id="allIncomeButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" stylesheets="@style.css" text="All" />
+                <RadioButton fx:id="socialMediaContextButton" mnemonicParsing="false" prefHeight="18.0" prefWidth="97.0" stylesheets="@style.css" text="Social Media" />
+            </children>
+         </VBox>
+         <VBox prefHeight="104.0" prefWidth="88.0" spacing="10.0">
+            <children>
+                <RadioButton fx:id="ageButton5" mnemonicParsing="false" prefHeight="18.0" prefWidth="54.0" stylesheets="@style.css" text="&gt;54" />
+               <Label>
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Label>
+               <Label>
+                  <font>
+                     <Font size="14.0" />
+                  </font>
+               </Label>
+                <RadioButton fx:id="allContextButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" stylesheets="@style.css" text="All" />
+            </children>
+         </VBox>
+          <RadioButton fx:id="ageButton6" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" stylesheets="@style.css" text="All" />
+      </children>
+   </HBox>
+   <HBox layoutX="265.0" layoutY="233.0" prefHeight="89.0" prefWidth="697.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0); -fx-background-radius: 10;">
+      <children>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
                   <image>
-                     <Image url="@../assets/power.png" />
+                     <Image url="@../assets/dashboard-icons/impression.png" />
                   </image>
                   <HBox.margin>
-                     <Insets left="10.0" right="30.0" />
+                     <Insets left="10.0" top="20.0" />
                   </HBox.margin>
                </ImageView>
-               <Button fx:id="logOutButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Log Out">
-                  <font>
-                     <Font size="15.0" />
-                  </font>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="Number of Impression" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                        <Label fx:id="impressionsLabel" alignment="CENTER" prefHeight="45.0" prefWidth="161.0" text="2778218321" textAlignment="CENTER" textOverrun="CLIP">
+                            <VBox.margin>
+                                <Insets />
+                            </VBox.margin>
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                  </children>
                   <HBox.margin>
-                     <Insets right="30.0" />
+                     <Insets />
                   </HBox.margin>
-               </Button>
+               </VBox>
             </children>
-            <VBox.margin>
-               <Insets top="460.0" />
-            </VBox.margin>
          </HBox>
-      </VBox>
-   </VBox>
-
-
-   <VBox layoutX="299.0" layoutY="371.0" prefHeight="269.0" prefWidth="308.0">
-      <children>
-         <Label fx:id="impressionsLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Impressions: 2778218321" textOverrun="CLIP">
-            <VBox.margin>
-               <Insets />
-            </VBox.margin>
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label fx:id="conversionsLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Conversions: ">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label fx:id="clicksLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Clicks: ">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label fx:id="uniquesLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Uniques: ">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label fx:id="bouncesLabel" prefHeight="45.0" prefWidth="245.0" text="Number of Bounces: TO BE IMPLEMENTED">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
-         <Label fx:id="costLabel" prefHeight="45.0" prefWidth="245.0" text="Total Cost: ">
-            <font>
-               <Font size="15.0" />
-            </font>
-         </Label>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/dashboard-icons/Bounce.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" top="20.0" />
+                  </HBox.margin>
+               </ImageView>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="Number of Bounce" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                        <Label fx:id="bouncesLabel" alignment="CENTER" prefHeight="45.0" prefWidth="245.0" textAlignment="CENTER">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/dashboard-icons/CPC.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" top="20.0" />
+                  </HBox.margin>
+               </ImageView>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="CPC" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                       <Label fx:id="CPCLabel" alignment="CENTER" prefHeight="45.0" prefWidth="245.0" textAlignment="CENTER">
+                           <font>
+                               <Font name="System Bold" size="24.0" />
+                           </font>
+                       </Label>
+                  </children>
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+               </VBox>
+            </children>
+         </HBox>
       </children>
-   </VBox>
-   <VBox alignment="TOP_CENTER" layoutX="637" layoutY="410.0" prefHeight="234.0" prefWidth="307.0">
-      <Label fx:id="CTRLabel" prefHeight="45.0" prefWidth="245.0" text="CTR: ">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label fx:id="CPALabel" prefHeight="45.0" prefWidth="245.0" text="CPA: ">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label fx:id="CPCLabel" prefHeight="45.0" prefWidth="245.0" text="CPC: ">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label fx:id="CPMLabel" prefHeight="45.0" prefWidth="245.0" text="CPM: ">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Label fx:id="bounceRateLabel" prefHeight="45.0" prefWidth="245.0" text="Bounce Rate: TO BE IMPLEMENTED">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-   </VBox>
-   <DatePicker fx:id="startDatePicker" layoutX="332.0" layoutY="90.0" />
-   <DatePicker fx:id="endDatePicker" layoutX="583.0" layoutY="90.0" />
-   <Button fx:id="applyButtonDashboard" layoutX="820.0" layoutY="274.0" mnemonicParsing="false" onAction="#applyFilters" prefHeight="22.0" prefWidth="83.0" styleClass="custom-button" text="Apply">
-      <font>
-         <Font size="11.0" />
-      </font>
-   </Button>
-   <Text layoutX="283.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From" />
-   <Text layoutX="548.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To" />
-   <Text layoutX="287.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Age" />
-   <RadioButton fx:id="femaleGenderButton" layoutX="409.0" layoutY="177.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="68.0" text="Female" translateX="3.0" />
-   <RadioButton fx:id="bothGenderButton" layoutX="486.0" layoutY="177.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" text="All" translateX="3.0" />
-   <RadioButton fx:id="maleGenderButton" layoutX="342.0" layoutY="177.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="59.0" text="Male" translateX="3.0" />
-   <Text layoutX="282.0" layoutY="190.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Gender" translateX="3.0" wrappingWidth="52.50496042441688" />
-   <RadioButton fx:id="mediumIncomeButton" layoutX="400.0" layoutY="207.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="68.0" text="Medium" translateX="3.0" />
-   <RadioButton fx:id="highIncomeButton" layoutX="478.0" layoutY="207.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" text="High" translateX="3.0" />
-   <RadioButton fx:id="lowIncomeButton" layoutX="340.0" layoutY="207.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="59.0" text="Low" translateX="3.0" />
-   <Text layoutX="283.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Income" translateX="3.0" wrappingWidth="52.50496042441688" />
-   <RadioButton fx:id="allIncomeButton" layoutX="535.0" layoutY="207.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" text="All" translateX="3.0" />
-   <RadioButton fx:id="blogContextButton" layoutX="405.0" layoutY="238.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="68.0" text="Blog" translateX="3.0" />
-   <RadioButton fx:id="shoppingContextButton" layoutX="470.0" layoutY="238.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="84.0" text="Shopping" translateX="3.0" />
-   <RadioButton fx:id="newsContextButton" layoutX="340.0" layoutY="238.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="59.0" text="News" translateX="3.0" />
-   <Text layoutX="283.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-font-weight: bold;" text="Context" translateX="3.0" wrappingWidth="52.50496042441688" />
-   <RadioButton fx:id="socialMediaContextButton" layoutX="560.0" layoutY="238.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="97.0" text="Social Media" translateX="3.0" />
-   <RadioButton fx:id="allContextButton" layoutX="665.0" layoutY="238.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" text="All" translateX="3.0" />
-   <RadioButton fx:id="ageButton1" layoutX="344.0" layoutY="144.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="59.0" text="&lt;25" />
-   <RadioButton fx:id="ageButton2" layoutX="411.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="68.0" text="25-34" />
-   <RadioButton fx:id="ageButton3" layoutX="480.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="71.0" text="35-44" />
-   <RadioButton fx:id="ageButton4" layoutX="553.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="68.0" text="45-54" />
-   <RadioButton fx:id="ageButton5" layoutX="624.0" layoutY="144.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="54.0" text="&gt;54" />
-   <RadioButton fx:id="ageButton6" layoutX="682.0" layoutY="144.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" text="All" />
+   </HBox>
+   <HBox layoutX="263.0" layoutY="341.0" prefHeight="89.0" prefWidth="697.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0); -fx-background-radius: 10;">
+      <children>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/dashboard-icons/click.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" top="20.0" />
+                  </HBox.margin>
+               </ImageView>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="Number of Clicks" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                        <Label fx:id="clicksLabel" alignment="CENTER" prefHeight="45.0" prefWidth="245.0" textAlignment="CENTER">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                  </children>
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+               </VBox>
+            </children>
+         </HBox>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/dashboard-icons/CPM.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" top="20.0" />
+                  </HBox.margin>
+               </ImageView>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="CPM" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                       <Label fx:id="CPMLabel" alignment="CENTER" prefHeight="45.0" prefWidth="245.0" textAlignment="CENTER">
+                           <font>
+                               <Font name="System Bold" size="24.0" />
+                           </font>
+                       </Label>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/dashboard-icons/CPA.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" top="20.0" />
+                  </HBox.margin>
+               </ImageView>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="CPA" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                       <Label fx:id="CPALabel" alignment="CENTER" prefHeight="45.0" prefWidth="245.0" textAlignment="CENTER">
+                           <font>
+                               <Font name="System Bold" size="24.0" />
+                           </font>
+                       </Label>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+      </children>
+   </HBox>
+   <HBox layoutX="263.0" layoutY="451.0" prefHeight="89.0" prefWidth="697.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0); -fx-background-radius: 10;">
+      <children>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/dashboard-icons/conversion.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" top="20.0" />
+                  </HBox.margin>
+               </ImageView>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="Number of Conversion" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                        <Label fx:id="conversionsLabel" alignment="CENTER" prefHeight="45.0" prefWidth="245.0" textAlignment="CENTER">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                  </children>
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+               </VBox>
+            </children>
+         </HBox>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/dashboard-icons/CTR.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" top="20.0" />
+                  </HBox.margin>
+               </ImageView>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="CTR" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                       <Label fx:id="CTRLabel" alignment="CENTER" prefHeight="45.0" prefWidth="245.0">
+                           <font>
+                               <Font name="System Bold" size="24.0" />
+                           </font>
+                       </Label>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/dashboard-icons/BounceRate.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" top="20.0" />
+                  </HBox.margin>
+               </ImageView>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="Bounce Rate" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                       <Label fx:id="bounceRateLabel" alignment="CENTER" prefHeight="45.0" prefWidth="245.0" textAlignment="CENTER">
+                           <font>
+                               <Font name="System Bold" size="24.0" />
+                           </font>
+                       </Label>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+      </children>
+   </HBox>
+   <HBox layoutX="262.0" layoutY="561.0" prefHeight="89.0" prefWidth="697.0" style="-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0); -fx-background-radius: 10;">
+      <children>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/dashboard-icons/uniques.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" top="20.0" />
+                  </HBox.margin>
+               </ImageView>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="Number of Uniques" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                        <Label fx:id="uniquesLabel" alignment="CENTER" prefHeight="45.0" prefWidth="245.0">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                  </children>
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+               </VBox>
+            </children>
+         </HBox>
+         <HBox prefHeight="89.0" prefWidth="232.0">
+            <children>
+               <ImageView fitHeight="53.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/dashboard-icons/cost.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" top="20.0" />
+                  </HBox.margin>
+               </ImageView>
+               <VBox alignment="CENTER" prefHeight="89.0" prefWidth="171.0">
+                  <HBox.margin>
+                     <Insets />
+                  </HBox.margin>
+                  <children>
+                     <Label prefHeight="19.0" prefWidth="160.0" text="Total Cost" textFill="#575757">
+                        <font>
+                           <Font size="14.0" />
+                        </font>
+                        <VBox.margin>
+                           <Insets left="10.0" />
+                        </VBox.margin>
+                     </Label>
+                        <Label fx:id="costLabel" alignment="CENTER" prefHeight="45.0" prefWidth="245.0" textAlignment="CENTER">
+                            <font>
+                                <Font name="System Bold" size="24.0" />
+                            </font>
+                        </Label>
+                  </children>
+               </VBox>
+            </children>
+         </HBox>
+      </children>
+   </HBox>
+    <VBox fx:id="metricsPane" layoutX="693.0" layoutY="540.0" prefHeight="132.0" prefWidth="307.0" styleClass="click-pane" stylesheets="@../assets/chart_styles.css">
+        <children>
+            <HBox prefHeight="54.0" prefWidth="325.0" styleClass="click-pane-header">
+                <children>
+                    <ImageView fx:id="iconMetrics" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                  <HBox.margin>
+                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  </HBox.margin></ImageView>
+               <Label fx:id="labelMetrics" prefHeight="53.0" prefWidth="349.0" text="Label" textFill="WHITE">
+                  <font>
+                     <Font name="System Bold" size="20.0" />
+                  </font>
+               </Label>
+                </children>
+            </HBox>
+         <Label fx:id="definitionMetrics" alignment="CENTER" prefHeight="113.0" prefWidth="303.0" text="Label" textAlignment="CENTER" textOverrun="CLIP">
+            <font>
+               <Font size="14.0" />
+            </font>
+         </Label>
+        </children>
+    </VBox>
 </AnchorPane>

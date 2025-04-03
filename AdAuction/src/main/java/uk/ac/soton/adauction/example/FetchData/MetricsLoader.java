@@ -118,29 +118,29 @@ public class MetricsLoader extends LocalQuerier {
 //        cost += (double) executeFilteredQuery(queryBuilder.toString(), "double");
 
         metricValuePairs.computeIfAbsent("TotalCost", key -> new SimpleStringProperty())
-                .set(Double.toString(cost/100));
+                .set(String.format("%.2f", cost/100));
     }
 
     private void loadCostMetrics() {
         double CTR = Double.parseDouble(metricValuePairs.get("NumberOfClicks").get()) /
                 Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get());
         metricValuePairs.computeIfAbsent("CTR", key -> new SimpleStringProperty())
-                .set(Double.toString(CTR));
+                .set(String.format("%.4f", CTR));
 
         double CPA = Double.parseDouble(metricValuePairs.get("TotalCost").get()) /
                 Double.parseDouble(metricValuePairs.get("NumberOfConversions").get());
         metricValuePairs.computeIfAbsent("CPA", key -> new SimpleStringProperty())
-                .set(Double.toString(CPA));
+                .set(String.format("%.4f", CPA));
 
         double CPC = Double.parseDouble(metricValuePairs.get("TotalCost").get()) /
                 Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
         metricValuePairs.computeIfAbsent("CPC", key -> new SimpleStringProperty())
-                .set(Double.toString(CPC));
+                .set(String.format("%.4f", CPC));
 
         double CPM = Double.parseDouble(metricValuePairs.get("TotalCost").get()) /
                 (Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get()) / 1000);
         metricValuePairs.computeIfAbsent("CPM", key -> new SimpleStringProperty())
-                .set(Double.toString(CPM));
+                .set(String.format("%.4f", CPM));
     }
 
     public HashMap<String, SimpleStringProperty> loadBounceMetrics() throws SQLException {
@@ -169,7 +169,7 @@ public class MetricsLoader extends LocalQuerier {
                 Double.parseDouble(metricValuePairs.get("NumberOfClicks").get());
 
         metricValuePairs.computeIfAbsent("BounceRate", key -> new SimpleStringProperty())
-                .set(Double.toString(bounceRate));
+                .set(String.format("%.4f", bounceRate));
 
         return metricValuePairs;
     }
