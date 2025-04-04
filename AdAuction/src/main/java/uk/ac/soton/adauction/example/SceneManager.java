@@ -86,6 +86,7 @@ public class SceneManager {
     }
 
 
+
     /**
      * Displays the scene using a fade transition. Used to make the transition between scenes smoother.
      * @param scene Scene object that will now be loaded on the primaryStage

@@ -11,17 +11,17 @@ import uk.ac.soton.adauction.example.AppState;
 
 public class SettingsController extends SceneController{
     @FXML
-    CheckBox timeSpent;
+    private CheckBox timeSpent;
     @FXML
-    Label bounceMessage;
+    private Label bounceMessage;
     @FXML
-    CheckBox numberOfPages;
+    private CheckBox numberOfPages;
     @FXML
-    TextField bounceEntry1;
+    private TextField bounceEntry1;
     @FXML
-    TextField bounceEntry2;
+    private TextField bounceEntry2;
     @FXML
-    Label currentDefinition;
+    private Label currentDefinition;
 
     private String bounceDefinition;
 
