@@ -207,7 +207,7 @@ public class DashboardController extends SceneController {
      */
     private void loadNoOfImpression(){
         impressionsLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "Number of Impressions: " + metricValuePairs.get("NumberOfImpressions").get(),
+                () -> metricValuePairs.get("NumberOfImpressions").get(),
                 metricValuePairs.get("NumberOfImpressions")
         ));
         impressionsLabel.setOnMouseClicked(mouseEvent -> {
@@ -225,7 +225,7 @@ public class DashboardController extends SceneController {
      */
     private void loadNoOfClick(){
         clicksLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "Number of Clicks: " + metricValuePairs.get("NumberOfClicks").get(),
+                () -> metricValuePairs.get("NumberOfClicks").get(),
                 metricValuePairs.get("NumberOfClicks")
         ));
         clicksLabel.setOnMouseClicked(mouseEvent -> {
@@ -243,7 +243,7 @@ public class DashboardController extends SceneController {
      */
     private void loadNoOfConversion(){
         conversionsLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "Number of Conversions: " + metricValuePairs.get("NumberOfConversions").get(),
+                () -> metricValuePairs.get("NumberOfConversions").get(),
                 metricValuePairs.get("NumberOfConversions")
         ));
         conversionsLabel.setOnMouseClicked(mouseEvent -> {
@@ -261,7 +261,7 @@ public class DashboardController extends SceneController {
      */
     private void loadNoOfUniques(){
         uniquesLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "Number of Uniques: " + metricValuePairs.get("NumberOfUniques").get(),
+                () -> metricValuePairs.get("NumberOfUniques").get(),
                 metricValuePairs.get("NumberOfUniques")
         ));
         uniquesLabel.setOnMouseClicked(mouseEvent -> {
@@ -279,7 +279,7 @@ public class DashboardController extends SceneController {
      */
     private void loadNoOfBounces(){
         bouncesLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "Number of Bounces: " + metricValuePairs.get("NumberOfBounces").get(),
+                () -> metricValuePairs.get("NumberOfBounces").get(),
                 metricValuePairs.get("NumberOfBounces")
         ));
         bouncesLabel.setOnMouseClicked(mouseEvent -> {
@@ -297,7 +297,7 @@ public class DashboardController extends SceneController {
      */
     private void loadCPA(){
         CPALabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "CPA: " + metricValuePairs.get("CPA").get(),
+                () -> metricValuePairs.get("CPA").get(),
                 metricValuePairs.get("CPA")
         ));
         CPALabel.setOnMouseClicked(mouseEvent -> {
@@ -315,7 +315,7 @@ public class DashboardController extends SceneController {
      */
     private void loadCPC(){
         CPCLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "CPC " + metricValuePairs.get("CPC").get(),
+                () -> metricValuePairs.get("CPC").get(),
                 metricValuePairs.get("CPC")
         ));
         CPCLabel.setOnMouseClicked(mouseEvent -> {
@@ -333,7 +333,7 @@ public class DashboardController extends SceneController {
      */
     private void loadCPM(){
         CPMLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "CPM: " + metricValuePairs.get("CPM").get(),
+                () -> metricValuePairs.get("CPM").get(),
                 metricValuePairs.get("CPM")
         ));
         CPMLabel.setOnMouseClicked(mouseEvent -> {
@@ -351,7 +351,7 @@ public class DashboardController extends SceneController {
      */
     private void loadCTR(){
         CTRLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "CTR: " + metricValuePairs.get("CTR").get(),
+                () -> metricValuePairs.get("CTR").get(),
                 metricValuePairs.get("CTR")
         ));
         CTRLabel.setOnMouseClicked(mouseEvent -> {
@@ -369,7 +369,7 @@ public class DashboardController extends SceneController {
      */
     private void loadBounceRate(){
         bounceRateLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "Bounce Rate: " + metricValuePairs.get("BounceRate").get(),
+                () -> metricValuePairs.get("BounceRate").get(),
                 metricValuePairs.get("BounceRate")
         ));
         bounceRateLabel.setOnMouseClicked(mouseEvent -> {
@@ -387,7 +387,7 @@ public class DashboardController extends SceneController {
      */
     private void loadTotalCost(){
         costLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> "Total Cost: $" + metricValuePairs.get("TotalCost").get(),
+                () -> "$" + metricValuePairs.get("TotalCost").get(),
                 metricValuePairs.get("TotalCost")
         ));
         costLabel.setOnMouseClicked(mouseEvent -> {
