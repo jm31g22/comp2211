@@ -23,8 +23,8 @@ public class App extends Application {
         String pathPrefix = "AdAuction/src/main/java/uk/ac/soton/adauction/example/";
 
         //Comment this out if you already have db (for quick testing)
-//        CampaignImporter.importCampaign(pathPrefix + args.get(0),
-//                pathPrefix + args.get(1), pathPrefix + args.get(2));
+        CampaignImporter.importCampaign(pathPrefix + args.get(0),
+                pathPrefix + args.get(1), pathPrefix + args.get(2));
 
 
         sceneManager.loadScenes();
