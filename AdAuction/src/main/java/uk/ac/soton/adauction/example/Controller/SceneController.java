@@ -22,6 +22,8 @@ public abstract class SceneController {
     @FXML
     private Button homeButton;
     @FXML
+    private Button adminButton;
+    @FXML
     private Button logOutButton;
     @FXML
     private Button importButton;
@@ -44,6 +46,9 @@ public abstract class SceneController {
         if (homeButton != null) {
             homeButton.setOnAction(e -> switchToDashboard());
         }
+        if (adminButton != null) {
+            adminButton.setOnAction(e -> switchToAdmin());
+        }
         if (logOutButton != null) {
             logOutButton.setOnAction(e -> switchToLogin());
         }
@@ -60,6 +65,8 @@ public abstract class SceneController {
     public void switchToSettings() {
         App.getSceneManager().switchTo("settings");
     }
+    public void switchToAdmin() {
+        App.getSceneManager().switchTo("admin"); }
     public void switchToLogin() {
         App.getSceneManager().switchTo("login"); }
     public void openImport() { App.getSceneManager().openNew("Controller/import.fxml", 450, 450); }

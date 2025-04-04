@@ -37,6 +37,7 @@ public class SceneManager {
         loadScene("settings", "Controller/settings.fxml");
         loadScene("charts", "Controller/charts.fxml");
         loadScene("login", "Controller/login.fxml");
+        loadScene("admin", "Controller/admin.fxml");
     }
 
     /**
