@@ -1,5 +1,7 @@
 package uk.ac.soton.adauction.example.Utils;
 
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+
 import java.io.*;
 import java.sql.*;
 import java.util.*;
@@ -51,7 +53,7 @@ public class CampaignImporter {
             try (Statement stmt = conn.createStatement()) {
                 stmt.execute( "PRAGMA automatic_index = OFF");
                 stmt.execute("PRAGMA synchronous = OFF");
-                stmt.execute("PRAGMA journal_mode = MEMORY");
+                stmt.execute("PRAGMA journal_mode = WAL");
                 stmt.execute("PRAGMA temp_store = MEMORY");
                 stmt.execute("PRAGMA foreign_keys = OFF");
             }
@@ -91,48 +93,56 @@ public class CampaignImporter {
     }
 
     private static void importImpressionsAndPopulateUsers(String impressionLogCSV) {
-        String insertSQL = "INSERT OR IGNORE INTO impression_log VALUES (?, ?, ?, ?, ?, ?, ?)";
-        String userInsertSQL = "INSERT OR IGNORE INTO unique_users VALUES (?, ?, ?, ?, ?)";
+        final String insertSQL = "INSERT OR IGNORE INTO impression_log VALUES (?, ?, ?, ?, ?, ?, ?)";
+        final String userInsertSQL = "INSERT OR IGNORE INTO unique_users VALUES (?, ?, ?, ?, ?)";
+        final int BATCH_SIZE = 5000;
 
-        Set<Long> seenUserIds = new HashSet<>();
+        LongOpenHashSet seenUserIds = new LongOpenHashSet();
 
         try (
-                BufferedReader reader = new BufferedReader(new FileReader(impressionLogCSV));
+                BufferedReader reader = new BufferedReader(new FileReader(impressionLogCSV), 16 * 1024);
                 PreparedStatement pstmt = conn.prepareStatement(insertSQL);
                 PreparedStatement userStmt = conn.prepareStatement(userInsertSQL)
         ) {
             conn.setAutoCommit(false);
-            String line = reader.readLine(); // skip header
+            reader.readLine(); // skip header
+            String line;
             int batchCount = 0;
 
             while ((line = reader.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
+                if (line.isBlank()) continue;
 
                 String[] fields = line.split(",", -1);
                 if (fields.length < 7) continue;
 
-                long userId = Long.parseLong(fields[1].trim());
+                String date = fields[0].strip();
+                long userId = Long.parseLong(fields[1].strip());
+                String gender = fields[2].strip();
+                String age = fields[3].strip();
+                String income = fields[4].strip();
+                String context = fields[5].strip();
+                double cost = Double.parseDouble(fields[6].strip());
 
-                pstmt.setString(1, fields[0].trim());
+                pstmt.setString(1, date);
                 pstmt.setLong(2, userId);
-                pstmt.setString(3, fields[2].trim());
-                pstmt.setString(4, fields[3].trim());
-                pstmt.setString(5, fields[4].trim());
-                pstmt.setString(6, fields[5].trim());
-                pstmt.setDouble(7, Double.parseDouble(fields[6].trim()));
+                pstmt.setString(3, gender);
+                pstmt.setString(4, age);
+                pstmt.setString(5, income);
+                pstmt.setString(6, context);
+                pstmt.setDouble(7, cost);
                 pstmt.addBatch();
 
                 if (!seenUserIds.contains(userId)) {
                     seenUserIds.add(userId);
                     userStmt.setLong(1, userId);
-                    userStmt.setString(2, fields[2].trim());
-                    userStmt.setString(3, fields[3].trim());
-                    userStmt.setString(4, fields[4].trim());
-                    userStmt.setString(5, fields[5].trim());
+                    userStmt.setString(2, gender);
+                    userStmt.setString(3, age);
+                    userStmt.setString(4, income);
+                    userStmt.setString(5, context);
                     userStmt.addBatch();
                 }
 
-                if (++batchCount % 1000 == 0) {
+                if (++batchCount % BATCH_SIZE == 0) {
                     pstmt.executeBatch();
                     userStmt.executeBatch();
                     conn.commit();
