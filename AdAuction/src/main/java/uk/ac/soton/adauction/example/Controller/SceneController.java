@@ -62,6 +62,8 @@ public abstract class SceneController {
     }
     public void switchToLogin() {
         App.getSceneManager().switchTo("login"); }
+    public void switchToAdmin() {
+        App.getSceneManager().switchTo("admin"); }
     public void openImport() { App.getSceneManager().openNew("Controller/import.fxml", 450, 450); }
     /**
      * Anything that needs to be done each time the scene is opened should be included in this method.
