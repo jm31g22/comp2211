@@ -2,3 +2,5 @@
 *.db
 *.zip
 *.csv
+*.db-shm
+*.db-wal
