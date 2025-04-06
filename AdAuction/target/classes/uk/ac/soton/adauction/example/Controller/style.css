@@ -84,4 +84,15 @@
     -fx-border-radius: 50;
 }
 
+.check-box > .box {
+    -fx-background-color: white;
+    -fx-border-color: #757575;
+    -fx-border-radius: 5;
+}
+
+.settings-text-field {
+    -fx-background-color: white;
+    -fx-border-color: #1F263E;
+    -fx-border-radius: 5;
+}
 
