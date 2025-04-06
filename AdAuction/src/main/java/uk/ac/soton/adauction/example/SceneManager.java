@@ -32,6 +32,7 @@ public class SceneManager {
      */
     public void loadScenes() {
         System.out.println(System.getProperty("user.dir"));
+        loadScene("admin", "Controller/admin.fxml");
         loadScene("login", "Controller/login.fxml");
         loadScene("dashboard", "Controller/dashboard.fxml");
         loadScene("settings", "Controller/settings.fxml");

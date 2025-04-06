@@ -25,6 +25,8 @@ public abstract class SceneController {
     private Button logOutButton;
     @FXML
     private Button importButton;
+    @FXML
+    private Button adminButton;
 
 
     @FXML
@@ -43,6 +45,9 @@ public abstract class SceneController {
         }
         if (homeButton != null) {
             homeButton.setOnAction(e -> switchToDashboard());
+        }
+        if (adminButton != null){
+            adminButton.setOnAction(e -> switchToAdmin());
         }
         if (logOutButton != null) {
             logOutButton.setOnAction(e -> switchToLogin());
