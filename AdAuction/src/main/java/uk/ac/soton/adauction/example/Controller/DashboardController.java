@@ -9,13 +9,19 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.*;
+import javafx.scene.shape.Circle;
 import uk.ac.soton.adauction.example.App;
+import uk.ac.soton.adauction.example.AppState;
 
 
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +97,58 @@ public class DashboardController extends SceneController {
     private Label labelMetrics;
     @FXML
     private Label definitionMetrics;
+    @FXML
+    private StackPane impressionIcon;
+    @FXML
+    private StackPane clickIcon;
+    @FXML
+    private StackPane conversionIcon;
+    @FXML
+    private StackPane uniquesIcon;
+    @FXML
+    private StackPane bouncesIcon;
+    @FXML
+    private StackPane CPMIcon;
+    @FXML
+    private StackPane CTRIcon;
+    @FXML
+    private StackPane costIcon;
+    @FXML
+    private StackPane CPCIcon;
+    @FXML
+    private StackPane CPAIcon;
+    @FXML
+    private StackPane bounceRateIcon;
+    @FXML
+    private HBox impressionBlock;
+    @FXML
+    private HBox clickBlock;
+    @FXML
+    private HBox conversionBlock;
+    @FXML
+    private HBox uniqueBlock;
+    @FXML
+    private HBox bounceBlock;
+    @FXML
+    private HBox CPMBlock;
+    @FXML
+    private HBox CTRBlock;
+    @FXML
+    private HBox costBlock;
+    @FXML
+    private HBox CPCBlock;
+    @FXML
+    private HBox CPABlock;
+    @FXML
+    private HBox bounceRateBlock;
+    @FXML
+    private HBox dashboardBlock1;
+    @FXML
+    private HBox dashboardBlock2;
+    @FXML
+    private HBox dashboardBlock3;
+    @FXML
+    private HBox dashboardBlock4;
 
     private HashMap<String, SimpleStringProperty> metricValuePairs;
     private final ToggleGroup genderToggleGroup = new ToggleGroup();
@@ -129,6 +187,7 @@ public class DashboardController extends SceneController {
                 (The definition of a bounce can be changed\s
                 in the settings page)""", "icons/bounce.png"));
     }};
+    private static final String[] colors = new String[]{"#d3ffe7","#caf1ff","#ffa3cf"};
 
 
     /**
@@ -182,28 +241,158 @@ public class DashboardController extends SceneController {
      * Initialize all key metrics label shown on dashboard page
      */
     private void initializeLabels() {
-        loadNoOfImpression();
-        loadNoOfClick();
-        loadNoOfConversion();
-        loadNoOfUniques();
-        loadTotalCost();
-        loadCPA();
-        loadCPC();
-        loadCPM();
-        loadCTR();
-        loadNoOfBounces();
-        loadBounceRate();
+        int mode = AppState.getDashboardMode();
+        dashboardBlock1.getChildren().clear();
+        dashboardBlock1.opacityProperty().setValue(0);
+        dashboardBlock2.getChildren().clear();
+        dashboardBlock2.opacityProperty().setValue(0);
+        dashboardBlock3.getChildren().clear();
+        dashboardBlock3.opacityProperty().setValue(0);
+        dashboardBlock4.getChildren().clear();
+        dashboardBlock4.opacityProperty().setValue(0);
+        switch (mode) {
+            case 0 -> loadInfluencerMode();
+            case 1 -> loadEntrepreneurMode();
+            case 3 -> loadCustomizedMode();
+            default -> loadAnalystMode();
+        }
+    }
+
+    private void loadAnalystMode(){
+        loadNoOfImpression(1);
+        loadNoOfClick(1);
+        loadNoOfConversion(1);
+        loadNoOfUniques(1);
+        loadNoOfBounces(2);
+        loadCPM(2);
+        loadCTR(2);
+        loadTotalCost(2);
+        loadCPC(3);
+        loadCPA(3);
+        loadBounceRate(3);
+        dashboardBlock1.getChildren().addAll(impressionBlock, bounceBlock, CPCBlock);
+        dashboardBlock1.opacityProperty().setValue(1);
+        dashboardBlock2.getChildren().addAll(clickBlock, CPMBlock, CPABlock);
+        dashboardBlock2.opacityProperty().setValue(1);
+        dashboardBlock3.getChildren().addAll(conversionBlock, CTRBlock, bounceRateBlock);
+        dashboardBlock3.opacityProperty().setValue(1);
+        dashboardBlock4.getChildren().addAll(uniqueBlock, costBlock);
+        dashboardBlock4.opacityProperty().setValue(1);
+    }
+
+    private void loadInfluencerMode(){
+        loadNoOfImpression(1);
+        loadNoOfClick(2);
+        loadNoOfConversion(3);
+        loadNoOfUniques(1);
+        loadCTR(2);
+        dashboardBlock1.getChildren().addAll(impressionBlock, clickBlock, conversionBlock);
+        dashboardBlock1.opacityProperty().setValue(1);
+        dashboardBlock2.getChildren().addAll(uniqueBlock, CTRBlock);
+        dashboardBlock2.opacityProperty().setValue(1);
+    }
+
+    private void loadEntrepreneurMode(){
+        loadNoOfClick(1);
+        loadNoOfConversion(2);
+        loadNoOfUniques(3);
+        loadTotalCost(1);
+        dashboardBlock1.getChildren().addAll(clickBlock, conversionBlock, uniqueBlock);
+        dashboardBlock1.opacityProperty().setValue(1);
+        dashboardBlock2.getChildren().addAll(costBlock);
+        dashboardBlock2.opacityProperty().setValue(1);
+    }
+
+    private void loadCustomizedMode(){
+        ArrayList<Integer> components = AppState.getComponents();
+        HBox[] blockList = new HBox[]{dashboardBlock1, dashboardBlock2, dashboardBlock3, dashboardBlock4};
+        int blockIndex = 0;
+        HBox currentBlock = blockList[blockIndex];
+        int offset = 1;
+        for (Integer component : components) {
+            currentBlock.opacityProperty().setValue(1);
+            switch (component) {
+                case 0:
+                    loadNoOfImpression(offset);
+                    currentBlock.getChildren().add(impressionBlock);
+                    break;
+                case 1:
+                    loadNoOfClick(offset);
+                    currentBlock.getChildren().add(clickBlock);
+                    break;
+                case 2:
+                    loadNoOfConversion(offset);
+                    currentBlock.getChildren().add(conversionBlock);
+                    break;
+                case 3:
+                    loadNoOfUniques(offset);
+                    currentBlock.getChildren().add(uniqueBlock);
+                    break;
+                case 4:
+                    loadNoOfBounces(offset);
+                    currentBlock.getChildren().add(bounceBlock);
+                    break;
+                case 5:
+                    loadCPM(offset);
+                    currentBlock.getChildren().add(CPMBlock);
+                    break;
+                case 6:
+                    loadCTR(offset);
+                    currentBlock.getChildren().add(CTRBlock);
+                    break;
+                case 7:
+                    loadTotalCost(offset);
+                    currentBlock.getChildren().add(costBlock);
+                    break;
+                case 8:
+                    loadCPC(offset);
+                    currentBlock.getChildren().add(CPCBlock);
+                    break;
+                case 9:
+                    loadCPA(offset);
+                    currentBlock.getChildren().add(CPABlock);
+                    break;
+                case 10:
+                    loadBounceRate(offset);
+                    currentBlock.getChildren().add(bounceRateBlock);
+                    break;
+            }
+            offset++;
+            if (offset > 3) {
+                blockIndex++;
+                currentBlock = blockList[blockIndex];
+                offset = 1;
+            }
+        }
+    }
+
+    private void loadIcon(int i, String imagePath, StackPane stackPane){
+        Circle circle = new Circle(24);
+        RadialGradient gradient = new RadialGradient(
+                0, 0, 0.5, 0.5, 1.0, true, CycleMethod.NO_CYCLE,
+                new Stop(0, Color.WHITE),
+                new Stop(1, Color.web(colors[i-1]))
+        );
+        circle.setFill(gradient);
+        URL url = getClass().getResource(imagePath);
+        ImageView imageView = new ImageView(new Image(url.toExternalForm()));
+        imageView.setFitWidth(40);
+        imageView.setFitHeight(40);
+        imageView.setPreserveRatio(true);
+        stackPane.getChildren().addAll(circle, imageView);
     }
 
     /**
      * Load the number of impression label and assign event after clicking on the label
      */
-    private void loadNoOfImpression(){
+    private void loadNoOfImpression(int i){
+        String imagePath = "icons/impression" + i + ".png";
+        loadIcon(i, imagePath, impressionIcon);
         impressionsLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("NumberOfImpressions").get(),
                 metricValuePairs.get("NumberOfImpressions")
         ));
-        impressionsLabel.setOnMouseClicked(mouseEvent -> {
+        impressionBlock.setOnMouseClicked(mouseEvent -> {
             try {
                 setMetricsPane("Number of Impression", mouseEvent.getSceneX(),
                         mouseEvent.getSceneY());
@@ -211,17 +400,20 @@ public class DashboardController extends SceneController {
                 throw new RuntimeException(e);
             }
         });
+
     }
 
     /**
      * Load the number of click label and assign event after clicking on the label
      */
-    private void loadNoOfClick(){
+    private void loadNoOfClick(int i){
+        String imagePath = "icons/clicks" + i + ".png";
+        loadIcon(i, imagePath, clickIcon);
         clicksLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("NumberOfClicks").get(),
                 metricValuePairs.get("NumberOfClicks")
         ));
-        clicksLabel.setOnMouseClicked(mouseEvent -> {
+        clickBlock.setOnMouseClicked(mouseEvent -> {
             try {
                 setMetricsPane("Number of Clicks", mouseEvent.getSceneX(),
                         mouseEvent.getSceneY());
@@ -234,12 +426,14 @@ public class DashboardController extends SceneController {
     /**
      * Load the number of conversion label and assign event after clicking on the label
      */
-    private void loadNoOfConversion(){
+    private void loadNoOfConversion(int i){
+        String imagePath = "icons/conversion" + i + ".png";
+        loadIcon(i, imagePath, conversionIcon);
         conversionsLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("NumberOfConversions").get(),
                 metricValuePairs.get("NumberOfConversions")
         ));
-        conversionsLabel.setOnMouseClicked(mouseEvent -> {
+        conversionBlock.setOnMouseClicked(mouseEvent -> {
             try {
                 setMetricsPane("Number of Conversions", mouseEvent.getSceneX(),
                         mouseEvent.getSceneY());
@@ -252,7 +446,9 @@ public class DashboardController extends SceneController {
     /**
      * Load the number of uniques label and assign event after clicking on the label
      */
-    private void loadNoOfUniques(){
+    private void loadNoOfUniques(int i){
+        String imagePath = "icons/uniques" + i + ".png";
+        loadIcon(i, imagePath, uniquesIcon);
         uniquesLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("NumberOfUniques").get(),
                 metricValuePairs.get("NumberOfUniques")
@@ -270,7 +466,9 @@ public class DashboardController extends SceneController {
     /**
      * Load the number of bounces label and assign event after clicking on the label
      */
-    private void loadNoOfBounces(){
+    private void loadNoOfBounces(int i){
+        String imagePath = "icons/bounce" + i + ".png";
+        loadIcon(i, imagePath, bouncesIcon);
         bouncesLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("NumberOfBounces").get(),
                 metricValuePairs.get("NumberOfBounces")
@@ -288,7 +486,9 @@ public class DashboardController extends SceneController {
     /**
      * Load the CPA label and assign event after clicking on the label
      */
-    private void loadCPA(){
+    private void loadCPA(int i){
+        String imagePath = "icons/CTR" + i + ".png";
+        loadIcon(i, imagePath, CPAIcon);
         CPALabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("CPA").get(),
                 metricValuePairs.get("CPA")
@@ -306,7 +506,9 @@ public class DashboardController extends SceneController {
     /**
      * Load the CPC label and assign event after clicking on the label
      */
-    private void loadCPC(){
+    private void loadCPC(int i){
+        String imagePath = "icons/CPM" + i + ".png";
+        loadIcon(i, imagePath, CPCIcon);
         CPCLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("CPC").get(),
                 metricValuePairs.get("CPC")
@@ -324,7 +526,9 @@ public class DashboardController extends SceneController {
     /**
      * Load the CPM label and assign event after clicking on the label
      */
-    private void loadCPM(){
+    private void loadCPM(int i){
+        String imagePath = "icons/CPM" + i + ".png";
+        loadIcon(i, imagePath, CPMIcon);
         CPMLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("CPM").get(),
                 metricValuePairs.get("CPM")
@@ -342,7 +546,9 @@ public class DashboardController extends SceneController {
     /**
      * Load the CTR label and assign event after clicking on the label
      */
-    private void loadCTR(){
+    private void loadCTR(int i){
+        String imagePath = "icons/CTR" + i + ".png";
+        loadIcon(i, imagePath, CTRIcon);
         CTRLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("CTR").get(),
                 metricValuePairs.get("CTR")
@@ -360,12 +566,14 @@ public class DashboardController extends SceneController {
     /**
      * Load the bounce rate label and assign event after clicking on the label
      */
-    private void loadBounceRate(){
+    private void loadBounceRate(int i){
+        String imagePath = "icons/bounce" + i + ".png";
+        loadIcon(i, imagePath, bounceRateIcon);
         bounceRateLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("BounceRate").get(),
                 metricValuePairs.get("BounceRate")
         ));
-        bounceRateLabel.setOnMouseClicked(mouseEvent -> {
+        bounceRateBlock.setOnMouseClicked(mouseEvent -> {
             try {
                 setMetricsPane("Bounce Rate", mouseEvent.getSceneX(),
                         mouseEvent.getSceneY());
@@ -378,7 +586,9 @@ public class DashboardController extends SceneController {
     /**
      * Load the total cost label and assign event after clicking on the label
      */
-    private void loadTotalCost(){
+    private void loadTotalCost(int i){
+        String imagePath = "icons/cost" + i + ".png";
+        loadIcon(i, imagePath, costIcon);
         costLabel.textProperty().bind(Bindings.createStringBinding(
                 () -> metricValuePairs.get("TotalCost").get(),
                 metricValuePairs.get("TotalCost")
@@ -429,6 +639,7 @@ public class DashboardController extends SceneController {
     @Override
     public void refreshScene() throws SQLException {
         metricValuePairs = App.getMetricsLoader().loadBounceMetrics();
+        initializeLabels();
     }
 
     /**
