@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnection {
-        private static final String LOGS_URL = "jdbc:mysql://185.247.116.78:3306/2month_campaign?user=root&password=Group34Southampton!&rewriteBatchedStatements=true";
+    private static final String LOGS_URL = "jdbc:mysql://185.247.116.78:3306/2month_campaign?user=root&password=Group34Southampton!&rewriteBatchedStatements=true";
     private static final String USERDATA_URL = "jdbc:mysql://185.247.116.78:3306/userdata";
     private static final String LOCAL_LOGS_URL = "jdbc:sqlite:logs.db";
     private static final String JDBC_USER = "root";

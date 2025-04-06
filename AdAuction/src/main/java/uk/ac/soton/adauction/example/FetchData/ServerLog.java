@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.*;
 import java.util.HashMap;
 
-public class ServerLog extends RemoteQuerier {
+public class ServerLog extends LocalQuerier {
 
 
     /**
@@ -42,7 +42,7 @@ public class ServerLog extends RemoteQuerier {
                 + "FROM server_log "
                 + "WHERE conversion = 'Yes' "
                 + "  AND entry_date BETWEEN ? AND ? "
-                + "GROUP BY " + tickInfo.getTickExpression();
+                + "GROUP BY tick";
 
         System.out.println("SQL statement: " + sql);
         System.out.println("Boundaries: " + startBoundary + " to " + endBoundary);
@@ -55,7 +55,7 @@ public class ServerLog extends RemoteQuerier {
                 String tick = rs.getString("tick");
                 int countVal = rs.getInt("count");
                 counts.put(tick, countVal);
-                System.out.println("Conversion tick: " + tick + " => " + countVal);
+                System.out.println(tick + ": " + countVal);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,7 +89,7 @@ public class ServerLog extends RemoteQuerier {
         // bounces - needs updating
         String sql = "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count "
                 + "FROM server_log "
-                + "WHERE (TIMEDIFF(exit_date, entry_date) <= TIME('00:00:10') OR pages_viewed = 1) "
+                + "WHERE ((strftime('%s', exit_date) - strftime('%s', entry_date)) <= 10 OR pages_viewed = 1)"
                 + "  AND entry_date BETWEEN ? AND ? "
                 + "GROUP BY " + tickInfo.getTickExpression();
 
@@ -97,8 +97,10 @@ public class ServerLog extends RemoteQuerier {
         System.out.println("Boundaries: " + startBoundary + " to " + endBoundary);
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setTimestamp(1, Timestamp.valueOf(startBoundary));
-            stmt.setTimestamp(2, Timestamp.valueOf(endBoundary));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+            stmt.setString(2, endBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 String tick = rs.getString("tick");
@@ -171,21 +173,19 @@ public class ServerLog extends RemoteQuerier {
 
     private TickInfo getTickInfo(int tickIndex) {
         switch (tickIndex) {
-            case 0: // hour
-                return new TickInfo("DATE_FORMAT(entry_date, '%Y-%m-%d %H:00:00')", "yyyy-MM-dd HH:00:00");
-            case 1: // day
-                return new TickInfo("DATE_FORMAT(entry_date, '%Y-%m-%d')", "yyyy-MM-dd");
-            case 2: // week
-                return new TickInfo(
-                        "CONCAT(YEAR(entry_date), '-W', LPAD(WEEK(entry_date,1), 2, '0'))",
-                        "yyyy-'W'ww"
-                );
-            case 3: // month
-                return new TickInfo("DATE_FORMAT(entry_date, '%Y-%m')", "yyyy-MM");
+            case 0: // hourly
+                return new TickInfo("strftime('%Y-%m-%d %H:00:00', entry_date)", "yyyy-MM-dd HH:00:00");
+            case 1: // daily
+                return new TickInfo("strftime('%Y-%m-%d', entry_date)", "yyyy-MM-dd");
+            case 2: // weekly
+                return new TickInfo("strftime('%Y-W%W', entry_date)", "yyyy-'W'ww");
+            case 3: // monthly
+                return new TickInfo("strftime('%Y-%m', entry_date)", "yyyy-MM");
             default:
                 throw new IllegalArgumentException("Invalid tick index: " + tickIndex);
         }
     }
+
 
     //ensure continuous x axis
     private HashMap<String, Integer> generateFullSeries(HashMap<String, Integer> counts,

@@ -1,6 +1,7 @@
 package uk.ac.soton.adauction.example.FetchData;
 
 import javafx.beans.property.SimpleStringProperty;
+import uk.ac.soton.adauction.example.App;
 import uk.ac.soton.adauction.example.AppState;
 import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
 
@@ -144,8 +145,8 @@ public class MetricsLoader extends LocalQuerier {
     }
 
     public HashMap<String, SimpleStringProperty> loadBounceMetrics() throws SQLException {
-        String definition = AppState.getBounceDefinitionBinding().get();
-        int value = AppState.getBounceDefinitionNumberBinding().get();
+        String definition = App.getAppState().getBounceDefinitionBinding().get();
+        int value = App.getAppState().getBounceDefinitionNumberBinding().get();
 
         // Change the query depending on the definition of bounce
         if (definition.equals("Pages")) {

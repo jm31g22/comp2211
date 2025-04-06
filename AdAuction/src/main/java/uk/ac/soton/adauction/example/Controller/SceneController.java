@@ -23,6 +23,8 @@ public abstract class SceneController {
     private Button homeButton;
     @FXML
     private Button logOutButton;
+    @FXML
+    private Button importButton;
 
 
     @FXML
@@ -45,21 +47,24 @@ public abstract class SceneController {
         if (logOutButton != null) {
             logOutButton.setOnAction(e -> switchToLogin());
         }
-    }
+        if (importButton != null) {
+            importButton.setOnAction(e -> openImport());
+        }
+     }
     public void switchToDashboard(){
-
-        App.getSceneController().switchTo("dashboard");
+        App.getSceneManager().switchTo("dashboard");
     }
     public void switchToCharts(){
-        App.getSceneController().switchTo("charts");
+        App.getSceneManager().switchTo("charts");
     }
     public void switchToSettings() {
-        App.getSceneController().switchTo("settings");
+        App.getSceneManager().switchTo("settings");
     }
     public void switchToLogin() {
-        App.getSceneController().switchTo("login");
-
-    }
+        App.getSceneManager().switchTo("login"); }
+    public void switchToAdmin() {
+        App.getSceneManager().switchTo("admin"); }
+    public void openImport() { App.getSceneManager().openNew("Controller/import.fxml", 450, 450); }
     /**
      * Anything that needs to be done each time the scene is opened should be included in this method.
      * @throws SQLException
@@ -70,7 +75,7 @@ public abstract class SceneController {
      * Switches to the last used scene.
      */
     public void switchToLastScene()  {
-        App.getSceneController().switchToLastScene();
+        App.getSceneManager().switchToLastScene();
     }
 
 

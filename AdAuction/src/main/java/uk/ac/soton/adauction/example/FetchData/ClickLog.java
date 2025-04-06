@@ -1,5 +1,6 @@
 package uk.ac.soton.adauction.example.FetchData;
 
+import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
 import uk.ac.soton.adauction.example.FetchData.Queriers.RemoteQuerier;
 
 import java.sql.*;
@@ -9,7 +10,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 
-public class ClickLog extends RemoteQuerier {
+public class ClickLog extends LocalQuerier {
 
     public HashMap<String, Integer> fetchClickCounts(String groupingGranularity, int tickIndex) {
         return fetchClickCounts(groupingGranularity, tickIndex, 0);
@@ -38,14 +39,16 @@ public class ClickLog extends RemoteQuerier {
         String sql = "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
                 "FROM click_log " +
                 "WHERE click_date BETWEEN ? AND ? " +
-                "GROUP BY " + tickInfo.getTickExpression();
+                "GROUP BY tick";
+
 
         System.out.println("SQL statement: " + sql);
         System.out.println("Boundaries: " + startBoundary + " to " + endBoundary);
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setTimestamp(1, Timestamp.valueOf(startBoundary));
-            stmt.setTimestamp(2, Timestamp.valueOf(endBoundary));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+            stmt.setString(2, endBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 String tick = rs.getString("tick");
@@ -85,23 +88,26 @@ public class ClickLog extends RemoteQuerier {
         LocalDateTime endBoundary = boundaries.getEnd();
         TickInfo tickInfo = getTickInfo(tickIndex);
 
-        // sql
-        String sql = "WITH first_date AS (" +
+        //sql
+        String query = "WITH first_date AS (" +
                 "   SELECT id, MIN(click_date) AS earliest_click " +
                 "   FROM click_log " +
                 "   GROUP BY id" +
                 ") " +
-                "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
+                "SELECT " + tickInfo.getTickExpression().replace("click_date", "earliest_click") + " AS tick, COUNT(*) AS count " +
                 "FROM first_date " +
                 "WHERE earliest_click BETWEEN ? AND ? " +
-                "GROUP BY " + tickInfo.getTickExpression();
+                "GROUP BY tick";
 
-        System.out.println("SQL statement: " + sql);
+
+        System.out.println("SQL statement: " + query);
         System.out.println("Boundaries (unique): " + startBoundary + " to " + endBoundary);
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setTimestamp(1, Timestamp.valueOf(startBoundary));
-            stmt.setTimestamp(2, Timestamp.valueOf(endBoundary));
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+            stmt.setString(2, endBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 String tick = rs.getString("tick");
@@ -179,17 +185,18 @@ public class ClickLog extends RemoteQuerier {
     private TickInfo getTickInfo(int tickIndex) {
         switch (tickIndex) {
             case 0: // hour
-                return new TickInfo("DATE_FORMAT(click_date, '%Y-%m-%d %H:00:00')", "yyyy-MM-dd HH:00:00");
+                return new TickInfo("strftime('%Y-%m-%d %H:00:00', click_date)", "yyyy-MM-dd HH:00:00");
             case 1: // day
-                return new TickInfo("DATE_FORMAT(click_date, '%Y-%m-%d')", "yyyy-MM-dd");
+                return new TickInfo("strftime('%Y-%m-%d', click_date)", "yyyy-MM-dd");
             case 2: // week
-                return new TickInfo("CONCAT(YEAR(click_date), '-W', LPAD(WEEK(click_date,1), 2, '0'))", "yyyy-'W'ww");
+                return new TickInfo("strftime('%Y-W%W', click_date)", "yyyy-'W'ww");
             case 3: // month
-                return new TickInfo("DATE_FORMAT(click_date, '%Y-%m')", "yyyy-MM");
+                return new TickInfo("strftime('%Y-%m', click_date)", "yyyy-MM");
             default:
                 throw new IllegalArgumentException("Invalid tick index: " + tickIndex);
         }
     }
+
 
     /**
      * ensure continuous x axis

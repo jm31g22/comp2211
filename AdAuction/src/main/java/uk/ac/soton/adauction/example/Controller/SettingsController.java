@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import uk.ac.soton.adauction.example.App;
 import net.synedra.validatorfx.Check;
 import uk.ac.soton.adauction.example.App;
 import uk.ac.soton.adauction.example.AppState;
@@ -78,6 +79,7 @@ public class SettingsController extends SceneController {
     }
 
 
+
     @FXML
     private void numberOfPagesCheck(ActionEvent event) {
         bounceDefinition = "Pages";
@@ -126,8 +128,8 @@ public class SettingsController extends SceneController {
         }
 
         // Apply settings if all validations pass
-        AppState.setBounceDefinition(bounceDefinition);
-        AppState.setBounceDefinitionNumber(number);
+        App.getAppState().setBounceDefinition(bounceDefinition);
+        App.getAppState().setBounceDefinitionNumber(number);
         showBounceMessage("Success!");
     }
 
@@ -136,6 +138,8 @@ public class SettingsController extends SceneController {
         bounceMessage.setText(message);
         bounceMessage.setVisible(true);
     }
+
+
 
 
     private boolean isInteger(String input) {
@@ -150,7 +154,6 @@ public class SettingsController extends SceneController {
 
     /**
      * Gets the text from nonempty TextField
-     *
      * @param tf1 text field 1
      * @param tf2 text field 2
      * @return Non-empty contents of Textfields
@@ -292,8 +295,8 @@ public class SettingsController extends SceneController {
     private void setupBindings() {
         //Binding current definition of a bounce to the variables in SettingsState
         currentDefinition.textProperty().bind(Bindings.createStringBinding(
-                () -> "Current Bounce Definition: " + AppState.getBounceDefinitionBinding().get() + " - " + AppState.getBounceDefinitionNumberBinding().get(), // Formatting
-                AppState.getBounceDefinitionBinding(), AppState.getBounceDefinitionNumberBinding() // Observables
+                () -> "Current Bounce Definition: " + App.getAppState().getBounceDefinitionBinding().get() + " - " + App.getAppState().getBounceDefinitionNumberBinding().get() , // Formatting
+                App.getAppState().getBounceDefinitionBinding(), App.getAppState().getBounceDefinitionNumberBinding() // Observables
         ));
     }
 

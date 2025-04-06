@@ -132,12 +132,13 @@ public class LoginPageController extends SceneController{
         }
 
         String userRole = getUserRole(username, password);
+        App.getAppState().setRole(userRole);
         if (userRole == null) {
             showErrorMessage("Error retrieving user role.");
             return;
         }
 
-        App.getSceneController().switchTo("dashboard");
+        App.getSceneManager().switchTo("dashboard");
 
     }
 

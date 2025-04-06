@@ -9,24 +9,35 @@ import java.util.ArrayList;
 
 public class AppState {
 
-    private static final StringProperty bounceDefinition = new SimpleStringProperty("Pages");
-    private static final IntegerProperty bounceDefinitionNumber = new SimpleIntegerProperty(5);
+    private final StringProperty bounceDefinition = new SimpleStringProperty("Pages");
+    private final IntegerProperty bounceDefinitionNumber = new SimpleIntegerProperty(5);
     private static int dashboardMode = 2;
     private static ArrayList<Integer> components = new ArrayList<>();
+    private String role;
 
 
-    public static void setBounceDefinition(String newDefinition) {
+    public void setBounceDefinition(String newDefinition) {
         bounceDefinition.set(newDefinition);
     }
-    public static void setBounceDefinitionNumber(int i) {
+    public void setBounceDefinitionNumber(int i) {
         bounceDefinitionNumber.set(i);
     }
 
-    public static StringProperty getBounceDefinitionBinding() {
+    public StringProperty getBounceDefinitionBinding() {
         return bounceDefinition;
     }
-    public static IntegerProperty getBounceDefinitionNumberBinding() {
+    public IntegerProperty getBounceDefinitionNumberBinding() {
         return bounceDefinitionNumber;
+    }
+
+    public void setRole(String newRole) {
+        role = newRole;
+    }
+    public String getRole() {
+        return role;
+    }
+    public AppState() {
+
     }
 
     public static void setDashboardMode(int i){

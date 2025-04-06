@@ -9,6 +9,7 @@ import javafx.util.Duration;
 import uk.ac.soton.adauction.example.Controller.SceneController;
 
 import java.io.IOException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -30,12 +31,12 @@ public class SceneManager {
      * Loads all the scenes beforehand to reduce lag during use.
      */
     public void loadScenes() {
+        System.out.println(System.getProperty("user.dir"));
         loadScene("login", "Controller/login.fxml");
         loadScene("dashboard", "Controller/dashboard.fxml");
         loadScene("settings", "Controller/settings.fxml");
         loadScene("charts", "Controller/charts.fxml");
         loadScene("login", "Controller/login.fxml");
-
     }
 
     /**
@@ -99,10 +100,31 @@ public class SceneManager {
         fadeIn.play();
     }
 
+    public void openNew(String fxmlPath, int width, int height) {
+        try {
+            URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                throw new IOException("FXML file not found: " + fxmlPath);
+            }
+            Parent root = FXMLLoader.load(resource);
+            Stage stage = new Stage();
+            stage.setTitle("AdGuru - " + fxmlPath);
+            stage.setScene(new Scene(root, width, height));  // Use width and height
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading FXML: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Switches to last scene by calling switchTo on the lastScene field that we've stored.
      */
     public void switchToLastScene() {
         switchTo(lastScene);
+    }
+
+    public HashMap<String, SceneController> getControllerCache() {
+        return controllerCache;
     }
 }

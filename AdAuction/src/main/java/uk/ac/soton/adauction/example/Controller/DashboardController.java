@@ -1,5 +1,6 @@
 package uk.ac.soton.adauction.example.Controller;
 
+import com.itextpdf.text.DocumentException;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -15,10 +16,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import uk.ac.soton.adauction.example.App;
+import uk.ac.soton.adauction.example.Utils.Export;
 import uk.ac.soton.adauction.example.AppState;
 
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -97,6 +100,8 @@ public class DashboardController extends SceneController {
     private Label labelMetrics;
     @FXML
     private Label definitionMetrics;
+    @FXML
+    private Label exportLabel;
     @FXML
     private StackPane impressionIcon;
     @FXML
@@ -400,7 +405,6 @@ public class DashboardController extends SceneController {
                 throw new RuntimeException(e);
             }
         });
-
     }
 
     /**
@@ -590,7 +594,7 @@ public class DashboardController extends SceneController {
         String imagePath = "icons/cost" + i + ".png";
         loadIcon(i, imagePath, costIcon);
         costLabel.textProperty().bind(Bindings.createStringBinding(
-                () -> metricValuePairs.get("TotalCost").get(),
+                () -> "$" + metricValuePairs.get("TotalCost").get(),
                 metricValuePairs.get("TotalCost")
         ));
         costLabel.setOnMouseClicked(mouseEvent -> {
@@ -640,6 +644,7 @@ public class DashboardController extends SceneController {
     public void refreshScene() throws SQLException {
         metricValuePairs = App.getMetricsLoader().loadBounceMetrics();
         initializeLabels();
+        metricValuePairs = App.getMetricsLoader().loadAllMetrics("All", "All", "All", "All", "Start", "End");
     }
 
     /**
@@ -666,5 +671,34 @@ public class DashboardController extends SceneController {
         System.out.println("End: " + endDate);
 
         metricValuePairs = App.getMetricsLoader().loadAllMetrics(age, gender, income, context, startDate, endDate);
+    }
+
+    @FXML
+    private void exportCSV() {
+        try {
+            Export.export(metricValuePairs, "csv", "Downloads");
+
+            exportLabel.setText("CSV saved to Downloads!");
+        } catch (IOException | DocumentException e) {
+            exportLabel.setText("Something went wrong!");
+            throw new RuntimeException(e);
+        }
+
+        exportLabel.setVisible(true);
+    }
+
+    @FXML
+    private void exportPDF() {
+        try {
+            Export.export(metricValuePairs, "pdf", "Downloads");
+
+            exportLabel.setText("PDF saved to Downloads!");
+        } catch (IOException | DocumentException e) {
+            exportLabel.setText("Something went wrong!");
+            throw new RuntimeException(e);
+        }
+
+        exportLabel.setVisible(true);
+
     }
 }
