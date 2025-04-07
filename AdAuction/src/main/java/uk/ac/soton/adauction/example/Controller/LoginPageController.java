@@ -45,7 +45,10 @@ public class LoginPageController extends SceneController{
         dynamicVerificationCode = null;
     }
 
-
+    /**
+     * Send 2FA email on button action
+     * @param event
+     */
     public void sendMailButtonOnAction(ActionEvent event) {
         String username = usernameTextField.getText();
 
@@ -98,8 +101,10 @@ public class LoginPageController extends SceneController{
         }).start();
     }
 
-
-
+    /**
+     * Login on button action, ensuring all verification steps take place and
+     * appropriate permissions are given
+     */
     public void loginButtonOnAction() {
         String username = usernameTextField.getText();
         String password = passwordPasswordField.getText();
@@ -142,11 +147,20 @@ public class LoginPageController extends SceneController{
 
     }
 
+    /**
+     * Show error message as label
+     * @param error - to be shown
+     */
     private void showErrorMessage(String error) {
         loginMessageLabel.setText(error);
         loginMessageLabel.setVisible(true);
     }
 
+    /**
+     * fetch user email given a username
+     * @param username given
+     * @return email
+     */
     private String fetchUserEmail(String username) {
         String email = null;
         String query = "SELECT * FROM users WHERE username = ?";
@@ -164,6 +178,12 @@ public class LoginPageController extends SceneController{
         }
     }
 
+    /**
+     * Validate user/passwrod combination
+     * @param username
+     * @param password
+     * @return
+     */
     private boolean userValidation(String username, String password) {
         String query = "SELECT COUNT(1) FROM users WHERE username = ? AND password = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
@@ -177,6 +197,12 @@ public class LoginPageController extends SceneController{
         }
     }
 
+    /**
+     * Get role of user given username/password combo
+     * @param username
+     * @param password
+     * @return
+     */
     private String getUserRole(String username, String password) {
         String query = "SELECT role FROM users WHERE username = ? AND password = ?";
         try (PreparedStatement statement = conn.prepareStatement(query)) {
@@ -199,7 +225,13 @@ public class LoginPageController extends SceneController{
 //    }
 
 
-
+    /**
+     * Change scene
+     * @param fxmlFileName
+     * @param windowTitle
+     * @param event
+     * @throws IOException
+     */
     private static void changeScene(String fxmlFileName, String windowTitle, ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(LoginPageController.class.getResource("/uk/ac/soton/adauction/example/Controller/login.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -208,6 +240,10 @@ public class LoginPageController extends SceneController{
         stage.show();
     }
 
+    /**
+     * Generate email 2FA code using Random object
+     * @return
+     */
     public static String generateVerificationCode() {
         Random random = new Random();
         StringBuilder verificationCode = new StringBuilder();
@@ -216,6 +252,10 @@ public class LoginPageController extends SceneController{
         }
         return verificationCode.toString();
     }
+
+    /**
+     * refresh scene/reset fields
+     */
     @Override
     public void refreshScene() {
         loginMessageLabel.setVisible(false);

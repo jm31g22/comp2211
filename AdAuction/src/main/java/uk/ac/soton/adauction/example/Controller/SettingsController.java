@@ -60,8 +60,9 @@ public class SettingsController extends SceneController {
     private String bounceDefinition;
     private ToggleGroup toggleGroup = new ToggleGroup();
 
-
-
+    /**
+     * Initialise settings page, ensure options are available
+     */
     @FXML
     public void initialize() {
         super.initialize();
@@ -78,8 +79,10 @@ public class SettingsController extends SceneController {
         }
     }
 
-
-
+    /**
+     * Check if bounce definition is based on number of pages visited
+     * @param event
+     */
     @FXML
     private void numberOfPagesCheck(ActionEvent event) {
         bounceDefinition = "Pages";
@@ -92,6 +95,10 @@ public class SettingsController extends SceneController {
         bounceEntry2.clear();
     }
 
+    /**
+     * Check if bounce definition is based on time spent
+     * @param event
+     */
     @FXML
     private void timeSpentCheck(ActionEvent event) {
         bounceDefinition = "Time Spent";
@@ -105,7 +112,10 @@ public class SettingsController extends SceneController {
         bounceEntry1.clear();
     }
 
-
+    /**
+     * Apply bounce definition and ensure validity
+     * @param event
+     */
     @FXML
     private void applyBounceDefinition(ActionEvent event) {
         // Ensure that at least one checkbox is selected
@@ -133,15 +143,20 @@ public class SettingsController extends SceneController {
         showBounceMessage("Success!");
     }
 
-    // Helper method to show  messages
+    /**
+     * Helper method to show messages
+     * @param message
+     */
     private void showBounceMessage(String message) {
         bounceMessage.setText(message);
         bounceMessage.setVisible(true);
     }
 
-
-
-
+    /**
+     * Check if a string input is integer
+     * @param input
+     * @return
+     */
     private boolean isInteger(String input) {
         try {
             Integer.parseInt(input);
@@ -166,6 +181,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Set toggle group based on mode
+     */
     public void setModeToggleGroup() {
         RadioButton selectedMode = (RadioButton) toggleGroup.getSelectedToggle();
         String mode = (selectedMode != null) ? selectedMode.getText() : "";
@@ -188,6 +206,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add number of impressions
+     */
     public void addNoOfImpression(){
         if (noOfImpression.isSelected()){
             AppState.addComponents(0);
@@ -196,6 +217,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add number of clicks
+     */
     public void addNoOfClicks(){
         if (noOfClicks.isSelected()){
             AppState.addComponents(1);
@@ -204,6 +228,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add number of conversions
+     */
     public void addNoOfConversion(){
         if (noOfConversion.isSelected()){
             AppState.addComponents(2);
@@ -212,6 +239,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add number of unique
+     */
     public void addNoOfUniques(){
         if (noOfUniques.isSelected()){
             AppState.addComponents(3);
@@ -220,6 +250,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add number of bounces
+     */
     public void addNoOfBounce(){
         if (noOfBounces.isSelected()){
             AppState.addComponents(4);
@@ -228,6 +261,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add CPM
+     */
     public void addCPM(){
         if (CPM.isSelected()){
             AppState.addComponents(5);
@@ -236,6 +272,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add click through rate
+     */
     public void addCTR(){
         if (CTR.isSelected()){
             AppState.addComponents(6);
@@ -244,6 +283,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add total cost
+     */
     public void addTotalCost(){
         if (totalCost.isSelected()){
             AppState.addComponents(7);
@@ -252,6 +294,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add cost per click
+     */
     public void addCPC(){
         if (CPC.isSelected()){
             AppState.addComponents(8);
@@ -260,6 +305,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add CPA
+     */
     public void addCPA(){
         if (CPA.isSelected()){
             AppState.addComponents(9);
@@ -268,6 +316,9 @@ public class SettingsController extends SceneController {
         }
     }
 
+    /**
+     * Add bounce rate
+     */
     public void addBounceRate(){
         if (bounceRate.isSelected()){
             AppState.addComponents(10);
@@ -275,8 +326,6 @@ public class SettingsController extends SceneController {
             AppState.removeComponents(10);
         }
     }
-
-
 
     /**
      * Cleanup of scene before being displayed
@@ -292,8 +341,10 @@ public class SettingsController extends SceneController {
         numberOfPages.setSelected(false);
     }
 
+    /**
+     * Binding current definition of a bounce to the variables in SettingsState
+     */
     private void setupBindings() {
-        //Binding current definition of a bounce to the variables in SettingsState
         currentDefinition.textProperty().bind(Bindings.createStringBinding(
                 () -> "Current Bounce Definition: " + App.getAppState().getBounceDefinitionBinding().get() + " - " + App.getAppState().getBounceDefinitionNumberBinding().get() , // Formatting
                 App.getAppState().getBounceDefinitionBinding(), App.getAppState().getBounceDefinitionNumberBinding() // Observables

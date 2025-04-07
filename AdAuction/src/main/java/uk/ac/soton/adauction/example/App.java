@@ -14,6 +14,11 @@ public class App extends Application {
     private static MetricsLoader metricsLoader = new MetricsLoader();
     private static AppState appState = new AppState();
 
+    /**
+     * Start the program - load scenes and switch to dashboard.
+     * @param stage
+     * @throws SQLException
+     */
     public void start(Stage stage) throws SQLException {
 
         List<String> args = getParameters().getRaw();

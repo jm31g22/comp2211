@@ -28,7 +28,9 @@ public abstract class SceneController {
     @FXML
     private Button adminButton;
 
-
+    /**
+     * initialise, ensure button actions are set
+     */
     @FXML
     protected void initialize() {
         if (backButton != null) {

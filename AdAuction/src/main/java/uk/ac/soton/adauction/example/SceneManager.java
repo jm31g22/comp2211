@@ -28,7 +28,7 @@ public class SceneManager {
     }
 
     /**
-     * Loads all the scenes beforehand to reduce lag during use.
+     * Fetch scene resources in advance to reduce lag
      */
     public void loadScenes() {
         System.out.println(System.getProperty("user.dir"));

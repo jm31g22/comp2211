@@ -18,6 +18,10 @@ public class ClickLog extends LocalQuerier {
 
     /**
      * fetch click counts in specified time window
+     * @param groupingGranularity
+     * @param tickIndex
+     * @param offset
+     * @return
      */
     public HashMap<String, Integer> fetchClickCounts(String groupingGranularity, int tickIndex, int offset) {
         HashMap<String, Integer> counts = new HashMap<>();
@@ -64,13 +68,22 @@ public class ClickLog extends LocalQuerier {
         return generateFullSeries(counts, startBoundary, endBoundary, tickIndex, tickInfo.getTickPattern());
     }
 
-
+    /**
+     *
+     * @param groupingGranularity
+     * @param tickIndex
+     * @return
+     */
     public HashMap<String, Integer> fetchUniqueCounts(String groupingGranularity, int tickIndex) {
         return fetchUniqueCounts(groupingGranularity, tickIndex, 0);
     }
 
     /**
      * get unique clicks during a period of time
+     * @param groupingGranularity
+     * @param tickIndex
+     * @param offset
+     * @return
      */
     public HashMap<String, Integer> fetchUniqueCounts(String groupingGranularity, int tickIndex, int offset) {
         HashMap<String, Integer> counts = new HashMap<>();
@@ -122,6 +135,10 @@ public class ClickLog extends LocalQuerier {
         return generateFullSeries(counts, startBoundary, endBoundary, tickIndex, tickInfo.getTickPattern());
     }
 
+    /**
+     * Get the timestamp of the latest click in log
+     * @return
+     */
     private Timestamp getLatestClickTimestamp() {
         String sql = "SELECT MAX(click_date) AS maxDate FROM click_log";
         try (Statement stmt = conn.createStatement();
@@ -135,6 +152,13 @@ public class ClickLog extends LocalQuerier {
         return null;
     }
 
+    /**
+     * Compute date boundaries for SQL query of click log
+     * @param latestLdt
+     * @param groupingGranularity
+     * @param offset
+     * @return
+     */
     private Boundary computeBoundaries(LocalDateTime latestLdt, String groupingGranularity, int offset) {
         LocalDateTime startBoundary;
         LocalDateTime endBoundary;
@@ -180,7 +204,10 @@ public class ClickLog extends LocalQuerier {
     }
 
     /**
-     * return the SQL date-format expression and the java date pattern given an index, 0=hour, 1=day, 2=week, 3=month
+     * return the SQL date-format expression and the java date pattern given an index
+     * 0=hour, 1=day, 2=week, 3=month
+     * @param tickIndex
+     * @return
      */
     private TickInfo getTickInfo(int tickIndex) {
         switch (tickIndex) {
@@ -200,6 +227,12 @@ public class ClickLog extends LocalQuerier {
 
     /**
      * ensure continuous x axis
+     * @param counts
+     * @param startBoundary
+     * @param endBoundary
+     * @param tickIndex
+     * @param tickPattern
+     * @return
      */
     private HashMap<String, Integer> generateFullSeries(HashMap<String, Integer> counts,
                                                         LocalDateTime startBoundary,

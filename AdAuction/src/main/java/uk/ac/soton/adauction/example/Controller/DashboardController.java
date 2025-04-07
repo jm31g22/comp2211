@@ -263,6 +263,9 @@ public class DashboardController extends SceneController {
         }
     }
 
+    /**
+     * Load analyst mode
+     */
     private void loadAnalystMode(){
         loadNoOfImpression(1);
         loadNoOfClick(1);
@@ -285,6 +288,9 @@ public class DashboardController extends SceneController {
         dashboardBlock4.opacityProperty().setValue(1);
     }
 
+    /**
+     * load influencer mode
+     */
     private void loadInfluencerMode(){
         loadNoOfImpression(1);
         loadNoOfClick(2);
@@ -297,6 +303,9 @@ public class DashboardController extends SceneController {
         dashboardBlock2.opacityProperty().setValue(1);
     }
 
+    /**
+     * Load entrepreneur mode
+     */
     private void loadEntrepreneurMode(){
         loadNoOfClick(1);
         loadNoOfConversion(2);
@@ -308,6 +317,9 @@ public class DashboardController extends SceneController {
         dashboardBlock2.opacityProperty().setValue(1);
     }
 
+    /**
+     * load customised mode
+     */
     private void loadCustomizedMode(){
         ArrayList<Integer> components = AppState.getComponents();
         HBox[] blockList = new HBox[]{dashboardBlock1, dashboardBlock2, dashboardBlock3, dashboardBlock4};
@@ -371,6 +383,12 @@ public class DashboardController extends SceneController {
         }
     }
 
+    /**
+     * Load icon given:
+     * @param i
+     * @param imagePath - path to icon
+     * @param stackPane - parent pane
+     */
     private void loadIcon(int i, String imagePath, StackPane stackPane){
         Circle circle = new Circle(24);
         RadialGradient gradient = new RadialGradient(
@@ -673,6 +691,9 @@ public class DashboardController extends SceneController {
         metricValuePairs = App.getMetricsLoader().loadAllMetrics(age, gender, income, context, startDate, endDate);
     }
 
+    /**
+     * Export data as csv
+     */
     @FXML
     private void exportCSV() {
         try {
@@ -687,6 +708,9 @@ public class DashboardController extends SceneController {
         exportLabel.setVisible(true);
     }
 
+    /**
+     * Export data as pdf
+     */
     @FXML
     private void exportPDF() {
         try {

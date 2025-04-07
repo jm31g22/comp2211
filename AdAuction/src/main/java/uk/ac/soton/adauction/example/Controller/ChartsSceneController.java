@@ -52,14 +52,18 @@ public class ChartsSceneController extends SceneController {
     private final ClickLog clickLog;
     private final ServerLog serverLog;
 
-
+    /**
+     *
+     */
     public ChartsSceneController() {
         impressionLog = new ImpressionLog();
         clickLog = new ClickLog();
         serverLog = new ServerLog();
     }
 
-    //assume pie chart is shown after entering the scene
+    /**
+     * Initialise scene - assume pie chart is shown after entering the scene
+     */
     public void initialize() {
         super.initialize();
         granSelection.opacityProperty().setValue(1);
@@ -230,6 +234,10 @@ public class ChartsSceneController extends SceneController {
 
     }
 
+    /**
+     * Add menu items for timeframe and granularity selection - and attempt to refresh graph upon changes
+     * @param graphIndex - which graph
+     */
     private void addTimeSelection(int graphIndex) {
         // clear old choices & selection
         timeSelection.getItems().clear();
@@ -247,6 +255,10 @@ public class ChartsSceneController extends SceneController {
         granSelection.setOnAction(e -> attemptGraphLoad(graphIndex));
     }
 
+    /**
+     * Attempt to load graph over time
+     * @param graphIndex
+     */
     private void attemptGraphLoad(int graphIndex) {
         int timeIndex = timeSelection.getSelectionModel().getSelectedIndex();  // 0..3 or -1
         String granChoice = granSelection.getSelectionModel().getSelectedItem(); // or null
@@ -283,6 +295,15 @@ public class ChartsSceneController extends SceneController {
         HashMap<String, Integer> fetch(String groupingGranularity, int tickIndex, int offset);
     }
 
+    /**
+     * Generic function to load a count graph over time
+     * @param tickIndex -
+     * @param groupingGranularity - granularity of data
+     * @param fetcher - generic data fetcher interface
+     * @param yAxisLabel - name of the y axis
+     * @param seriesName - name of the graph
+     * @param reloadFunc - function to reload when panning data
+     */
     private void loadCountGraph(
             int tickIndex,
             String groupingGranularity,
@@ -404,6 +425,11 @@ public class ChartsSceneController extends SceneController {
         System.out.println(seriesName + " loaded. Current offset = " + offset);
     }
 
+    /**
+     * Load impression count graph
+     * @param tickIndex
+     * @param groupingGranularity
+     */
     public void loadImpressionCountGraph(int tickIndex, String groupingGranularity) {
         loadCountGraph(
                 tickIndex,
@@ -415,6 +441,11 @@ public class ChartsSceneController extends SceneController {
         );
     }
 
+    /**
+     * Load click count graph
+     * @param tickIndex
+     * @param groupingGranularity
+     */
     public void loadClickCountGraph(int tickIndex, String groupingGranularity) {
         loadCountGraph(
                 tickIndex,
@@ -426,6 +457,11 @@ public class ChartsSceneController extends SceneController {
         );
     }
 
+    /**
+     * Load unique count graph
+     * @param tickIndex
+     * @param groupingGranularity
+     */
     public void loadUniqueCountGraph(int tickIndex, String groupingGranularity) {
         loadCountGraph(
                 tickIndex,
@@ -437,6 +473,11 @@ public class ChartsSceneController extends SceneController {
         );
     }
 
+    /**
+     * Load conversion count graph
+     * @param tickIndex
+     * @param groupingGranularity
+     */
     public void loadConversionCountGraph(int tickIndex, String groupingGranularity) {
         loadCountGraph(
                 tickIndex,
@@ -448,6 +489,11 @@ public class ChartsSceneController extends SceneController {
         );
     }
 
+    /**
+     * Load bounce count graph
+     * @param tickIndex
+     * @param groupingGranularity
+     */
     public void loadBounceCountGraph(int tickIndex, String groupingGranularity) {
         loadCountGraph(
                 tickIndex,
@@ -459,6 +505,11 @@ public class ChartsSceneController extends SceneController {
         );
     }
 
+    /**
+     * Get maximum count from dataset
+     * @param count
+     * @return maximum
+     */
     private long getMaxCount(HashMap<String,Integer> count){
         long max = 0;
         for (String date: count.keySet()){
@@ -467,6 +518,11 @@ public class ChartsSceneController extends SceneController {
         return max;
     }
 
+    /**
+     * Get minimum count from dataset
+     * @param count
+     * @return minimum
+     */
     private long getMinCount(HashMap<String,Integer> count){
         long min = Integer.MAX_VALUE;
         for (String date: count.keySet()){
@@ -483,7 +539,6 @@ public class ChartsSceneController extends SceneController {
      * @param key key of the data
      * @param value value of the data
      */
-
     private void addChartHoverPane(double coordX, double coordY, String cat, String key, Integer value){
         hoverPane.setLayoutX(coordX+200);
         hoverPane.setLayoutY(coordY+200);

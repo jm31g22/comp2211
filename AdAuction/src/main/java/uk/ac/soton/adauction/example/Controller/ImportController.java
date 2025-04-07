@@ -27,14 +27,20 @@ public class ImportController {
     @FXML
     private Label serverLabel;
 
-    // Method to select first CSV
+   /**
+     * Select first CSV
+     * @param event
+     */
     @FXML
     private void selectClickLog(ActionEvent event) {
         file1 = chooseFile(event);
         clickLabel.setText(file1.getName());
     }
 
-    // Method to select second CSV
+    /**
+     * Select second CSV
+     * @param event
+     */
     @FXML
     private void selectImpressionLog(ActionEvent event) {
         file2 = chooseFile(event);
@@ -42,7 +48,10 @@ public class ImportController {
 
     }
 
-    // Method to select third CSV
+    /**
+     * Select third CSV
+     * @param event
+     */
     @FXML
     private void selectServerLog(ActionEvent event) {
         file3 = chooseFile(event);
@@ -50,9 +59,11 @@ public class ImportController {
 
     }
 
-
-
-    // FileChooser utility function
+    /**
+     * FileChooser utility function
+     * @param event
+     * @return
+     */
     private File chooseFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
@@ -60,7 +71,9 @@ public class ImportController {
         return fileChooser.showOpenDialog(stage);
     }
 
-    // Handle upload button click
+    /**
+     * Handle upload button click
+     */
     @FXML
     private void uploadFiles() {
         if (file1 == null && file2 == null && file3 == null) {
@@ -90,7 +103,11 @@ public class ImportController {
         stage.close();
     }
 
-    // Save a file to the working directory
+    /**
+     * Save a file to the working directory
+     * @param file
+     * @param directory
+     */
     private void saveFile(File file, String directory) {
         if (file == null) return;
 
