@@ -8,6 +8,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.Window;
 import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
@@ -118,9 +120,14 @@ public class AdminController extends SceneController{
         // Actions - Delete
         TableColumn<Map<String, String>, Void> actionsColumn = new TableColumn<>("Actions");
         actionsColumn.setCellFactory(param -> new TableCell<>() {
-            private final Button deleteButton = new Button("Delete");
+            private final Button deleteButton = new Button("");
 
             {
+                ImageView img = new ImageView(new Image(getClass().getResourceAsStream("icons/trash.png")));
+                img.setFitWidth(20);
+                img.setFitHeight(20);
+                deleteButton.getStyleClass().add("delete-button");
+                deleteButton.setGraphic(img);
                 deleteButton.setOnAction(event -> {
                     Map<String, String> user = getTableView().getItems().get(getIndex());
                     handleDeleteUser(user.get("username"));
@@ -132,9 +139,12 @@ public class AdminController extends SceneController{
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : deleteButton);
             }
+
+
         });
 
         usersTable.getColumns().add(actionsColumn);
+        usersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
     /*

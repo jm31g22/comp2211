@@ -203,8 +203,8 @@ public class ChartsSceneController extends SceneController {
                         new PieChart.Data("High", income3Count));
         impressionPie.setData(pieChartData);
         hoverImpressionPane("Income :");
-        impressionPie.setPrefWidth(770.0);
-        impressionPie.setPrefHeight(500.0);
+        impressionPie.setPrefWidth(789.0);
+        impressionPie.setPrefHeight(551.0);
         impressionPie.setLegendVisible(false);
     }
 
@@ -358,8 +358,8 @@ public class ChartsSceneController extends SceneController {
         // create chart
         LineChart<String, Number> metricsLine = new LineChart<>(xAxis, yAxis);
         metricsLine.setLegendVisible(false);
-        metricsLine.setPrefWidth(770.0);
-        metricsLine.setPrefHeight(500.0);
+        metricsLine.setPrefWidth(789.0);
+        metricsLine.setPrefHeight(551.0);
         metricsLine.setHorizontalGridLinesVisible(false);
         metricsLine.setVerticalGridLinesVisible(false);
         metricsLine.setCreateSymbols(false);

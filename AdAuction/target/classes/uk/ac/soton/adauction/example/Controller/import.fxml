@@ -3,48 +3,92 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="450.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.ImportController">
+<AnchorPane prefHeight="563.0" prefWidth="484.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.ImportController">
    <children>
-      <VBox prefHeight="351.0" prefWidth="249.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="101.0" AnchorPane.topAnchor="100.0">
+      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="100.0" layoutY="101.0" text="Upload CSV Files" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="125.0">
+         <font>
+            <Font size="24.0" />
+         </font></Label>
+      <HBox layoutX="55.0" layoutY="219.0" prefHeight="161.0" prefWidth="410.0" spacing="5.0" AnchorPane.leftAnchor="55.0" AnchorPane.rightAnchor="25.0">
          <children>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+            <VBox prefHeight="161.0" prefWidth="152.0" spacing="45.0">
                <children>
-                  <Button fx:id="fileLabel1" mnemonicParsing="false" onAction="#selectClickLog" text="click_log" />
-                  <Label fx:id="clickLabel" text="None">
-                     <HBox.margin>
-                        <Insets top="6.0" />
-                     </HBox.margin>
+                  <Label text="Click Log CSV:" textFill="#727272">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="Impression Log CSV:" textFill="#727272">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Label>
+                  <Label text="Server Log CSV:" textFill="#727272">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets top="3.0" />
+                     </VBox.margin>
                   </Label>
                </children>
-            </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            </VBox>
+            <VBox prefHeight="161.0" prefWidth="68.0" spacing="37.0">
                <children>
-                  <Button fx:id="fileLabel2" mnemonicParsing="false" onAction="#selectImpressionLog" text="impression_log" />
-                  <Label fx:id="impressionLabel" text="None">
-                     <HBox.margin>
-                        <Insets left="10.0" top="6.0" />
-                     </HBox.margin>
-                  </Label>
+                  <Button fx:id="fileLabel1" mnemonicParsing="false" onAction="#selectClickLog" style="-fx-background-color: #1F263E; -fx-background-radius: 5;" text="Upload" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font></Button>
+                  <Button fx:id="fileLabel2" mnemonicParsing="false" onAction="#selectImpressionLog" style="-fx-background-color: #1F263E; -fx-background-radius: 5;" text="Upload" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="fileLabel3" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#selectServerLog" style="-fx-background-color: #1F263E; -fx-background-radius: 5;" text="Upload" textAlignment="CENTER" textFill="WHITE">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
                </children>
-            </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            </VBox>
+            <VBox prefHeight="161.0" prefWidth="177.0" spacing="50.0">
                <children>
-                  <Button fx:id="fileLabel3" mnemonicParsing="false" onAction="#selectServerLog" text="server_log" />
-                  <Label fx:id="serverLabel" text="None">
-                     <HBox.margin>
-                        <Insets left="10.0" top="6.0" />
-                     </HBox.margin>
+                  <Label fx:id="clickLabel" text="Click Log Not Uploaded">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets top="7.0" />
+                     </padding>
                   </Label>
+                  <Label fx:id="impressionLabel" text="Impression Log Not Uploaded" />
+                  <Label fx:id="serverLabel" alignment="CENTER" contentDisplay="CENTER" text="Server Log Not Uploaded" />
                </children>
-            </HBox>
-            <Button mnemonicParsing="false" onAction="#uploadFiles" text="Upload" />
+            </VBox>
          </children>
-      </VBox>
-      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="200.0" text="Upload CSV Files" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="20.0" />
+      </HBox>
+      <Button alignment="CENTER" layoutX="159.0" layoutY="475.0" mnemonicParsing="false" onAction="#uploadFiles" prefHeight="32.0" prefWidth="167.0" style="-fx-background-color: #1F263E; -fx-background-radius: 5;" text="Import" textFill="WHITE">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <ImageView fitHeight="104.0" fitWidth="284.0" layoutX="128.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="50.0">
+         <image>
+            <Image url="@../assets/logo.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>
