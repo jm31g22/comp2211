@@ -96,3 +96,30 @@
     -fx-border-radius: 5;
 }
 
+.table-view .column-header {
+    -fx-background-color:  linear-gradient(to top, #ffffff, #d1dcff);
+    -fx-border-radius: 10 0 0 0;
+}
+
+.table-row-cell{
+    -fx-background-color: -fx-table-cell-border-color, #ffffff;
+}
+
+.table-row-cell:odd{
+    -fx-background-color: -fx-table-cell-border-color, rgba(243, 246, 255, 0.45);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #1F263E;
+    -fx-border-color: white;
+}
+
+.delete-button {
+    -fx-background-color: #1F263E;
+    -fx-background-radius: 5;
+    -fx-max-height: 25;
+    -fx-max-width: 20;
+}
+
+
+
