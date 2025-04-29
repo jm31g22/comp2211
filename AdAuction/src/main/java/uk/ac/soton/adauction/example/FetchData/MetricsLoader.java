@@ -6,6 +6,7 @@ import uk.ac.soton.adauction.example.AppState;
 import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,34 @@ public class MetricsLoader extends LocalQuerier {
 
         System.out.println("Metrics loaded");
         return metricValuePairs;
+    }
+
+    public Date getStartDate(){
+        String query = "SELECT min(i.impression_date) AS earliest date FROM impression_log i";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            if (rs.next()) {
+                return rs.getDate("earliest"); // The "name" column contains the column name
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+        return null;
+    }
+
+    public Date getEndDate(){
+        String query = "SELECT max(i.impression_date) AS latest date FROM impression_log i";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            if (rs.next()) {
+                return rs.getDate("latest"); // The "name" column contains the column name
+            }
+        } catch (SQLException e) {
+            return null;
+        }
+        return null;
     }
 
     private void addParameters(String age, String gender, String income, String context, String startDate, String endDate) throws SQLException {

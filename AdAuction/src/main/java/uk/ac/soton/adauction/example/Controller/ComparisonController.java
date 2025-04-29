@@ -2,50 +2,69 @@ package uk.ac.soton.adauction.example.Controller;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.renderer.xy.XYBarRenderer;
-import uk.ac.soton.adauction.example.FetchData.ClickLog;
-import uk.ac.soton.adauction.example.FetchData.ServerLog;
-import uk.ac.soton.adauction.example.FetchData.ImpressionLog;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.chart.fx.ChartViewer;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYBarRenderer;
+import org.jfree.data.statistics.HistogramDataset;
+import uk.ac.soton.adauction.example.FetchData.ClickLog;
+import uk.ac.soton.adauction.example.FetchData.ImpressionLog;
+import uk.ac.soton.adauction.example.FetchData.ServerLog;
 
-import java.util.*;
-import java.util.function.BiConsumer;
 import java.awt.*;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.function.BiConsumer;
 
-public class ChartsSceneController extends SceneController {
+public class ComparisonController extends SceneController {
+    private int offset1 = 0;
+    private int offset2 = 0;
     @FXML
-    private PieChart impressionPie;
+    AnchorPane graph1Pane;
     @FXML
-    private ChoiceBox<String> chartSelection = new ChoiceBox<>();
+    private ChoiceBox<String> chartSelection1 = new ChoiceBox<>();
     @FXML
-    private ChoiceBox<String> metricSelection = new ChoiceBox<>();
+    private ChoiceBox<String> metricSelection1 = new ChoiceBox<>();
     @FXML
-    private ChoiceBox<String> timeSelection = new ChoiceBox<>();
+    private ChoiceBox<String> timeSelection1 = new ChoiceBox<>();
     @FXML
-    private ChoiceBox<String> granSelection = new ChoiceBox<>();
+    private ChoiceBox<String> granSelection1 = new ChoiceBox<>();
     @FXML
-    private StackPane stackPaneGraph;
+    private Button panLeftButton1 = new Button();
     @FXML
-    private Button panLeftButton = new Button();
+    private Button panRightButton1 = new Button();
     @FXML
-    private Button panRightButton = new Button();
-    private int offset = 0;  // Global offset for navigation.
+    private PieChart piechart1;
+    @FXML
+    AnchorPane graph2Pane;
+    @FXML
+    private ChoiceBox<String> chartSelection2 = new ChoiceBox<>();
+    @FXML
+    private ChoiceBox<String> metricSelection2 = new ChoiceBox<>();
+    @FXML
+    private ChoiceBox<String> timeSelection2 = new ChoiceBox<>();
+    @FXML
+    private ChoiceBox<String> granSelection2 = new ChoiceBox<>();
+    @FXML
+    private Button panLeftButton2 = new Button();
+    @FXML
+    private Button panRightButton2 = new Button();
+    @FXML
+    private PieChart piechart2;
     @FXML
     private VBox hoverPane;
     @FXML
@@ -60,10 +79,7 @@ public class ChartsSceneController extends SceneController {
     private final ClickLog clickLog;
     private final ServerLog serverLog;
 
-    /**
-     *
-     */
-    public ChartsSceneController() {
+    public ComparisonController() {
         impressionLog = new ImpressionLog();
         clickLog = new ClickLog();
         serverLog = new ServerLog();
@@ -74,44 +90,86 @@ public class ChartsSceneController extends SceneController {
      */
     public void initialize() {
         super.initialize();
-        granSelection.opacityProperty().setValue(1);
-        panLeftButton.setVisible(false);
-        panRightButton.setVisible(false);
-        stackPaneGraph.getChildren().clear();
+        granSelection1.opacityProperty().setValue(1);
+        panLeftButton1.setVisible(false);
+        panRightButton1.setVisible(false);
+        graph1Pane.getChildren().clear();
+        hoverPane.opacityProperty().setValue(0);
         //load chart options into list
-        chartSelection.getItems().setAll(
+        chartSelection1.getItems().setAll(
                 "Metrics by time",
                 "Impression Chart",
                 "Histogram of click costs"
         );
-        chartSelection.setOnAction((event) -> {
-            int selectedIndex = chartSelection.getSelectionModel().getSelectedIndex();
-            Object selectedItem = chartSelection.getSelectionModel().getSelectedItem();
+        chartSelection1.setOnAction((event) -> {
+            int selectedIndex = chartSelection1.getSelectionModel().getSelectedIndex();
+            Object selectedItem = chartSelection1.getSelectionModel().getSelectedItem();
             hoverPane.opacityProperty().setValue(0);
             if (selectedIndex == 0) {
                 currentPage = 0;
-                loadLineChartPage();
-                panLeftButton.setVisible(true);
-                panRightButton.setVisible(true);
-                metricSelection.opacityProperty().setValue(1);
-                timeSelection.opacityProperty().setValue(1);
-                granSelection.opacityProperty().setValue(1);
+                loadLineChartPage(metricSelection1,timeSelection1,granSelection1,graph1Pane);
+                panLeftButton1.setVisible(true);
+                panRightButton1.setVisible(true);
+                metricSelection1.opacityProperty().setValue(1);
+                timeSelection1.opacityProperty().setValue(1);
+                granSelection1.opacityProperty().setValue(1);
             } else if (selectedIndex == 1) {
                 currentPage = 1;
-                loadPieChartPage();
-                panLeftButton.setVisible(false);
-                panRightButton.setVisible(false);
-                metricSelection.opacityProperty().setValue(1);
-                granSelection.opacityProperty().setValue(0);
-                timeSelection.opacityProperty().setValue(0);
+                loadPieChartPage(metricSelection1, timeSelection1, piechart1, graph1Pane);
+                panLeftButton1.setVisible(false);
+                panRightButton1.setVisible(false);
+                metricSelection1.opacityProperty().setValue(1);
+                granSelection1.opacityProperty().setValue(0);
+                timeSelection1.opacityProperty().setValue(0);
             } else if (selectedIndex == 2) {
                 currentPage = 2;
-                loadHistogramPage();
-                panLeftButton.setVisible(false);
-                panRightButton.setVisible(false);
-                granSelection.opacityProperty().setValue(0);
-                timeSelection.opacityProperty().setValue(0);
-                metricSelection.opacityProperty().setValue(0);
+                loadHistogramPage(graph1Pane);
+                panLeftButton1.setVisible(false);
+                panRightButton1.setVisible(false);
+                granSelection1.opacityProperty().setValue(0);
+                timeSelection1.opacityProperty().setValue(0);
+                metricSelection1.opacityProperty().setValue(0);
+            }
+            System.out.println("Selection made for graph 1: [" + selectedIndex + "] " + selectedItem);
+        });
+        granSelection2.opacityProperty().setValue(1);
+        panLeftButton2.setVisible(false);
+        panRightButton2.setVisible(false);
+        graph2Pane.getChildren().clear();
+        //load chart options into list
+        chartSelection2.getItems().setAll(
+                "Metrics by time",
+                "Impression Chart",
+                "Histogram of click costs"
+        );
+        chartSelection2.setOnAction((event) -> {
+            int selectedIndex = chartSelection2.getSelectionModel().getSelectedIndex();
+            Object selectedItem = chartSelection2.getSelectionModel().getSelectedItem();
+            hoverPane.opacityProperty().setValue(0);
+            if (selectedIndex == 0) {
+                currentPage = 0;
+                loadLineChartPage(metricSelection2, timeSelection2, granSelection2, graph2Pane);
+                panLeftButton2.setVisible(true);
+                panRightButton2.setVisible(true);
+                metricSelection2.opacityProperty().setValue(1);
+                timeSelection2.opacityProperty().setValue(1);
+                granSelection2.opacityProperty().setValue(1);
+            } else if (selectedIndex == 1) {
+                currentPage = 1;
+                loadPieChartPage(metricSelection2, timeSelection2, piechart2, graph2Pane);
+                panLeftButton2.setVisible(false);
+                panRightButton2.setVisible(false);
+                metricSelection2.opacityProperty().setValue(1);
+                granSelection2.opacityProperty().setValue(0);
+                timeSelection2.opacityProperty().setValue(0);
+            } else if (selectedIndex == 2) {
+                currentPage = 2;
+                loadHistogramPage(graph2Pane);
+                panLeftButton2.setVisible(false);
+                panRightButton2.setVisible(false);
+                granSelection2.opacityProperty().setValue(0);
+                timeSelection2.opacityProperty().setValue(0);
+                metricSelection2.opacityProperty().setValue(0);
             }
             System.out.println("Selection made: [" + selectedIndex + "] " + selectedItem);
         });
@@ -120,25 +178,24 @@ public class ChartsSceneController extends SceneController {
     /**
      * Function to load the histogram of distributed click cost
      */
-    public void loadHistogramPage(){
-        metricSelection.getItems().clear();
-        stackPaneGraph.getChildren().clear();
+    public void loadHistogramPage(AnchorPane pane){
+        pane.getChildren().clear();
         ChartViewer viewer = new ChartViewer(createHistogram());
-        viewer.setPrefWidth(789.0);
-        viewer.setPrefHeight(551.0);
-        stackPaneGraph.getChildren().add(viewer);
+        viewer.setPrefWidth(623.0);
+        viewer.setPrefHeight(242.0);
+        pane.getChildren().add(viewer);
         viewer.setStyle("-fx-border-width: 0");
-        //stackPaneGraph.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.TRANSPARENT,new CornerRadii(10), new Insets(10))));
     }
+
 
     /**
      * Function to modify the pie chart page and set metric selection
      */
-    public void loadPieChartPage() {
+    public void loadPieChartPage(ChoiceBox<String> metricSelection, ChoiceBox<String> timeSelection, PieChart impressionPie, AnchorPane pane) {
         metricSelection.getItems().clear();
-        stackPaneGraph.getChildren().clear();
+        pane.getChildren().clear();
         impressionPie.getData().clear();
-        stackPaneGraph.getChildren().add(impressionPie);
+        pane.getChildren().add(impressionPie);
         impressionPie.setStyle("-fx-border-width: 0");
         //load chart options into list
         metricSelection.getItems().add("Gender");
@@ -148,17 +205,17 @@ public class ChartsSceneController extends SceneController {
             int selectedIndex = metricSelection.getSelectionModel().getSelectedIndex();
             hoverPane.opacityProperty().setValue(0);
             if (selectedIndex == 0) {
-                loadGenderPieData();
+                loadGenderPieData(impressionPie);
             } else if (selectedIndex == 1) {
-                loadAgePieData();
+                loadAgePieData(impressionPie);
             } else if (selectedIndex == 2) {
-                loadIncomePieData();
+                loadIncomePieData(impressionPie);
             }
         });
         timeSelection.hide();
     }
 
-    private void hoverImpressionPane(String cat){
+    private void hoverImpressionPane(String cat, PieChart impressionPie){
         impressionPie.getData().stream().forEach(data ->{
             data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED,
                     new EventHandler<>() {
@@ -175,7 +232,7 @@ public class ChartsSceneController extends SceneController {
     /**
      * Function to load data into impression pie chart by gender
      */
-    public void loadGenderPieData() {
+    public void loadGenderPieData(PieChart impressionPie) {
         HashMap<String, Integer> counts = impressionLog.fetchImpressionGenderCount();
         double femaleCount = Math.round((float) counts.get("female") / counts.get("total") * 100);
         double maleCount = Math.round((float) counts.get("male") / counts.get("total") * 100);
@@ -184,17 +241,17 @@ public class ChartsSceneController extends SceneController {
                         new PieChart.Data("Female", femaleCount),
                         new PieChart.Data("Male", maleCount));
         impressionPie.setData(pieChartData);
-        hoverImpressionPane("Gender :");
+        hoverImpressionPane("Gender :", impressionPie);
         pieChartData.get(0).getNode().setStyle("-fx-pie-color: #a85775;");
         pieChartData.get(1).getNode().setStyle("-fx-pie-color: #5f8df7;");
-        impressionPie.setPrefWidth(770.0);
-        impressionPie.setPrefHeight(500.0);
+        impressionPie.setPrefWidth(623.0);
+        impressionPie.setPrefHeight(242.0);
         impressionPie.setLegendVisible(false);
     }
     /**
      * Function to load impression group by age pie chart
      */
-    public void loadAgePieData() {
+    public void loadAgePieData(PieChart impressionPie) {
         HashMap<String, Integer> counts = impressionLog.fetchImpressionAgeCount();
         double age1Count = Math.round((float) counts.get("<25") / counts.get("total") * 100);
         double age2Count = Math.round((float) counts.get("25-34") / counts.get("total") * 100);
@@ -209,21 +266,21 @@ public class ChartsSceneController extends SceneController {
                         new PieChart.Data("45-54", age4Count),
                         new PieChart.Data(">54", age5Count));
         impressionPie.setData(pieChartData);
-        hoverImpressionPane("Age :");
+        hoverImpressionPane("Age :", impressionPie);
         pieChartData.get(0).getNode().setStyle("-fx-pie-color: #5f3f65;");
         pieChartData.get(1).getNode().setStyle("-fx-pie-color: #a85775;");
         pieChartData.get(2).getNode().setStyle("-fx-pie-color: #e47c6f;");
         pieChartData.get(3).getNode().setStyle("-fx-pie-color: #ffb563;");
         pieChartData.get(4).getNode().setStyle("-fx-pie-color: #f9f871;");
-        impressionPie.setPrefWidth(770.0);
-        impressionPie.setPrefHeight(500.0);
+        impressionPie.setPrefWidth(623.0);
+        impressionPie.setPrefHeight(242.0);
         impressionPie.setLegendVisible(false);
     }
 
     /**
      * Function to load impression group by income pie chart
      */
-    public void loadIncomePieData() {
+    public void loadIncomePieData(PieChart impressionPie) {
         HashMap<String, Integer> counts = impressionLog.fetchImpressionIncomeCount();
         double income1Count = Math.round((float) counts.get("low") / counts.get("total") * 100);
         double income2Count = Math.round((float) counts.get("medium") / counts.get("total") * 100);
@@ -234,21 +291,21 @@ public class ChartsSceneController extends SceneController {
                         new PieChart.Data("Medium", income2Count),
                         new PieChart.Data("High", income3Count));
         impressionPie.setData(pieChartData);
-        hoverImpressionPane("Income :");
+        hoverImpressionPane("Income :", impressionPie);
         pieChartData.get(0).getNode().setStyle("-fx-pie-color: #1f263e;");
         pieChartData.get(1).getNode().setStyle("-fx-pie-color: #d1eeec;");
         pieChartData.get(2).getNode().setStyle("-fx-pie-color: #208a86;");
-        impressionPie.setPrefWidth(789.0);
-        impressionPie.setPrefHeight(551.0);
+        impressionPie.setPrefWidth(623.0);
+        impressionPie.setPrefHeight(242.0);
         impressionPie.setLegendVisible(false);
     }
 
     /**
      * Load data for the line chart by time and set metric selection
      */
-    public void loadLineChartPage() {
+    public void loadLineChartPage(ChoiceBox<String> metricSelection, ChoiceBox<String> timeSelection, ChoiceBox<String> granSelection, AnchorPane pane) {
         metricSelection.getItems().clear();
-        stackPaneGraph.getChildren().clear();
+        pane.getChildren().clear();
         //load chart options into list
         metricSelection.getItems().addAll(
                 "Number of Impression",
@@ -264,7 +321,7 @@ public class ChartsSceneController extends SceneController {
                 return; // invalid
             }
             System.out.println("Metric selected index: " + selectedIndex);
-            addTimeSelection(selectedIndex);
+            addTimeSelection(selectedIndex, timeSelection, granSelection, pane);
         });
 
     }
@@ -273,7 +330,7 @@ public class ChartsSceneController extends SceneController {
      * Add menu items for timeframe and granularity selection - and attempt to refresh graph upon changes
      * @param graphIndex - which graph
      */
-    private void addTimeSelection(int graphIndex) {
+    private void addTimeSelection(int graphIndex, ChoiceBox<String> timeSelection, ChoiceBox<String> granSelection, AnchorPane pane) {
         // clear old choices & selection
         timeSelection.getItems().clear();
         timeSelection.getSelectionModel().clearSelection();
@@ -286,15 +343,21 @@ public class ChartsSceneController extends SceneController {
         granSelection.getItems().addAll("Hourly", "Daily", "Weekly", "Monthly");
 
         // attempt graph load on selection change
-        timeSelection.setOnAction(e -> attemptGraphLoad(graphIndex));
-        granSelection.setOnAction(e -> attemptGraphLoad(graphIndex));
+        if (pane == graph1Pane){
+            timeSelection.setOnAction(e -> attemptGraphLoad(graphIndex, timeSelection, granSelection, pane, panLeftButton1, panRightButton1));
+            granSelection.setOnAction(e -> attemptGraphLoad(graphIndex, timeSelection, granSelection, pane, panLeftButton1, panRightButton1));
+        }else{
+            timeSelection.setOnAction(e -> attemptGraphLoad(graphIndex, timeSelection, granSelection, pane, panLeftButton2, panRightButton2));
+            granSelection.setOnAction(e -> attemptGraphLoad(graphIndex, timeSelection, granSelection, pane, panLeftButton2, panRightButton2));
+        }
+
     }
 
     /**
      * Attempt to load graph over time
      * @param graphIndex
      */
-    private void attemptGraphLoad(int graphIndex) {
+    private void attemptGraphLoad(int graphIndex, ChoiceBox<String> timeSelection, ChoiceBox<String> granSelection, AnchorPane pane, Button panLeftButton, Button panRightButton) {
         int timeIndex = timeSelection.getSelectionModel().getSelectedIndex();  // 0..3 or -1
         String granChoice = granSelection.getSelectionModel().getSelectedItem(); // or null
 
@@ -305,25 +368,29 @@ public class ChartsSceneController extends SceneController {
 
         switch (graphIndex) {
             case 0:
-                loadImpressionCountGraph(timeIndex, granChoice);
+                loadImpressionCountGraph(timeIndex, granChoice, pane, panLeftButton, panRightButton);
                 break;
             case 1:
-                loadClickCountGraph(timeIndex, granChoice);
+                loadClickCountGraph(timeIndex, granChoice, pane, panLeftButton, panRightButton);
                 break;
             case 2:
-                loadUniqueCountGraph(timeIndex, granChoice);
+                loadUniqueCountGraph(timeIndex, granChoice, pane, panLeftButton, panRightButton);
                 break;
             case 3:
-                loadConversionCountGraph(timeIndex, granChoice);
+                loadConversionCountGraph(timeIndex, granChoice, pane, panLeftButton, panRightButton);
                 break;
             case 4:
-                loadBounceCountGraph(timeIndex, granChoice);
+                loadBounceCountGraph(timeIndex, granChoice, pane, panLeftButton, panRightButton);
                 break;
             default:
                 System.err.println("Unknown metric selection index: " + graphIndex);
         }
     }
 
+    @FunctionalInterface
+    public interface Consumer<T,U,V,W,X>{
+        void accept(T t, U u, V v, W w, X x);
+    }
 
     @FunctionalInterface
     private interface DataFetcher {
@@ -342,12 +409,15 @@ public class ChartsSceneController extends SceneController {
     private void loadCountGraph(
             int tickIndex,
             String groupingGranularity,
-            DataFetcher fetcher,                    // get the data
+            ComparisonController.DataFetcher fetcher,                    // get the data
             String yAxisLabel,
             String seriesName,
-            BiConsumer<Integer, String> reloadFunc  // reload when panning the data using arrows
+            Consumer<Integer, String, AnchorPane, Button, Button> reloadFunc,  // reload when panning the data using arrows
+            AnchorPane pane,
+            Button panLeftButton,
+            Button panRightButton
     ) {
-        stackPaneGraph.getChildren().clear();
+        pane.getChildren().clear();
 
         // determine x-axis label
         CategoryAxis xAxis = new CategoryAxis();
@@ -371,9 +441,13 @@ public class ChartsSceneController extends SceneController {
             default:
                 throw new IllegalArgumentException("Invalid tick increment index: " + tickIndex);
         }
-
+        HashMap<String, Integer> count = new HashMap<>();
+        if (pane == graph1Pane){
+            count = fetcher.fetch(groupingGranularity, tickIndex, offset1);
+        }else{
+            count = fetcher.fetch(groupingGranularity, tickIndex, offset2);
+        }
         // fetch data
-        HashMap<String, Integer> count = fetcher.fetch(groupingGranularity, tickIndex, offset);
 
         // sort time buckets and add to x-axis
         java.util.List<String> sortedBuckets = new ArrayList<>(count.keySet());
@@ -393,8 +467,8 @@ public class ChartsSceneController extends SceneController {
         // create chart
         LineChart<String, Number> metricsLine = new LineChart<>(xAxis, yAxis);
         metricsLine.setLegendVisible(false);
-        metricsLine.setPrefWidth(789.0);
-        metricsLine.setPrefHeight(551.0);
+        metricsLine.setPrefWidth(623.0);
+        metricsLine.setPrefHeight(242.0);
         metricsLine.setHorizontalGridLinesVisible(false);
         metricsLine.setVerticalGridLinesVisible(false);
         metricsLine.setCreateSymbols(false);
@@ -427,19 +501,32 @@ public class ChartsSceneController extends SceneController {
                 symbol.setStyle("-fx-background-color:  #1F263E, #FFFFFF");
             });
         }
-        stackPaneGraph.getChildren().clear();
-        stackPaneGraph.getChildren().add(metricsLine);
+        pane.getChildren().clear();
+        pane.getChildren().add(metricsLine);
+        if (pane == graph1Pane){
+            // panning button functionality
+            panLeftButton.setOnAction(e -> {
+                offset1--;
+                reloadFunc.accept(tickIndex, groupingGranularity, pane, panLeftButton, panRightButton);
+            });
 
-        // panning button functionality
-        panLeftButton.setOnAction(e -> {
-            offset--;
-            reloadFunc.accept(tickIndex, groupingGranularity);
-        });
+            panRightButton.setOnAction(e -> {
+                offset1++;
+                reloadFunc.accept(tickIndex, groupingGranularity, pane, panLeftButton, panRightButton);
+            });
+        }else{
+            // panning button functionality
+            panLeftButton.setOnAction(e -> {
+                offset2--;
+                reloadFunc.accept(tickIndex, groupingGranularity, pane, panLeftButton, panRightButton);
+            });
 
-        panRightButton.setOnAction(e -> {
-            offset++;
-            reloadFunc.accept(tickIndex, groupingGranularity);
-        });
+            panRightButton.setOnAction(e -> {
+                offset2++;
+                reloadFunc.accept(tickIndex, groupingGranularity, pane, panLeftButton, panRightButton);
+            });
+        }
+
 
         for (XYChart.Data<String, Number> data: series.getData()){
             data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED,
@@ -457,8 +544,12 @@ public class ChartsSceneController extends SceneController {
                         }
                     });
         }
+        if (pane == graph1Pane){
+            System.out.println(seriesName + " loaded. Current offset = " + offset1);
+        }else{
+            System.out.println(seriesName + " loaded. Current offset = " + offset2);
+        }
 
-        System.out.println(seriesName + " loaded. Current offset = " + offset);
     }
 
     /**
@@ -466,14 +557,21 @@ public class ChartsSceneController extends SceneController {
      * @param tickIndex
      * @param groupingGranularity
      */
-    public void loadImpressionCountGraph(int tickIndex, String groupingGranularity) {
+    public void loadImpressionCountGraph(int tickIndex,
+                                         String groupingGranularity,
+                                         AnchorPane pane,
+                                         Button panLeftButton,
+                                         Button panRightButton) {
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
                 impressionLog::fetchImpressionCounts,
                 "No of Impression",
                 "No of Impression over time",
-                this::loadImpressionCountGraph
+                this::loadImpressionCountGraph,
+                pane,
+                panLeftButton,
+                panRightButton
         );
     }
 
@@ -482,14 +580,21 @@ public class ChartsSceneController extends SceneController {
      * @param tickIndex
      * @param groupingGranularity
      */
-    public void loadClickCountGraph(int tickIndex, String groupingGranularity) {
+    public void loadClickCountGraph(int tickIndex,
+                                    String groupingGranularity,
+                                    AnchorPane pane,
+                                    Button panLeftButton,
+                                    Button panRightButton) {
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
                 clickLog::fetchClickCounts,
                 "No of Click",
                 "No of Click over time",
-                this::loadClickCountGraph
+                this::loadClickCountGraph,
+                pane,
+                panLeftButton,
+                panRightButton
         );
     }
 
@@ -498,14 +603,21 @@ public class ChartsSceneController extends SceneController {
      * @param tickIndex
      * @param groupingGranularity
      */
-    public void loadUniqueCountGraph(int tickIndex, String groupingGranularity) {
+    public void loadUniqueCountGraph(int tickIndex,
+                                     String groupingGranularity,
+                                     AnchorPane pane,
+                                     Button panLeftButton,
+                                     Button panRightButton) {
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
                 clickLog::fetchUniqueCounts,
                 "No of Unique",
                 "No of Unique over time",
-                this::loadUniqueCountGraph
+                this::loadUniqueCountGraph,
+                pane,
+                panLeftButton,
+                panRightButton
         );
     }
 
@@ -514,14 +626,21 @@ public class ChartsSceneController extends SceneController {
      * @param tickIndex
      * @param groupingGranularity
      */
-    public void loadConversionCountGraph(int tickIndex, String groupingGranularity) {
+    public void loadConversionCountGraph(int tickIndex,
+                                         String groupingGranularity,
+                                         AnchorPane pane,
+                                         Button panLeftButton,
+                                         Button panRightButton) {
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
                 serverLog::fetchConversionCounts,
                 "No of Conversion",
                 "No of Conversion over time",
-                this::loadConversionCountGraph
+                this::loadConversionCountGraph,
+                pane,
+                panLeftButton,
+                panRightButton
         );
     }
 
@@ -530,17 +649,23 @@ public class ChartsSceneController extends SceneController {
      * @param tickIndex
      * @param groupingGranularity
      */
-    public void loadBounceCountGraph(int tickIndex, String groupingGranularity) {
+    public void loadBounceCountGraph(int tickIndex,
+                                     String groupingGranularity,
+                                     AnchorPane pane,
+                                     Button panLeftButton,
+                                     Button panRightButton) {
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
                 serverLog::fetchBounceCounts,
                 "No of Bounce",
                 "No of Bounce over time",
-                this::loadBounceCountGraph
+                this::loadBounceCountGraph,
+                pane,
+                panLeftButton,
+                panRightButton
         );
     }
-
     /**
      * Get maximum count from dataset
      * @param count
@@ -567,23 +692,6 @@ public class ChartsSceneController extends SceneController {
         return min;
     }
 
-    /**
-     * Function to add chart hovering pane
-     * @param coordX x-coordinate of the hovering pane
-     * @param coordY y-coordinate of the hovering pane
-     * @param cat category of the data
-     * @param key key of the data
-     * @param value value of the data
-     */
-    private void addChartHoverPane(double coordX, double coordY, String cat, String key, Integer value){
-        hoverPane.setLayoutX(coordX+200);
-        hoverPane.setLayoutY(coordY+200);
-        hoverPane.opacityProperty().setValue(1);
-        timeOrCatLabel.setText(cat);
-        timeLabel.setText(key);
-        valueLabel.setText(String.valueOf(value));
-    }
-
     private JFreeChart createHistogram(){
         double[] values = clickLog.getHistogramData();
         HistogramDataset dataset = new HistogramDataset();
@@ -605,13 +713,25 @@ public class ChartsSceneController extends SceneController {
         return histogram;
     }
 
-
-
     /**
-     * Include anything that needs to be done EACH time the scene is opened
+     * Function to add chart hovering pane
+     * @param coordX x-coordinate of the hovering pane
+     * @param coordY y-coordinate of the hovering pane
+     * @param cat category of the data
+     * @param key key of the data
+     * @param value value of the data
      */
+    private void addChartHoverPane(double coordX, double coordY, String cat, String key, Integer value){
+        hoverPane.setLayoutX(coordX+200);
+        hoverPane.setLayoutY(coordY+200);
+        hoverPane.opacityProperty().setValue(1);
+        timeOrCatLabel.setText(cat);
+        timeLabel.setText(key);
+        valueLabel.setText(String.valueOf(value));
+    }
+
     @Override
-    public void refreshScene() {
-        hoverPane.opacityProperty().setValue(0);
+    public void refreshScene() throws SQLException {
+
     }
 }

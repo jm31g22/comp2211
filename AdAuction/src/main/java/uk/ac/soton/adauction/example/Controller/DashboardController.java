@@ -1,13 +1,11 @@
 package uk.ac.soton.adauction.example.Controller;
 
 import com.itextpdf.text.DocumentException;
+import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -15,6 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
+import javafx.util.Duration;
 import uk.ac.soton.adauction.example.App;
 import uk.ac.soton.adauction.example.Utils.Export;
 import uk.ac.soton.adauction.example.AppState;
@@ -24,10 +23,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 public class DashboardController extends SceneController {
     @FXML
@@ -199,9 +197,22 @@ public class DashboardController extends SceneController {
      * Include things that needs to be done on the first launch of this scene
      */
     public void initialize() {
-
+        Date startDate = App.getMetricsLoader().getStartDate();
+        Date endDate = App.getMetricsLoader().getEndDate();
+        if (startDate != null && endDate != null){
+            LocalDate startDateLocal = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate endDateLocal = App.getMetricsLoader().getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            startDatePicker.setDayCellFactory(p -> new DateCell(){
+                public void updateItem(LocalDate date, boolean empty){
+                    super.updateItem(date, empty);
+                    if (empty || date.isBefore(startDateLocal) || date.isAfter(endDateLocal)){
+                        setDisable(true);
+                        System.out.println("Dates are disabled before: " + startDateLocal + " and after: " + endDateLocal);
+                    }
+                }
+            });
+        }
         assignButtonGroups();
-
         super.initialize();
         try {
             metricValuePairs = App.getMetricsLoader().loadAllMetrics("All", "All", "All", "All", "Start", "End");
@@ -698,14 +709,15 @@ public class DashboardController extends SceneController {
     private void exportCSV() {
         try {
             Export.export(metricValuePairs, "csv", "Downloads");
-
             exportLabel.setText("CSV saved to Downloads!");
         } catch (IOException | DocumentException e) {
             exportLabel.setText("Something went wrong!");
             throw new RuntimeException(e);
         }
-
         exportLabel.setVisible(true);
+        PauseTransition pause = new PauseTransition(Duration.seconds(5));
+        pause.setOnFinished(e -> exportLabel.setVisible(false));
+        pause.play();
     }
 
     /**
@@ -715,14 +727,16 @@ public class DashboardController extends SceneController {
     private void exportPDF() {
         try {
             Export.export(metricValuePairs, "pdf", "Downloads");
-
             exportLabel.setText("PDF saved to Downloads!");
         } catch (IOException | DocumentException e) {
             exportLabel.setText("Something went wrong!");
             throw new RuntimeException(e);
         }
-
         exportLabel.setVisible(true);
+        PauseTransition pause = new PauseTransition(Duration.seconds(5));
+        pause.setOnFinished(e -> exportLabel.setVisible(false));
+        pause.play();
+
 
     }
 }

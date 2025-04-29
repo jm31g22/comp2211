@@ -27,6 +27,8 @@ public abstract class SceneController {
     private Button importButton;
     @FXML
     private Button adminButton;
+    @FXML
+    private Button comparisonButton;
 
     /**
      * initialise, ensure button actions are set
@@ -57,6 +59,9 @@ public abstract class SceneController {
         if (importButton != null) {
             importButton.setOnAction(e -> openImport());
         }
+        if (comparisonButton != null) {
+            comparisonButton.setOnAction(e -> switchToComparison());
+        }
      }
     public void switchToDashboard(){
         App.getSceneManager().switchTo("dashboard");
@@ -71,6 +76,9 @@ public abstract class SceneController {
         App.getSceneManager().switchTo("login"); }
     public void switchToAdmin() {
         App.getSceneManager().switchTo("admin"); }
+    public void switchToComparison(){
+        App.getSceneManager().switchTo("comparison");
+    }
     public void openImport() { App.getSceneManager().openNew("Controller/import.fxml", 500, 563
     ); }
     /**
