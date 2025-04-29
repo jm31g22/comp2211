@@ -1,8 +1,10 @@
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\module-info.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\App.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\AppState.java
+C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Controller\AdminController.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Controller\ChartsSceneController.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Controller\DashboardController.java
+C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Controller\ImportController.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Controller\LoginPageController.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Controller\SceneController.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Controller\SettingsController.java
@@ -14,8 +16,7 @@ C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adaucti
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\FetchData\Queriers\RemoteQuerier.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\FetchData\ServerLog.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\SceneManager.java
-C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Utils\DatabaseCacher.java
+C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Utils\CampaignImporter.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Utils\DatabaseConnection.java
-C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Utils\DatabaseEmptier.java
 C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Utils\EmailUtils.java
-C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\importing\CampaignImporter.java
+C:\Users\chanb\IdeaProjects\comp2211\AdAuction\src\main\java\uk\ac\soton\adauction\example\Utils\Export.java
