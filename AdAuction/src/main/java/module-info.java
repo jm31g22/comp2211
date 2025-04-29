@@ -15,6 +15,8 @@ module uk.ac.soton.adauction {
     requires java.desktop;
     requires java.mail;
     requires it.unimi.dsi.fastutil;
+    requires jfreechart;
+    requires jfreechart.fx;
 
     opens uk.ac.soton.adauction.example.Controller to javafx.fxml;
     opens uk.ac.soton.adauction.example to javafx.fxml;

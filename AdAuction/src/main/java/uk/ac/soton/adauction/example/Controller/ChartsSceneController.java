@@ -5,20 +5,28 @@ import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYBarRenderer;
 import uk.ac.soton.adauction.example.FetchData.ClickLog;
 import uk.ac.soton.adauction.example.FetchData.ServerLog;
 import uk.ac.soton.adauction.example.FetchData.ImpressionLog;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.statistics.HistogramDataset;
+import org.jfree.chart.fx.ChartViewer;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.awt.*;
 
 public class ChartsSceneController extends SceneController {
     @FXML
@@ -46,6 +54,8 @@ public class ChartsSceneController extends SceneController {
     private Label valueLabel;
     @FXML
     private Label timeOrCatLabel;
+    @FXML
+    private BarChart histogram;
     //variable to save what is the current page
     private int currentPage;
     private final ImpressionLog impressionLog;
@@ -74,8 +84,7 @@ public class ChartsSceneController extends SceneController {
         chartSelection.getItems().setAll(
                 "Metrics by time",
                 "Impression Chart",
-                "Histogram of click costs",
-                "Bounces vs Clicks"
+                "Histogram of click costs"
         );
         chartSelection.setOnAction((event) -> {
             int selectedIndex = chartSelection.getSelectionModel().getSelectedIndex();
@@ -86,6 +95,7 @@ public class ChartsSceneController extends SceneController {
                 loadLineChartPage();
                 panLeftButton.setVisible(true);
                 panRightButton.setVisible(true);
+                metricSelection.opacityProperty().setValue(1);
                 timeSelection.opacityProperty().setValue(1);
                 granSelection.opacityProperty().setValue(1);
             } else if (selectedIndex == 1) {
@@ -93,16 +103,34 @@ public class ChartsSceneController extends SceneController {
                 loadPieChartPage();
                 panLeftButton.setVisible(false);
                 panRightButton.setVisible(false);
+                metricSelection.opacityProperty().setValue(1);
                 granSelection.opacityProperty().setValue(0);
                 timeSelection.opacityProperty().setValue(0);
             } else if (selectedIndex == 2) {
                 currentPage = 2;
+                loadHistogramPage();
                 panLeftButton.setVisible(false);
                 panRightButton.setVisible(false);
                 granSelection.opacityProperty().setValue(0);
+                timeSelection.opacityProperty().setValue(0);
+                metricSelection.opacityProperty().setValue(0);
             }
             System.out.println("Selection made: [" + selectedIndex + "] " + selectedItem);
         });
+    }
+
+    /**
+     * Function to load the histogram of distributed click cost
+     */
+    public void loadHistogramPage(){
+        metricSelection.getItems().clear();
+        stackPaneGraph.getChildren().clear();
+        ChartViewer viewer = new ChartViewer(createHistogram());
+        viewer.setPrefWidth(789.0);
+        viewer.setPrefHeight(551.0);
+        stackPaneGraph.getChildren().add(viewer);
+        viewer.setStyle("-fx-border-width: 0");
+        //stackPaneGraph.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.TRANSPARENT,new CornerRadii(10), new Insets(10))));
     }
 
     /**
@@ -113,6 +141,7 @@ public class ChartsSceneController extends SceneController {
         stackPaneGraph.getChildren().clear();
         impressionPie.getData().clear();
         stackPaneGraph.getChildren().add(impressionPie);
+        impressionPie.setStyle("-fx-border-width: 0");
         //load chart options into list
         metricSelection.getItems().add("Gender");
         metricSelection.getItems().add("Age");
@@ -158,8 +187,8 @@ public class ChartsSceneController extends SceneController {
                         new PieChart.Data("Male", maleCount));
         impressionPie.setData(pieChartData);
         hoverImpressionPane("Gender :");
-        pieChartData.get(0).getNode().setStyle("-fx-pie-color: #b81370;");
-        pieChartData.get(1).getNode().setStyle("-fx-pie-color: #2d58d6;");
+        pieChartData.get(0).getNode().setStyle("-fx-pie-color: #a85775;");
+        pieChartData.get(1).getNode().setStyle("-fx-pie-color: #5f8df7;");
         impressionPie.setPrefWidth(770.0);
         impressionPie.setPrefHeight(500.0);
         impressionPie.setLegendVisible(false);
@@ -183,6 +212,11 @@ public class ChartsSceneController extends SceneController {
                         new PieChart.Data(">54", age5Count));
         impressionPie.setData(pieChartData);
         hoverImpressionPane("Age :");
+        pieChartData.get(0).getNode().setStyle("-fx-pie-color: #5f3f65;");
+        pieChartData.get(1).getNode().setStyle("-fx-pie-color: #a85775;");
+        pieChartData.get(2).getNode().setStyle("-fx-pie-color: #e47c6f;");
+        pieChartData.get(3).getNode().setStyle("-fx-pie-color: #ffb563;");
+        pieChartData.get(4).getNode().setStyle("-fx-pie-color: #f9f871;");
         impressionPie.setPrefWidth(770.0);
         impressionPie.setPrefHeight(500.0);
         impressionPie.setLegendVisible(false);
@@ -203,6 +237,9 @@ public class ChartsSceneController extends SceneController {
                         new PieChart.Data("High", income3Count));
         impressionPie.setData(pieChartData);
         hoverImpressionPane("Income :");
+        pieChartData.get(0).getNode().setStyle("-fx-pie-color: #1f263e;");
+        pieChartData.get(1).getNode().setStyle("-fx-pie-color: #d1eeec;");
+        pieChartData.get(2).getNode().setStyle("-fx-pie-color: #208a86;");
         impressionPie.setPrefWidth(789.0);
         impressionPie.setPrefHeight(551.0);
         impressionPie.setLegendVisible(false);
@@ -340,8 +377,8 @@ public class ChartsSceneController extends SceneController {
         // fetch data
         HashMap<String, Integer> count = fetcher.fetch(groupingGranularity, tickIndex, offset);
 
-        // sort time buckets and add to x axis
-        List<String> sortedBuckets = new ArrayList<>(count.keySet());
+        // sort time buckets and add to x-axis
+        java.util.List<String> sortedBuckets = new ArrayList<>(count.keySet());
         Collections.sort(sortedBuckets);
         xAxis.setCategories(FXCollections.observableArrayList(sortedBuckets));
 
@@ -363,6 +400,7 @@ public class ChartsSceneController extends SceneController {
         metricsLine.setHorizontalGridLinesVisible(false);
         metricsLine.setVerticalGridLinesVisible(false);
         metricsLine.setCreateSymbols(false);
+        metricsLine.setStyle("-fx-border-width: 0");
 
         // build the data series
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -547,6 +585,28 @@ public class ChartsSceneController extends SceneController {
         timeLabel.setText(key);
         valueLabel.setText(String.valueOf(value));
     }
+
+    private JFreeChart createHistogram(){
+        double[] values = clickLog.getHistogramData();
+        HistogramDataset dataset = new HistogramDataset();
+        dataset.addSeries("click-cost", values, 10);
+        JFreeChart histogram = ChartFactory.createHistogram(
+                "Histogram Of The Click Costs",
+                "Click Cost",
+                "Frequency",
+                dataset);
+        XYPlot plot = (XYPlot) histogram.getPlot();
+        Stroke gridLines = new BasicStroke(0);
+        plot.setDomainGridlineStroke(gridLines);
+        plot.setRangeGridlineStroke(gridLines);
+        plot.setBackgroundPaint(null);
+        XYBarRenderer renderer = (XYBarRenderer) plot.getRenderer();
+        renderer.setSeriesPaint(0, new java.awt.Color(31, 38, 62));
+        histogram.removeLegend();
+        histogram.setBackgroundPaint(null);
+        return histogram;
+    }
+
 
 
     /**
