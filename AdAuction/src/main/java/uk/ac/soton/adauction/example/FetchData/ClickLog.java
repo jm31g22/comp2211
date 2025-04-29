@@ -24,48 +24,55 @@ public class ClickLog extends LocalQuerier {
      * @return
      */
     public HashMap<String, Integer> fetchClickCounts(String groupingGranularity, int tickIndex, int offset) {
-        HashMap<String, Integer> counts = new HashMap<>();
-
-        // get the latest click timestamp.
         Timestamp latestTimestamp = getLatestClickTimestamp();
-        if (latestTimestamp == null) {
-            return counts;
-        }
+        if (latestTimestamp == null) return new HashMap<>();
         LocalDateTime latestLdt = latestTimestamp.toLocalDateTime();
+        Boundary      boundaries = computeBoundaries(latestLdt, groupingGranularity, offset);
 
-        // calculate boundaries based on groupingGranularity + offset.
-        Boundary boundaries = computeBoundaries(latestLdt, groupingGranularity, offset);
-        LocalDateTime startBoundary = boundaries.getStart();
-        LocalDateTime endBoundary = boundaries.getEnd();
-        TickInfo tickInfo = getTickInfo(tickIndex);
+        return fetchClickCountsInternal(boundaries.getStart(),
+                boundaries.getEnd(),
+                tickIndex);
+    }
 
-        // run query
-        String sql = "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
-                "FROM click_log " +
-                "WHERE click_date BETWEEN ? AND ? " +
-                "GROUP BY tick";
+    public HashMap<String, Integer> fetchClickCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) {
+        if (lowerDateTime.isAfter(upperDateTime)) {
+            throw new IllegalArgumentException("lowerDateTime must be before upperDateTime");
+        }
+        return fetchClickCountsInternal(lowerDateTime, upperDateTime, tickIndex);
+    }
 
+    private HashMap<String, Integer> fetchClickCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) {
 
-        System.out.println("SQL statement: " + sql);
-        System.out.println("Boundaries: " + startBoundary + " to " + endBoundary);
+        HashMap<String, Integer> counts   = new HashMap<>();
+        TickInfo                 tickInfo = getTickInfo(tickIndex);
+
+        String sql =
+                "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
+                        "FROM click_log " +
+                        "WHERE click_date BETWEEN ? AND ? " +
+                        "GROUP BY tick";
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
-            stmt.setString(2, endBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                String tick = rs.getString("tick");
-                int countVal = rs.getInt("count");
-                counts.put(tick, countVal);
-                System.out.println("tick: " + tick + " count: " + countVal);
+            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+            stmt.setString(2, endBoundary  .truncatedTo(ChronoUnit.SECONDS).format(fmt));
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    counts.put(rs.getString("tick"), rs.getInt("count"));
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace();            // (or use a logger)
         }
 
-        // fill in anu missing data with 0
-        return generateFullSeries(counts, startBoundary, endBoundary, tickIndex, tickInfo.getTickPattern());
+        // pad out missing buckets with zeros so the chart has a continuous series
+        return generateFullSeries(counts,
+                startBoundary,
+                endBoundary,
+                tickIndex,
+                tickInfo.getTickPattern());
     }
 
     /**
@@ -86,40 +93,42 @@ public class ClickLog extends LocalQuerier {
      * @return
      */
     public HashMap<String, Integer> fetchUniqueCounts(String groupingGranularity, int tickIndex, int offset) {
-        HashMap<String, Integer> counts = new HashMap<>();
-
-        // latest click date
+        // compute latest and boundaries as before
         Timestamp latestTimestamp = getLatestClickTimestamp();
         if (latestTimestamp == null) {
-            return counts;
+            return new HashMap<>();
         }
         LocalDateTime latestLdt = latestTimestamp.toLocalDateTime();
-
-        // calculate boundaries
         Boundary boundaries = computeBoundaries(latestLdt, groupingGranularity, offset);
-        LocalDateTime startBoundary = boundaries.getStart();
-        LocalDateTime endBoundary = boundaries.getEnd();
+
+        // delegate to the new overload
+        return fetchUniqueCounts(boundaries.getStart(), boundaries.getEnd(), tickIndex);
+    }
+
+    public HashMap<String, Integer> fetchUniqueCounts(LocalDateTime lowerBound, LocalDateTime upperBound, int tickIndex) {
+        HashMap<String, Integer> counts = new HashMap<>();
         TickInfo tickInfo = getTickInfo(tickIndex);
 
-        //sql
-        String query = "WITH first_date AS (" +
-                "   SELECT id, MIN(click_date) AS earliest_click " +
-                "   FROM click_log " +
-                "   GROUP BY id" +
-                ") " +
-                "SELECT " + tickInfo.getTickExpression().replace("click_date", "earliest_click") + " AS tick, COUNT(*) AS count " +
-                "FROM first_date " +
-                "WHERE earliest_click BETWEEN ? AND ? " +
-                "GROUP BY tick";
-
+        String query =
+                "WITH first_date AS (" +
+                        "   SELECT id, MIN(click_date) AS earliest_click " +
+                        "   FROM click_log " +
+                        "   GROUP BY id" +
+                        ") " +
+                        "SELECT " +
+                        tickInfo.getTickExpression().replace("click_date", "earliest_click") +
+                        " AS tick, COUNT(*) AS count " +
+                        "FROM first_date " +
+                        "WHERE earliest_click BETWEEN ? AND ? " +
+                        "GROUP BY tick";
 
         System.out.println("SQL statement: " + query);
-        System.out.println("Boundaries (unique): " + startBoundary + " to " + endBoundary);
+        System.out.println("Boundaries (unique): " + lowerBound + " to " + upperBound);
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
-            stmt.setString(2, endBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            stmt.setString(1, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+            stmt.setString(2, upperBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -132,8 +141,9 @@ public class ClickLog extends LocalQuerier {
             e.printStackTrace();
         }
 
-        return generateFullSeries(counts, startBoundary, endBoundary, tickIndex, tickInfo.getTickPattern());
+        return generateFullSeries(counts, lowerBound, upperBound, tickIndex, tickInfo.getTickPattern());
     }
+
 
     /**
      * Get the timestamp of the latest click in log

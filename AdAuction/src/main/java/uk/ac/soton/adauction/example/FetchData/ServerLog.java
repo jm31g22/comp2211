@@ -19,30 +19,37 @@ public class ServerLog extends LocalQuerier {
         return fetchConversionCounts(groupingGranularity, tickIndex, 0);
     }
 
-    /**
-     * Unified method for “conversion” data grouped by hour/day/week/month within a chosen offset window.
-     */
     public HashMap<String, Integer> fetchConversionCounts(String groupingGranularity, int tickIndex, int offset) {
-        HashMap<String, Integer> counts = new HashMap<>();
-
-        // latest entry date
         Timestamp latest = getLatestEntryTimestamp();
         if (latest == null) {
-            return counts;
+            return new HashMap<>();
         }
-        LocalDateTime latestLdt = latest.toLocalDateTime();
 
-        // calculate boundaries
+        LocalDateTime latestLdt  = latest.toLocalDateTime();
         Boundary boundaries = computeBoundaries(latestLdt, groupingGranularity, offset);
-        LocalDateTime startBoundary = boundaries.getStart();
-        LocalDateTime endBoundary = boundaries.getEnd();
+
+        return fetchConversionCountsInternal(boundaries.getStart(),
+                boundaries.getEnd(),
+                tickIndex);
+    }
+
+    public HashMap<String, Integer> fetchConversionCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) {
+        if (lowerDateTime.isAfter(upperDateTime)) {
+            throw new IllegalArgumentException("lowerDateTime must be before upperDateTime");
+        }
+        return fetchConversionCountsInternal(lowerDateTime, upperDateTime, tickIndex);
+    }
+
+    private HashMap<String, Integer> fetchConversionCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) {
+        HashMap<String, Integer> counts   = new HashMap<>();
         TickInfo tickInfo = getTickInfo(tickIndex);
 
-        String sql = "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count "
-                + "FROM server_log "
-                + "WHERE conversion = 'Yes' "
-                + "  AND entry_date BETWEEN ? AND ? "
-                + "GROUP BY tick";
+        String sql =
+                "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
+                        "FROM server_log " +
+                        "WHERE conversion = 'Yes' " +
+                        "  AND entry_date BETWEEN ? AND ? " +
+                        "GROUP BY tick";
 
         System.out.println("SQL statement: " + sql);
         System.out.println("Boundaries: " + startBoundary + " to " + endBoundary);
@@ -50,71 +57,84 @@ public class ServerLog extends LocalQuerier {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setTimestamp(1, Timestamp.valueOf(startBoundary));
             stmt.setTimestamp(2, Timestamp.valueOf(endBoundary));
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                String tick = rs.getString("tick");
-                int countVal = rs.getInt("count");
-                counts.put(tick, countVal);
-                System.out.println(tick + ": " + countVal);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    counts.put(rs.getString("tick"), rs.getInt("count"));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        // continuous x axis
-        return generateFullSeries(counts, startBoundary, endBoundary, tickIndex, tickInfo.getTickPattern());
+        // ensure continuous x-axis
+        return generateFullSeries(counts,
+                startBoundary,
+                endBoundary,
+                tickIndex,
+                tickInfo.getTickPattern());
     }
+
 
     public HashMap<String, Integer> fetchBounceCounts(String groupingGranularity, int tickIndex) {
         return fetchBounceCounts(groupingGranularity, tickIndex, 0);
     }
 
-    //fetch bounce data in time window
     public HashMap<String, Integer> fetchBounceCounts(String groupingGranularity, int tickIndex, int offset) {
-        HashMap<String, Integer> counts = new HashMap<>();
-
-        // latest entry date
         Timestamp latest = getLatestEntryTimestamp();
-        if (latest == null) {
-            return counts;
-        }
-        LocalDateTime latestLdt = latest.toLocalDateTime();
+        if (latest == null) return new HashMap<>();
 
-        // boundaries
-        Boundary boundaries = computeBoundaries(latestLdt, groupingGranularity, offset);
-        LocalDateTime startBoundary = boundaries.getStart();
-        LocalDateTime endBoundary = boundaries.getEnd();
+        LocalDateTime latestLdt  = latest.toLocalDateTime();
+        Boundary      boundaries = computeBoundaries(latestLdt, groupingGranularity, offset);
+
+        return fetchBounceCountsInternal(boundaries.getStart(),
+                boundaries.getEnd(),
+                tickIndex);
+    }
+
+    public HashMap<String, Integer> fetchBounceCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) {
+        if (lowerDateTime.isAfter(upperDateTime)) {
+            throw new IllegalArgumentException("lowerDateTime must be before upperDateTime");
+        }
+        return fetchBounceCountsInternal(lowerDateTime, upperDateTime, tickIndex);
+    }
+
+    private HashMap<String, Integer> fetchBounceCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) {
+
+        HashMap<String, Integer> counts   = new HashMap<>();
         TickInfo tickInfo = getTickInfo(tickIndex);
 
-        // bounces - needs updating
-        String sql = "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count "
-                + "FROM server_log "
-                + "WHERE ((strftime('%s', exit_date) - strftime('%s', entry_date)) <= 10 OR pages_viewed = 1)"
-                + "  AND entry_date BETWEEN ? AND ? "
-                + "GROUP BY " + tickInfo.getTickExpression();
+        String sql =
+                "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
+                        "FROM server_log " +
+                        "WHERE ((strftime('%s', exit_date) - strftime('%s', entry_date)) <= 10 " +
+                        "       OR pages_viewed = 1) " +
+                        "  AND entry_date BETWEEN ? AND ? " +
+                        "GROUP BY " + tickInfo.getTickExpression();
 
-        System.out.println("SQL statement: " + sql);
-        System.out.println("Boundaries: " + startBoundary + " to " + endBoundary);
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
-            stmt.setString(2, endBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+            stmt.setString(2, endBoundary  .truncatedTo(ChronoUnit.SECONDS).format(fmt));
 
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                String tick = rs.getString("tick");
-                int countVal = rs.getInt("count");
-                counts.put(tick, countVal);
-                System.out.println("Bounce tick: " + tick + " => " + countVal);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    counts.put(rs.getString("tick"), rs.getInt("count"));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        // fill missing intervals
-        return generateFullSeries(counts, startBoundary, endBoundary, tickIndex, tickInfo.getTickPattern());
+        // pad missing buckets so the line chart is continuous
+        return generateFullSeries(counts,
+                startBoundary,
+                endBoundary,
+                tickIndex,
+                tickInfo.getTickPattern());
     }
+
 
     private Timestamp getLatestEntryTimestamp() {
         String sql = "SELECT MAX(entry_date) AS maxDate FROM server_log";
