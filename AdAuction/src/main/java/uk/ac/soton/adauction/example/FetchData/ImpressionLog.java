@@ -53,41 +53,49 @@ public class ImpressionLog extends LocalQuerier {
      *
      * @return HashMap of gender count
      */
+    // ---------------------------------------------
+// GENDER
+// ---------------------------------------------
     public HashMap<String, Integer> fetchImpressionGenderCount() {
+        // default to “everything up to now” – you can change this if you prefer a different default window
+        return fetchImpressionGenderCount(LocalDateTime.MIN, LocalDateTime.now());
+    }
+
+    public HashMap<String, Integer> fetchImpressionGenderCount(LocalDateTime lowerBound,
+                                                               LocalDateTime upperBound) {
         HashMap<String, Integer> counts = new HashMap<>();
-        int val = 0;
-        try (
-                Statement stmt = conn.createStatement();
-        ) {
-            String strSelect = "SELECT COUNT(*) FROM impression_log WHERE gender = 'Male'";
-            System.out.println("SQL statement " + strSelect + " called");
-            ResultSet rs = stmt.executeQuery(strSelect);
-            while (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("male", val);
-                    System.out.println("Male = " + val);
-                }
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        String sqlByGender = ""
+                + "SELECT gender, COUNT(*) AS cnt "
+                + "FROM impression_log "
+                + "WHERE gender = ? "
+                + "  AND impression_date BETWEEN ? AND ? "
+                + "GROUP BY gender";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sqlByGender)) {
+            for (String gender : new String[]{"Male", "Female"}) {
+                stmt.setString(1, gender);
+                stmt.setString(2, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                stmt.setString(3, upperBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                System.out.println("SQL statement: " + stmt);
+                ResultSet rs = stmt.executeQuery();
+                counts.put(gender.toLowerCase(), rs.next() ? rs.getInt("cnt") : 0);
+                System.out.println(gender + " = " + counts.get(gender.toLowerCase()));
             }
-            strSelect = "SELECT COUNT(*) FROM impression_log WHERE gender = 'Female'";
-            System.out.println("SQL statement " + strSelect + " called");
-            rs = stmt.executeQuery(strSelect);
-            while (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("female", val);
-                    System.out.println("Female = " + val);
-                }
-            }
-            strSelect = "SELECT COUNT(*) FROM impression_log";
-            System.out.println("SQL statement " + strSelect + " called");
-            rs = stmt.executeQuery(strSelect);
-            while (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("total", val);
-                    System.out.println("Total = " + val);
-                }
+
+            // total count
+            String sqlTotal = ""
+                    + "SELECT COUNT(*) AS cnt "
+                    + "FROM impression_log "
+                    + "WHERE impression_date BETWEEN ? AND ?";
+            try (PreparedStatement totalStmt = conn.prepareStatement(sqlTotal)) {
+                totalStmt.setString(1, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                totalStmt.setString(2, upperBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                System.out.println("SQL statement: " + totalStmt);
+                ResultSet rsTotal = totalStmt.executeQuery();
+                counts.put("total", rsTotal.next() ? rsTotal.getInt("cnt") : 0);
+                System.out.println("Total = " + counts.get("total"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -95,65 +103,50 @@ public class ImpressionLog extends LocalQuerier {
         return counts;
     }
 
-    /**
-     * Function for fetching the age count of the impression
-     *
-     * @return HashMap of age count
-     */
+
+    // ---------------------------------------------
+// AGE
+// ---------------------------------------------
     public HashMap<String, Integer> fetchImpressionAgeCount() {
+        return fetchImpressionAgeCount(LocalDateTime.MIN, LocalDateTime.now());
+    }
+
+    public HashMap<String, Integer> fetchImpressionAgeCount(LocalDateTime lowerBound,
+                                                            LocalDateTime upperBound) {
         HashMap<String, Integer> counts = new HashMap<>();
-        int val = 0;
-        try (
-                Statement stmt = conn.createStatement();
-        ) {
-            String strSelect = "SELECT COUNT(*) FROM impression_log WHERE age = '<25'";
-            System.out.println("SQL statement " + strSelect + " called");
-            ResultSet rs = stmt.executeQuery(strSelect);
-            if (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("<25", val);
-                }
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        String sqlByAge = ""
+                + "SELECT age, COUNT(*) AS cnt "
+                + "FROM impression_log "
+                + "WHERE age = ? "
+                + "  AND impression_date BETWEEN ? AND ? "
+                + "GROUP BY age";
+
+        String[] ageBuckets = {"<25","25-34","35-44","45-54",">54"};
+        try (PreparedStatement stmt = conn.prepareStatement(sqlByAge)) {
+            for (String bucket : ageBuckets) {
+                stmt.setString(1, bucket);
+                stmt.setString(2, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                stmt.setString(3, upperBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                System.out.println("SQL statement: " + stmt);
+                ResultSet rs = stmt.executeQuery();
+                counts.put(bucket, rs.next() ? rs.getInt("cnt") : 0);
+                System.out.println(bucket + " = " + counts.get(bucket));
             }
-            strSelect = "SELECT COUNT(*) FROM impression_log WHERE age = '25-34'";
-            rs = stmt.executeQuery(strSelect);
-            if (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("25-34", val);
-                }
-            }
-            strSelect = "SELECT COUNT(*) FROM impression_log WHERE age = '35-44'";
-            rs = stmt.executeQuery(strSelect);
-            if (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("35-44", val);
-                }
-            }
-            strSelect = "SELECT COUNT(*) FROM impression_log WHERE age = '45-54'";
-            rs = stmt.executeQuery(strSelect);
-            if (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("45-54", val);
-                }
-            }
-            strSelect = "SELECT COUNT(*) FROM impression_log WHERE age = '>54'";
-            rs = stmt.executeQuery(strSelect);
-            if (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put(">54", val);
-                }
-            }
-            strSelect = "SELECT COUNT(*) FROM impression_log";
-            rs = stmt.executeQuery(strSelect);
-            if (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("total", val);
-                }
+
+            // total
+            String sqlTotal = ""
+                    + "SELECT COUNT(*) AS cnt "
+                    + "FROM impression_log "
+                    + "WHERE impression_date BETWEEN ? AND ?";
+            try (PreparedStatement totalStmt = conn.prepareStatement(sqlTotal)) {
+                totalStmt.setString(1, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                totalStmt.setString(2, upperBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                System.out.println("SQL statement: " + totalStmt);
+                ResultSet rsTotal = totalStmt.executeQuery();
+                counts.put("total", rsTotal.next() ? rsTotal.getInt("cnt") : 0);
+                System.out.println("Total = " + counts.get("total"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -161,90 +154,90 @@ public class ImpressionLog extends LocalQuerier {
         return counts;
     }
 
-    /**
-     * Function for fetching the income count of the impression
-     *
-     * @return HashMap of income count
-     */
+
+    // ---------------------------------------------
+// INCOME
+// ---------------------------------------------
     public HashMap<String, Integer> fetchImpressionIncomeCount() {
+        return fetchImpressionIncomeCount(LocalDateTime.MIN, LocalDateTime.now());
+    }
+
+    public HashMap<String, Integer> fetchImpressionIncomeCount(LocalDateTime lowerBound,
+                                                               LocalDateTime upperBound) {
         HashMap<String, Integer> counts = new HashMap<>();
-        int val = 0;
-        try (
-                Statement stmt = conn.createStatement();
-        ) {
-            String strSelect = "SELECT COUNT(*) FROM impression_log WHERE income = 'Low'";
-            System.out.println("SQL statement " + strSelect + " called");
-            ResultSet rs = stmt.executeQuery(strSelect);
-            while (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("low", val);
-                }
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        String sqlByIncome = ""
+                + "SELECT income, COUNT(*) AS cnt "
+                + "FROM impression_log "
+                + "WHERE income = ? "
+                + "  AND impression_date BETWEEN ? AND ? "
+                + "GROUP BY income";
+
+        String[] incomeLevels = {"Low","Medium","High"};
+        try (PreparedStatement stmt = conn.prepareStatement(sqlByIncome)) {
+            for (String level : incomeLevels) {
+                stmt.setString(1, level);
+                stmt.setString(2, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                stmt.setString(3, upperBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                System.out.println("SQL statement: " + stmt);
+                ResultSet rs = stmt.executeQuery();
+                counts.put(level.toLowerCase(), rs.next() ? rs.getInt("cnt") : 0);
+                System.out.println(level + " = " + counts.get(level.toLowerCase()));
             }
-            strSelect = "SELECT COUNT(*) FROM impression_log WHERE income = 'Medium'";
-            System.out.println("SQL statement " + strSelect + " called");
-            rs = stmt.executeQuery(strSelect);
-            while (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("medium", val);
-                }
-            }
-            strSelect = "SELECT COUNT(*) FROM impression_log WHERE income = 'High'";
-            System.out.println("SQL statement " + strSelect + " called");
-            rs = stmt.executeQuery(strSelect);
-            while (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("high", val);
-                }
-            }
-            strSelect = "SELECT COUNT(*) FROM impression_log";
-            System.out.println("SQL statement " + strSelect + " called");
-            rs = stmt.executeQuery(strSelect);
-            while (rs.next()) {
-                if (rs.getObject(1) != null) {
-                    val = rs.getInt(1);
-                    counts.put("total", val);
-                }
+
+            // total
+            String sqlTotal = ""
+                    + "SELECT COUNT(*) AS cnt "
+                    + "FROM impression_log "
+                    + "WHERE impression_date BETWEEN ? AND ?";
+            try (PreparedStatement totalStmt = conn.prepareStatement(sqlTotal)) {
+                totalStmt.setString(1, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                totalStmt.setString(2, upperBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+                System.out.println("SQL statement: " + totalStmt);
+                ResultSet rsTotal = totalStmt.executeQuery();
+                counts.put("total", rsTotal.next() ? rsTotal.getInt("cnt") : 0);
+                System.out.println("Total = " + counts.get("total"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return counts;
     }
+
 
     public HashMap<String, Integer> fetchImpressionCounts(String groupingGranularity, int tickIndex) {
         return fetchImpressionCounts(groupingGranularity, tickIndex, 0);
     }
 
-    public HashMap<String, Integer> fetchImpressionCounts(String groupingGranularity, int tickIndex, int offset) {
-        HashMap<String, Integer> counts = new HashMap<>();
 
+    public HashMap<String, Integer> fetchImpressionCounts(String groupingGranularity, int tickIndex, int offset) {
         Timestamp latestTimestamp = getLatestImpressionTimestamp();
         if (latestTimestamp == null) {
-            return counts;
+            return new HashMap<>();
         }
 
         LocalDateTime latestLdt = latestTimestamp.toLocalDateTime();
-
         Boundary boundaries = computeBoundaries(latestLdt, groupingGranularity, offset);
-        LocalDateTime startBoundary = boundaries.getStart();
-        LocalDateTime endBoundary = boundaries.getEnd();
-        TickInfo tickInfo = getTickInfo(tickIndex);
+        return fetchImpressionCounts(boundaries.getStart(), boundaries.getEnd(), tickIndex);
+    }
 
-        // execute query
+    public HashMap<String, Integer> fetchImpressionCounts(LocalDateTime lowerBound, LocalDateTime upperBound, int tickIndex) {
+        HashMap<String, Integer> counts = new HashMap<>();
+        int newTick = (tickIndex >= 0) ? tickIndex : resolveTickIndex(lowerBound, upperBound);
+        TickInfo tickInfo = getTickInfo(newTick);
+
         String sql = "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
                 "FROM impression_log " +
                 "WHERE impression_date BETWEEN ? AND ? " +
                 "GROUP BY tick";
         System.out.println("SQL statement: " + sql);
-        System.out.println("Boundaries: " + startBoundary + " to " + endBoundary);
+        System.out.println("Boundaries: " + lowerBound + " to " + upperBound);
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
-            stmt.setString(2, endBoundary.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+            stmt.setString(1, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+            stmt.setString(2, upperBound.truncatedTo(ChronoUnit.SECONDS).format(formatter));
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -257,8 +250,7 @@ public class ImpressionLog extends LocalQuerier {
             e.printStackTrace();
         }
 
-        // continuous x axis
-        return generateFullSeries(counts, startBoundary, endBoundary, tickIndex, tickInfo.getTickPattern());
+        return generateFullSeries(counts, lowerBound, upperBound, newTick, tickInfo.getTickPattern());
     }
 
     private Timestamp getLatestImpressionTimestamp() {
@@ -315,6 +307,15 @@ public class ImpressionLog extends LocalQuerier {
                 throw new IllegalArgumentException("Invalid grouping granularity: " + groupingGranularity);
         }
         return new Boundary(startBoundary, endBoundary);
+    }
+
+    private int resolveTickIndex(LocalDateTime start, LocalDateTime end) {
+        int maxPoints = 50;
+        long hours = ChronoUnit.HOURS.between(start, end) + 1;
+        if (hours <= maxPoints) return 0;
+        if (hours / 24 <= maxPoints) return 1;
+        if (hours / (24 * 7) <= maxPoints) return 2;
+        return 3;
     }
 
     private TickInfo getTickInfo(int tickIndex) {

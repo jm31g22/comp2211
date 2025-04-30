@@ -1,17 +1,20 @@
 package uk.ac.soton.adauction.example.Controller;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import org.jfree.chart.plot.XYPlot;
@@ -24,6 +27,9 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.chart.fx.ChartViewer;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.awt.*;
@@ -39,6 +45,15 @@ public class ChartsSceneController extends SceneController {
     private ChoiceBox<String> timeSelection = new ChoiceBox<>();
     @FXML
     private ChoiceBox<String> granSelection = new ChoiceBox<>();
+    @FXML
+    private DatePicker lowerDatePicker = new DatePicker();
+    @FXML
+    private DatePicker upperDatePicker = new DatePicker();
+    @FXML
+    private Button dateRangeToggle = new Button();
+    private boolean dateRangeVisible = false;
+    private LocalDateTime lowerDateTime = LocalDateTime.now();
+    private LocalDateTime upperDateTime = LocalDateTime.now();
     @FXML
     private StackPane stackPaneGraph;
     @FXML
@@ -80,6 +95,52 @@ public class ChartsSceneController extends SceneController {
         panLeftButton.setVisible(false);
         panRightButton.setVisible(false);
         stackPaneGraph.getChildren().clear();
+
+        //setup date picker
+        // Set min and max dates
+        LocalDate minDate = LocalDate.of(2015, 1, 1);
+        LocalDate maxDate = LocalDate.of(2015, 12, 31);
+
+        lowerDatePicker.setVisible(false);
+        upperDatePicker.setVisible(false);
+
+        ChangeListener<LocalDate> dateChangeListener = (obs, oldVal, newVal) -> {
+            // only reload if both dates are chosen
+            System.out.println("dateChangeListener called");
+            if (lowerDatePicker.getValue() == null || upperDatePicker.getValue() == null) {
+                System.out.println("Exiting listener due to null date");
+                return;
+            }
+            lowerDateTime = lowerDatePicker.getValue().atStartOfDay();
+            upperDateTime = upperDatePicker.getValue().atTime(LocalTime.MAX);
+            System.out.println("lowerDateTime: " + lowerDateTime);
+            System.out.println("upperDateTime: " + upperDateTime);
+            int selectedIndex = metricSelection.getSelectionModel().getSelectedIndex();
+            System.out.println("selectedIndex: " + selectedIndex);
+            if (selectedIndex >= 0) {
+                System.out.println("Attempting graph load");
+                attemptGraphLoad(selectedIndex);
+            }
+        };
+        lowerDatePicker.valueProperty().addListener(dateChangeListener);
+        upperDatePicker.valueProperty().addListener(dateChangeListener);
+
+        // Restrict selectable dates
+        Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+
+                if (date.isBefore(minDate) || date.isAfter(maxDate)) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #eeeeee;");
+                }
+            }
+        };
+
+        lowerDatePicker.setDayCellFactory(dayCellFactory);
+        upperDatePicker.setDayCellFactory(dayCellFactory);
+        lowerDatePicker.setValue(LocalDate.now()); // Optional: set initial date
         //load chart options into list
         chartSelection.getItems().setAll(
                 "Metrics by time",
@@ -87,6 +148,7 @@ public class ChartsSceneController extends SceneController {
                 "Histogram of click costs"
         );
         chartSelection.setOnAction((event) -> {
+            handleChartSelection();
             int selectedIndex = chartSelection.getSelectionModel().getSelectedIndex();
             Object selectedItem = chartSelection.getSelectionModel().getSelectedItem();
             hoverPane.opacityProperty().setValue(0);
@@ -299,10 +361,15 @@ public class ChartsSceneController extends SceneController {
     private void attemptGraphLoad(int graphIndex) {
         int timeIndex = timeSelection.getSelectionModel().getSelectedIndex();  // 0..3 or -1
         String granChoice = granSelection.getSelectionModel().getSelectedItem(); // or null
-
-        if (timeIndex < 0 || granChoice == null) {
-            // invalid choices
-            return;
+        System.out.println("attemptGraphLoad called - timeIndex = " + timeIndex + ", granChoice = " + granChoice);
+        // invalid choices
+        if (timeIndex < 0 && !dateRangeVisible) return;
+        if(granChoice == null){
+            if(dateRangeVisible){
+                granChoice = "";
+            }else{
+                return;
+            }
         }
 
         switch (graphIndex) {
@@ -325,7 +392,6 @@ public class ChartsSceneController extends SceneController {
                 System.err.println("Unknown metric selection index: " + graphIndex);
         }
     }
-
 
     @FunctionalInterface
     private interface DataFetcher {
@@ -371,7 +437,11 @@ public class ChartsSceneController extends SceneController {
                 xAxis.setLabel("Month");
                 break;
             default:
-                throw new IllegalArgumentException("Invalid tick increment index: " + tickIndex);
+                if(dateRangeVisible){
+                    xAxis.setLabel("Custom date range");
+                }else{
+                    throw new IllegalArgumentException("Invalid tick increment index: " + tickIndex);
+                }
         }
 
         // fetch data
@@ -469,10 +539,20 @@ public class ChartsSceneController extends SceneController {
      * @param groupingGranularity
      */
     public void loadImpressionCountGraph(int tickIndex, String groupingGranularity) {
+        DataFetcher fetcher = (g, t, o) -> {
+            if (dateRangeVisible) {
+                System.out.println("loadImpressionCountGraph called with date range");
+                return impressionLog.fetchImpressionCounts(lowerDateTime, upperDateTime, tickIndex);
+            } else {
+                System.out.println("loadImpressionCountGraph called without date range");
+                return impressionLog.fetchImpressionCounts(g, t, o);
+            }
+        };
+
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
-                impressionLog::fetchImpressionCounts,
+                fetcher,
                 "No of Impression",
                 "No of Impression over time",
                 this::loadImpressionCountGraph
@@ -485,10 +565,18 @@ public class ChartsSceneController extends SceneController {
      * @param groupingGranularity
      */
     public void loadClickCountGraph(int tickIndex, String groupingGranularity) {
+        DataFetcher fetcher = (g, t, o) -> {
+            if (dateRangeVisible) {
+                return clickLog.fetchClickCounts(lowerDateTime, upperDateTime, tickIndex);
+            } else {
+                return clickLog.fetchClickCounts(g, t, o);
+            }
+        };
+
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
-                clickLog::fetchClickCounts,
+                fetcher,
                 "No of Click",
                 "No of Click over time",
                 this::loadClickCountGraph
@@ -501,10 +589,18 @@ public class ChartsSceneController extends SceneController {
      * @param groupingGranularity
      */
     public void loadUniqueCountGraph(int tickIndex, String groupingGranularity) {
+        DataFetcher fetcher = (g, t, o) -> {
+            if (dateRangeVisible) {
+                return clickLog.fetchUniqueCounts(lowerDateTime, upperDateTime, tickIndex);
+            } else {
+                return clickLog.fetchUniqueCounts(g, t, o);
+            }
+        };
+
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
-                clickLog::fetchUniqueCounts,
+                fetcher,
                 "No of Unique",
                 "No of Unique over time",
                 this::loadUniqueCountGraph
@@ -517,10 +613,18 @@ public class ChartsSceneController extends SceneController {
      * @param groupingGranularity
      */
     public void loadConversionCountGraph(int tickIndex, String groupingGranularity) {
+        DataFetcher fetcher = (g, t, o) -> {
+            if (dateRangeVisible) {
+                return serverLog.fetchConversionCounts(lowerDateTime, upperDateTime, tickIndex);
+            } else {
+                return serverLog.fetchConversionCounts(g, t, o);
+            }
+        };
+
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
-                serverLog::fetchConversionCounts,
+                fetcher,
                 "No of Conversion",
                 "No of Conversion over time",
                 this::loadConversionCountGraph
@@ -533,10 +637,18 @@ public class ChartsSceneController extends SceneController {
      * @param groupingGranularity
      */
     public void loadBounceCountGraph(int tickIndex, String groupingGranularity) {
+        DataFetcher fetcher = (g, t, o) -> {
+            if (dateRangeVisible) {
+                return serverLog.fetchBounceCounts(lowerDateTime, upperDateTime, tickIndex);
+            } else {
+                return serverLog.fetchBounceCounts(g, t, o);
+            }
+        };
+
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
-                serverLog::fetchBounceCounts,
+                fetcher,
                 "No of Bounce",
                 "No of Bounce over time",
                 this::loadBounceCountGraph
@@ -608,6 +720,34 @@ public class ChartsSceneController extends SceneController {
     }
 
 
+    @FXML
+    public void handleChartSelection() {
+        if(dateRangeVisible) handleDateRangeToggle();
+        System.out.println("handleChartSelection called");
+    }
+
+
+    @FXML
+    private void handleDateRangeToggle() {
+        dateRangeVisible = !dateRangeVisible;
+        System.out.println("dateRangeVisible = " + dateRangeVisible);
+
+        lowerDatePicker.setVisible(dateRangeVisible);
+        upperDatePicker.setVisible(dateRangeVisible);
+
+        if(chartSelection.getSelectionModel().getSelectedIndex() == 0){
+            granSelection.setVisible(!dateRangeVisible);
+            timeSelection.setVisible(!dateRangeVisible);
+        }
+
+        if (dateRangeVisible) {
+            dateRangeToggle.setText("Clear date range");
+        } else {
+            dateRangeToggle.setText("Custom date range");
+            lowerDatePicker.setValue(null);
+            upperDatePicker.setValue(null);
+        }
+    }
 
     /**
      * Include anything that needs to be done EACH time the scene is opened
