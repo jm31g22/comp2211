@@ -13,7 +13,7 @@ public class AppState {
     private final IntegerProperty bounceDefinitionNumber = new SimpleIntegerProperty(5);
     private static int dashboardMode = 2;
     private static ArrayList<Integer> components = new ArrayList<>();
-    private String role;
+    private String role = "admin";
 
 
     public void setBounceDefinition(String newDefinition) {

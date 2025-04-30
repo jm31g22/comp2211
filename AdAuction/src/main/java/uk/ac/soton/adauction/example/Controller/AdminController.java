@@ -16,10 +16,7 @@ import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class AdminController extends SceneController{

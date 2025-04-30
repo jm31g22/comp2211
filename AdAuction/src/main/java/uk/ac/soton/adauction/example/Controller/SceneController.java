@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import uk.ac.soton.adauction.example.App;
 
 import java.io.IOException;
@@ -29,12 +30,25 @@ public abstract class SceneController {
     private Button adminButton;
     @FXML
     private Button comparisonButton;
+    @FXML
+    private HBox adminBlock;
+    @FXML
+    private HBox importBlock;
 
     /**
      * initialise, ensure button actions are set
      */
     @FXML
     protected void initialize() {
+        if (App.getAppState().getRole().equals("viewer")){
+            adminButton.setDisable(true);
+            adminBlock.setVisible(false);
+            importButton.setDisable(true);
+            importBlock.setVisible(false);
+        }else if (App.getAppState().getRole().equals("editor")){
+            adminButton.setDisable(true);
+            adminBlock.setVisible(false);
+        }
         if (backButton != null) {
             backButton.setOnAction(e -> switchToLastScene());
         }
