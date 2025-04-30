@@ -22,6 +22,7 @@ import org.jfree.data.statistics.HistogramDataset;
 import uk.ac.soton.adauction.example.FetchData.ClickLog;
 import uk.ac.soton.adauction.example.FetchData.ImpressionLog;
 import uk.ac.soton.adauction.example.FetchData.ServerLog;
+import uk.ac.soton.adauction.example.Utils.GraphFilters;
 
 import java.awt.*;
 import java.sql.SQLException;
@@ -78,6 +79,10 @@ public class ComparisonController extends SceneController {
     private final ImpressionLog impressionLog;
     private final ClickLog clickLog;
     private final ServerLog serverLog;
+    private GraphFilters graph1Filters;
+    private GraphFilters graph2Filters;
+
+
 
     public ComparisonController() {
         impressionLog = new ImpressionLog();
