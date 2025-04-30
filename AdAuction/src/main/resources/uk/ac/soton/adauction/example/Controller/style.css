@@ -106,7 +106,7 @@
 }
 
 .table-row-cell:odd{
-    -fx-background-color: -fx-table-cell-border-color, rgba(243, 246, 255, 0.45);
+    -fx-background-color: -fx-table-cell-border-color, rgba(255, 255, 255, 0.45);
 }
 
 .table-row-cell:selected {
