@@ -8,6 +8,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ClickLog extends LocalQuerier {
@@ -145,6 +146,22 @@ public class ClickLog extends LocalQuerier {
         return generateFullSeries(counts, lowerBound, upperBound, tickIndex, tickInfo.getTickPattern());
     }
 
+
+    public double[] getHistogramData(){
+        String query = "SELECT click_cost AS cost FROM click_log";
+        ArrayList<Double> values = new ArrayList<>();
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                double cost = rs.getInt("cost");
+                values.add(cost);
+                System.out.println("cost: " + cost);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return values.stream().mapToDouble(Double::doubleValue).toArray();
+    }
 
     /**
      * Get the timestamp of the latest click in log

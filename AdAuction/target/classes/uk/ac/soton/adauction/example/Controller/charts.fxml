@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
@@ -260,6 +261,14 @@
             </yAxis>
          </LineChart>
          <PieChart fx:id="impressionPie" prefHeight="551.0" prefWidth="789.0" styleClass="chart-pie-gender" />
+         <BarChart fx:id="histogram">
+           <xAxis>
+             <CategoryAxis side="BOTTOM" />
+           </xAxis>
+           <yAxis>
+             <NumberAxis side="LEFT" />
+           </yAxis>
+         </BarChart>
       </StackPane>
       <VBox fx:id="hoverPane" layoutX="14.0" layoutY="434.0" prefHeight="103.0" prefWidth="258.0" style="-fx-border-color: #1F263E; -fx-border-width: 2; -fx-background-color: white; -fx-border-radius: 10;">
          <children>
