@@ -237,9 +237,13 @@
      <ChoiceBox fx:id="metricSelection" prefHeight="30" prefWidth="200" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" stylesheets="@../assets/chart_styles.css" />
      <ChoiceBox fx:id="timeSelection" prefHeight="30" prefWidth="200" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" stylesheets="@../assets/chart_styles.css" />
      <ChoiceBox fx:id="granSelection" prefHeight="30" prefWidth="200" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" stylesheets="@../assets/chart_styles.css" />
-     <DatePicker fx:id="lowerDatePicker" />
-     <DatePicker fx:id="upperDatePicker" />
-     <Button fx:id="dateRangeToggle" text="Custom date range" onAction="#handleDateRangeToggle" />
+     <VBox>
+        <HBox>
+           <DatePicker fx:id="lowerDatePicker" />
+           <DatePicker fx:id="upperDatePicker" />
+        </HBox>
+        <Button fx:id="dateRangeToggle" text="Custom date range" onAction="#handleDateRangeToggle" />
+     </VBox>
   </HBox>
 <HBox alignment="CENTER" layoutX="576.0" layoutY="114.0" spacing="15.0">
   <Button fx:id="panLeftButton" alignment="CENTER" style="-fx-background-color: #1F263E; -fx-background-radius: 5;" text="←" textFill="WHITE" />

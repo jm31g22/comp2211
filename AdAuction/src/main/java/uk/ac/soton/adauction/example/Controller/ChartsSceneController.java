@@ -94,13 +94,19 @@ public class ChartsSceneController extends SceneController {
 
         ChangeListener<LocalDate> dateChangeListener = (obs, oldVal, newVal) -> {
             // only reload if both dates are chosen
+            System.out.println("dateChangeListener called");
             if (lowerDatePicker.getValue() == null || upperDatePicker.getValue() == null) {
+                System.out.println("Exiting listener due to null date");
                 return;
             }
             lowerDateTime = lowerDatePicker.getValue().atStartOfDay();
             upperDateTime = upperDatePicker.getValue().atTime(LocalTime.MAX);
+            System.out.println("lowerDateTime: " + lowerDateTime);
+            System.out.println("upperDateTime: " + upperDateTime);
             int selectedIndex = metricSelection.getSelectionModel().getSelectedIndex();
+            System.out.println("selectedIndex: " + selectedIndex);
             if (selectedIndex >= 0) {
+                System.out.println("Attempting graph load");
                 attemptGraphLoad(selectedIndex);
             }
         };
@@ -316,10 +322,15 @@ public class ChartsSceneController extends SceneController {
     private void attemptGraphLoad(int graphIndex) {
         int timeIndex = timeSelection.getSelectionModel().getSelectedIndex();  // 0..3 or -1
         String granChoice = granSelection.getSelectionModel().getSelectedItem(); // or null
-
-        if (timeIndex < 0 || granChoice == null) {
-            // invalid choices
-            return;
+        System.out.println("attemptGraphLoad called - timeIndex = " + timeIndex + ", granChoice = " + granChoice);
+        // invalid choices
+        if (timeIndex < 0 && !dateRangeVisible) return;
+        if(granChoice == null){
+            if(dateRangeVisible){
+                granChoice = "";
+            }else{
+                return;
+            }
         }
 
         switch (graphIndex) {
@@ -387,7 +398,11 @@ public class ChartsSceneController extends SceneController {
                 xAxis.setLabel("Month");
                 break;
             default:
-                throw new IllegalArgumentException("Invalid tick increment index: " + tickIndex);
+                if(dateRangeVisible){
+                    xAxis.setLabel("Custom date range");
+                }else{
+                    throw new IllegalArgumentException("Invalid tick increment index: " + tickIndex);
+                }
         }
 
         // fetch data
@@ -485,9 +500,11 @@ public class ChartsSceneController extends SceneController {
      */
     public void loadImpressionCountGraph(int tickIndex, String groupingGranularity) {
         DataFetcher fetcher = (g, t, o) -> {
-            if (dateRangeVisible) {                       // new path
+            if (dateRangeVisible) {
+                System.out.println("loadImpressionCountGraph called with date range");
                 return impressionLog.fetchImpressionCounts(lowerDateTime, upperDateTime, tickIndex);
-            } else {                                      // old path
+            } else {
+                System.out.println("loadImpressionCountGraph called without date range");
                 return impressionLog.fetchImpressionCounts(g, t, o);
             }
         };
@@ -509,9 +526,9 @@ public class ChartsSceneController extends SceneController {
      */
     public void loadClickCountGraph(int tickIndex, String groupingGranularity) {
         DataFetcher fetcher = (g, t, o) -> {
-            if (dateRangeVisible) {                       // new path
+            if (dateRangeVisible) {
                 return clickLog.fetchClickCounts(lowerDateTime, upperDateTime, tickIndex);
-            } else {                                      // old path
+            } else {
                 return clickLog.fetchClickCounts(g, t, o);
             }
         };
@@ -533,9 +550,9 @@ public class ChartsSceneController extends SceneController {
      */
     public void loadUniqueCountGraph(int tickIndex, String groupingGranularity) {
         DataFetcher fetcher = (g, t, o) -> {
-            if (dateRangeVisible) {                       // new path
+            if (dateRangeVisible) {
                 return clickLog.fetchUniqueCounts(lowerDateTime, upperDateTime, tickIndex);
-            } else {                                      // old path
+            } else {
                 return clickLog.fetchUniqueCounts(g, t, o);
             }
         };
@@ -557,9 +574,9 @@ public class ChartsSceneController extends SceneController {
      */
     public void loadConversionCountGraph(int tickIndex, String groupingGranularity) {
         DataFetcher fetcher = (g, t, o) -> {
-            if (dateRangeVisible) {                       // new path
+            if (dateRangeVisible) {
                 return serverLog.fetchConversionCounts(lowerDateTime, upperDateTime, tickIndex);
-            } else {                                      // old path
+            } else {
                 return serverLog.fetchConversionCounts(g, t, o);
             }
         };
@@ -581,9 +598,9 @@ public class ChartsSceneController extends SceneController {
      */
     public void loadBounceCountGraph(int tickIndex, String groupingGranularity) {
         DataFetcher fetcher = (g, t, o) -> {
-            if (dateRangeVisible) {                       // new path
+            if (dateRangeVisible) {
                 return serverLog.fetchBounceCounts(lowerDateTime, upperDateTime, tickIndex);
-            } else {                                      // old path
+            } else {
                 return serverLog.fetchBounceCounts(g, t, o);
             }
         };

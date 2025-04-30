@@ -224,7 +224,8 @@ public class ImpressionLog extends LocalQuerier {
 
     public HashMap<String, Integer> fetchImpressionCounts(LocalDateTime lowerBound, LocalDateTime upperBound, int tickIndex) {
         HashMap<String, Integer> counts = new HashMap<>();
-        TickInfo tickInfo = getTickInfo(tickIndex);
+        int newTick = (tickIndex >= 0) ? tickIndex : resolveTickIndex(lowerBound, upperBound);
+        TickInfo tickInfo = getTickInfo(newTick);
 
         String sql = "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
                 "FROM impression_log " +
@@ -249,7 +250,7 @@ public class ImpressionLog extends LocalQuerier {
             e.printStackTrace();
         }
 
-        return generateFullSeries(counts, lowerBound, upperBound, tickIndex, tickInfo.getTickPattern());
+        return generateFullSeries(counts, lowerBound, upperBound, newTick, tickInfo.getTickPattern());
     }
 
     private Timestamp getLatestImpressionTimestamp() {
@@ -306,6 +307,15 @@ public class ImpressionLog extends LocalQuerier {
                 throw new IllegalArgumentException("Invalid grouping granularity: " + groupingGranularity);
         }
         return new Boundary(startBoundary, endBoundary);
+    }
+
+    private int resolveTickIndex(LocalDateTime start, LocalDateTime end) {
+        int maxPoints = 50;
+        long hours = ChronoUnit.HOURS.between(start, end) + 1;
+        if (hours <= maxPoints) return 0;
+        if (hours / 24 <= maxPoints) return 1;
+        if (hours / (24 * 7) <= maxPoints) return 2;
+        return 3;
     }
 
     private TickInfo getTickInfo(int tickIndex) {

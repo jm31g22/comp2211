@@ -37,7 +37,9 @@ public class ServerLog extends LocalQuerier {
         if (lowerDateTime.isAfter(upperDateTime)) {
             throw new IllegalArgumentException("lowerDateTime must be before upperDateTime");
         }
-        return fetchConversionCountsInternal(lowerDateTime, upperDateTime, tickIndex);
+        int newTick = (tickIndex >= 0) ? tickIndex : resolveTickIndex(lowerDateTime, upperDateTime);
+        TickInfo tickInfo = getTickInfo(newTick);
+        return fetchConversionCountsInternal(lowerDateTime, upperDateTime, newTick);
     }
 
     private HashMap<String, Integer> fetchConversionCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) {
@@ -189,6 +191,15 @@ public class ServerLog extends LocalQuerier {
                 throw new IllegalArgumentException("Invalid grouping granularity: " + groupingGranularity);
         }
         return new Boundary(startBoundary, endBoundary);
+    }
+
+    private int resolveTickIndex(LocalDateTime start, LocalDateTime end) {
+        int maxPoints = 50;
+        long hours = ChronoUnit.HOURS.between(start, end) + 1;
+        if (hours <= maxPoints) return 0;
+        if (hours / 24 <= maxPoints) return 1;
+        if (hours / (24 * 7) <= maxPoints) return 2;
+        return 3;
     }
 
     private TickInfo getTickInfo(int tickIndex) {

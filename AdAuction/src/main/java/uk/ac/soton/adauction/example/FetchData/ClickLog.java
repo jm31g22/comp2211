@@ -107,7 +107,8 @@ public class ClickLog extends LocalQuerier {
 
     public HashMap<String, Integer> fetchUniqueCounts(LocalDateTime lowerBound, LocalDateTime upperBound, int tickIndex) {
         HashMap<String, Integer> counts = new HashMap<>();
-        TickInfo tickInfo = getTickInfo(tickIndex);
+        int newTick = (tickIndex >= 0) ? tickIndex : resolveTickIndex(lowerBound, upperBound);
+        TickInfo tickInfo = getTickInfo(newTick);
 
         String query =
                 "WITH first_date AS (" +
@@ -211,6 +212,15 @@ public class ClickLog extends LocalQuerier {
         }
 
         return new Boundary(startBoundary, endBoundary);
+    }
+
+    private int resolveTickIndex(LocalDateTime start, LocalDateTime end) {
+        int maxPoints = 50;
+        long hours = ChronoUnit.HOURS.between(start, end) + 1;
+        if (hours <= maxPoints) return 0;
+        if (hours / 24 <= maxPoints) return 1;
+        if (hours / (24 * 7) <= maxPoints) return 2;
+        return 3;
     }
 
     /**
