@@ -7,8 +7,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -74,6 +74,57 @@ public class ComparisonController extends SceneController {
     private Label valueLabel;
     @FXML
     private Label timeOrCatLabel;
+
+    @FXML
+    private Button graph1FilterButton = new Button();
+    @FXML
+    private Button graph2FilterButton = new Button();
+    private int filterButtonShowing;
+    @FXML
+    private DatePicker startDatePicker;
+    @FXML
+    private DatePicker endDatePicker;
+    private final ToggleGroup genderToggleGroup = new ToggleGroup();
+    private final ToggleGroup incomeToggleGroup = new ToggleGroup();
+    private final ToggleGroup ageToggleGroup = new ToggleGroup();
+    private final ToggleGroup contextToggleGroup = new ToggleGroup();
+    @FXML
+    private RadioButton maleGenderButton;
+    @FXML
+    private RadioButton femaleGenderButton;
+    @FXML
+    private RadioButton bothGenderButton;
+    @FXML
+    private RadioButton lowIncomeButton;
+    @FXML
+    private RadioButton mediumIncomeButton;
+    @FXML
+    private RadioButton highIncomeButton;
+    @FXML
+    private RadioButton newsContextButton;
+    @FXML
+    private RadioButton blogContextButton;
+    @FXML
+    private RadioButton socialMediaContextButton;
+    @FXML
+    private RadioButton allContextButton;
+    @FXML
+    private RadioButton shoppingContextButton;
+    @FXML
+    private RadioButton allIncomeButton;
+    @FXML
+    private RadioButton ageButton1;
+    @FXML
+    private RadioButton ageButton2;
+    @FXML
+    private RadioButton ageButton3;
+    @FXML
+    private RadioButton ageButton4;
+    @FXML
+    private RadioButton ageButton5;
+    @FXML
+    private RadioButton ageButton6;
+
     //variable to save what is the current page
     private int currentPage;
     private final ImpressionLog impressionLog;
@@ -81,6 +132,7 @@ public class ComparisonController extends SceneController {
     private final ServerLog serverLog;
     private GraphFilters graph1Filters;
     private GraphFilters graph2Filters;
+
 
 
 
@@ -95,9 +147,15 @@ public class ComparisonController extends SceneController {
      */
     public void initialize() {
         super.initialize();
+        filterButtonShowing = 1;
+        assignButtonGroups();
         granSelection1.opacityProperty().setValue(1);
         panLeftButton1.setVisible(false);
         panRightButton1.setVisible(false);
+        graph1FilterButton.setOnAction(event -> {
+        });
+        graph2FilterButton.setOnAction(event -> {
+        });
         graph1Pane.getChildren().clear();
         hoverPane.opacityProperty().setValue(0);
         //load chart options into list
@@ -178,6 +236,60 @@ public class ComparisonController extends SceneController {
             }
             System.out.println("Selection made: [" + selectedIndex + "] " + selectedItem);
         });
+    }
+
+    /**
+     * Assign the button groups for the filters
+     */
+    private void assignButtonGroups() {
+        maleGenderButton.setToggleGroup(genderToggleGroup);
+        femaleGenderButton.setToggleGroup(genderToggleGroup);
+        bothGenderButton.setToggleGroup(genderToggleGroup);
+
+        lowIncomeButton.setToggleGroup(incomeToggleGroup);
+        mediumIncomeButton.setToggleGroup(incomeToggleGroup);
+        highIncomeButton.setToggleGroup(incomeToggleGroup);
+        allIncomeButton.setToggleGroup(incomeToggleGroup);
+
+
+        shoppingContextButton.setToggleGroup(contextToggleGroup);
+        newsContextButton.setToggleGroup(contextToggleGroup);
+        blogContextButton.setToggleGroup(contextToggleGroup);
+        socialMediaContextButton.setToggleGroup(contextToggleGroup);
+        allContextButton.setToggleGroup(contextToggleGroup);
+
+        ageButton1.setToggleGroup(ageToggleGroup);
+        ageButton2.setToggleGroup(ageToggleGroup);
+        ageButton3.setToggleGroup(ageToggleGroup);
+        ageButton4.setToggleGroup(ageToggleGroup);
+        ageButton5.setToggleGroup(ageToggleGroup);
+        ageButton6.setToggleGroup(ageToggleGroup);
+    }
+
+    public void filterButtonUpdate(int graph){
+        RadioButton ageSelected = (RadioButton) ageToggleGroup.getSelectedToggle();
+        String age = ageSelected.getText();
+        RadioButton genderSelected = (RadioButton) genderToggleGroup.getSelectedToggle();
+        String gender = genderSelected.getText();
+        RadioButton incomeSelected = (RadioButton) incomeToggleGroup.getSelectedToggle();
+        String income = incomeSelected.getText();
+        RadioButton contextSelected = (RadioButton) contextToggleGroup.getSelectedToggle();
+        String context = contextSelected.getText();
+        GraphFilters filters = new GraphFilters(
+                startDatePicker.getValue(),
+                endDatePicker.getValue(),
+                age,
+                gender,
+                income,
+                context
+        );
+        if (graph == 1) {
+            filterButtonShowing = 1;
+            graph1Filters = filters;
+        }else if(graph == 2){
+            filterButtonShowing = 2;
+            graph2Filters = filters;
+        }
     }
 
     /**
