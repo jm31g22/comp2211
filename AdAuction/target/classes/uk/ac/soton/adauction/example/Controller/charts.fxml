@@ -85,17 +85,10 @@
       </children>
    </HBox>
   <HBox alignment="CENTER" layoutX="217.0" layoutY="62.0" prefHeight="32.0" prefWidth="789.0" spacing="10" AnchorPane.leftAnchor="217.0">
-     <ChoiceBox fx:id="chartSelection" prefHeight="30" prefWidth="200" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" stylesheets="@../assets/chart_styles.css" onAction="#handleChartSelection" />
+     <ChoiceBox fx:id="chartSelection" prefHeight="30" prefWidth="200" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" stylesheets="@../assets/chart_styles.css" />
      <ChoiceBox fx:id="metricSelection" prefHeight="30" prefWidth="200" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" stylesheets="@../assets/chart_styles.css" />
      <ChoiceBox fx:id="timeSelection" prefHeight="30" prefWidth="200" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" stylesheets="@../assets/chart_styles.css" />
      <ChoiceBox fx:id="granSelection" prefHeight="30" prefWidth="200" style="-fx-background-color: transparent; -fx-border-width: 1; -fx-border-color: #1F263E; -fx-border-radius: 5; -fx-font-size: 15;" stylesheets="@../assets/chart_styles.css" />
-     <VBox>
-        <HBox>
-           <DatePicker fx:id="lowerDatePicker" />
-           <DatePicker fx:id="upperDatePicker" />
-        </HBox>
-        <Button fx:id="dateRangeToggle" text="Custom date range" onAction="#handleDateRangeToggle" />
-     </VBox>
   </HBox>
 <HBox alignment="CENTER" layoutX="576.0" layoutY="114.0" spacing="15.0">
   <Button fx:id="panLeftButton" alignment="CENTER" style="-fx-background-color: #1F263E; -fx-background-radius: 5;" text="←" textFill="WHITE" />
@@ -243,7 +236,7 @@
                      </Button>
                   </children>
                </AnchorPane>
-               <HBox alignment="CENTER_RIGHT" maxHeight="52.0" minHeight="52.0" prefHeight="52.0" prefWidth="200.0" spacing="45.0" style="-fx-background-color: #1F263E; -fx-border-width: 1 0 1 0;">
+               <HBox fx:id="importBlock" alignment="CENTER_RIGHT" maxHeight="52.0" minHeight="52.0" prefHeight="52.0" prefWidth="200.0" spacing="45.0" style="-fx-background-color: #1F263E; -fx-border-width: 1 0 1 0;">
                   <children>
                      <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -269,7 +262,7 @@
                      <Insets />
                   </VBox.margin>
                </HBox>
-               <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #1F263E; -fx-border-width: 1 0 1 0;">
+               <HBox fx:id="adminBlock" alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #1F263E; -fx-border-width: 1 0 1 0;">
                   <children>
                      <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
                         <image>
@@ -322,4 +315,4 @@
          </HBox>
       </children>
    </VBox>
-</AnchorPane>
+ </AnchorPane>
