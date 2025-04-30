@@ -71,148 +71,6 @@
             </Button>
         </HBox>
     </HBox>
-    <VBox alignment="BOTTOM_CENTER" prefHeight="713.0" prefWidth="200.0">
-        <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@../assets/logo.png" />
-            </image>
-        </ImageView>
-        <VBox alignment="TOP_CENTER" maxHeight="697.0" maxWidth="200.0" minHeight="664.0" minWidth="200.0" prefHeight="597.0" prefWidth="200.0" style="-fx-background-color: #1F263E;" VBox.vgrow="NEVER">
-            <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="199.0" style="-fx-font-weight: bold;" text="Quick Access" textAlignment="CENTER" textFill="WHITE">
-                <font>
-                    <Font size="18.0" />
-                </font>
-            <padding>
-               <Insets bottom="10.0" top="10.0" />
-            </padding>
-            </Label>
-            <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
-                <opaqueInsets>
-                    <Insets />
-                </opaqueInsets>
-                <padding>
-                    <Insets bottom="10.0" left="5.0" right="30.0" top="10.0" />
-                </padding>
-                <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../assets/house.png" />
-                    </image>
-                    <HBox.margin>
-                        <Insets left="5.0" right="20.0" />
-                    </HBox.margin>
-                </ImageView>
-                <Button fx:id="dashboardButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="115.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
-                    <font>
-                        <Font size="15.0" />
-                    </font>
-                </Button>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" spacing="35.0" style="-fx-background-color: #1F263E; -fx-border-width: 1 0 1 0;">
-                <opaqueInsets>
-                    <Insets />
-                </opaqueInsets>
-                <padding>
-                    <Insets bottom="10.0" left="5.0" right="57.0" top="10.0" />
-                </padding>
-                <ImageView fitHeight="32.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../assets/chart.png" />
-                    </image>
-                    <HBox.margin>
-                        <Insets />
-                    </HBox.margin>
-                </ImageView>
-                <Button fx:id="chartsButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
-                    <font>
-                        <Font size="15.0" />
-                    </font>
-               <HBox.margin>
-                  <Insets />
-               </HBox.margin>
-                </Button>
-            </HBox>
-            <HBox alignment="CENTER_RIGHT" maxHeight="52.0" minHeight="52.0" prefHeight="52.0" prefWidth="200.0" spacing="45.0" style="-fx-background-color: #1F263E; -fx-border-width: 1 0 1 0;">
-                <children>
-                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../assets/import.png" />
-                        </image>
-                        <HBox.margin>
-                            <Insets left="7.0" />
-                        </HBox.margin>
-                    </ImageView>
-                    <Button fx:id="importButton" contentDisplay="CENTER" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Import">
-                        <font>
-                            <Font size="15.0" />
-                        </font>
-                        <HBox.margin>
-                            <Insets right="40.0" />
-                        </HBox.margin>
-                    </Button>
-                </children>
-                <padding>
-                    <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
-                </padding>
-            <VBox.margin>
-               <Insets />
-            </VBox.margin>
-            </HBox>
-
-            <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #1F263E; -fx-border-width: 1 0 1 0;">
-                <children>
-                    <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../assets/admin.png" />
-                        </image>
-                        <HBox.margin>
-                            <Insets right="37.0" />
-                        </HBox.margin>
-                    </ImageView>
-                    <Button fx:id="adminButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Admin">
-                        <font>
-                            <Font size="15.0" />
-                        </font>
-                    </Button>
-                </children>
-                <padding>
-                    <Insets bottom="10.0" right="52.0" top="10.0" />
-                </padding>
-            <VBox.margin>
-               <Insets />
-            </VBox.margin>
-            </HBox>
-
-            <HBox alignment="CENTER_RIGHT" prefHeight="52.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
-                <opaqueInsets>
-                    <Insets />
-                </opaqueInsets>
-                <padding>
-                    <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
-                </padding>
-                <children>
-                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../assets/power.png" />
-                        </image>
-                        <HBox.margin>
-                            <Insets left="10.0" right="30.0" />
-                        </HBox.margin>
-                    </ImageView>
-                    <Button fx:id="logOutButton" maxHeight="29.0" minHeight="29.0" mnemonicParsing="false" prefHeight="29.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Log Out">
-                        <font>
-                            <Font size="15.0" />
-                        </font>
-                        <HBox.margin>
-                            <Insets right="30.0" />
-                        </HBox.margin>
-                    </Button>
-                </children>
-                <VBox.margin>
-                    <Insets top="365.0" />
-                </VBox.margin>
-            </HBox>
-        </VBox>
-    </VBox>
     <DatePicker fx:id="startDatePicker" layoutX="314.0" layoutY="55.0" style="-fx-background-color: transparent; -fx-border-color: #1F263E; -fx-border-radius: 5;" styleClass="date-picker" stylesheets="@style.css" />
     <DatePicker fx:id="endDatePicker" layoutX="568.0" layoutY="55.0" style="-fx-background-color: transparent; -fx-border-color: #1F263E; -fx-border-radius: 5;" styleClass="date-picker" stylesheets="@style.css" />
     <Button fx:id="applyButtonDashboard" layoutX="820.0" layoutY="216.0" mnemonicParsing="false" onAction="#applyFilters" prefHeight="22.0" prefWidth="153.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Apply">
@@ -664,4 +522,163 @@
         </font>
     </Button>
     <Label fx:id="exportLabel" layoutX="832.0" layoutY="657.0" text="Export message" visible="false" />
+   <VBox layoutX="-1.0" layoutY="-1.0" prefHeight="719.0" prefWidth="200.0">
+      <children>
+         <ImageView fitHeight="84.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <image>
+               <Image url="@../assets/logo.png" />
+            </image>
+         </ImageView>
+         <VBox alignment="TOP_CENTER" maxHeight="697.0" maxWidth="200.0" minHeight="614.0" minWidth="200.0" prefHeight="614.0" prefWidth="200.0" style="-fx-background-color: #1F263E;">
+            <children>
+               <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="41.0" prefWidth="199.0" style="-fx-font-weight: bold;" text="Quick Access" textAlignment="CENTER" textFill="WHITE">
+                  <font>
+                     <Font size="18.0" />
+                  </font>
+                  <padding>
+                     <Insets bottom="10.0" top="10.0" />
+                  </padding>
+               </Label>
+               <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #303750;">
+                  <opaqueInsets>
+                     <Insets />
+                  </opaqueInsets>
+                  <padding>
+                     <Insets bottom="10.0" left="5.0" right="30.0" top="10.0" />
+                  </padding>
+                  <children>
+                     <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../assets/house.png" />
+                        </image>
+                        <HBox.margin>
+                           <Insets left="5.0" right="20.0" />
+                        </HBox.margin>
+                     </ImageView>
+                     <Button fx:id="dashboardButton" mnemonicParsing="false" prefHeight="30.0" prefWidth="115.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Dashboard">
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                     </Button>
+                  </children>
+               </HBox>
+               <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" spacing="35.0">
+                  <opaqueInsets>
+                     <Insets />
+                  </opaqueInsets>
+                  <padding>
+                     <Insets bottom="10.0" left="5.0" right="57.0" top="10.0" />
+                  </padding>
+                  <children>
+                     <ImageView fitHeight="32.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../assets/chart.png" />
+                        </image>
+                        <HBox.margin>
+                           <Insets />
+                        </HBox.margin>
+                     </ImageView>
+                     <Button fx:id="chartsButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Charts">
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                        <HBox.margin>
+                           <Insets />
+                        </HBox.margin>
+                     </Button>
+                  </children>
+               </HBox>
+               <AnchorPane prefHeight="51.0" prefWidth="200.0">
+                  <children>
+                     <ImageView fitHeight="32.0" fitWidth="34.0" layoutX="11.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../assets/presentation-chart.png" />
+                        </image>
+                     </ImageView>
+                     <Button fx:id="comparisonButton" layoutX="58.0" layoutY="10.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="116.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Comparison">
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                     </Button>
+                  </children>
+               </AnchorPane>
+               <HBox alignment="CENTER_RIGHT" maxHeight="52.0" minHeight="52.0" prefHeight="52.0" prefWidth="200.0" spacing="45.0" style="-fx-background-color: #1F263E; -fx-border-width: 1 0 1 0;">
+                  <children>
+                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../assets/import.png" />
+                        </image>
+                        <HBox.margin>
+                           <Insets left="7.0" />
+                        </HBox.margin>
+                     </ImageView>
+                     <Button fx:id="importButton" contentDisplay="CENTER" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Import">
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                        <HBox.margin>
+                           <Insets right="40.0" />
+                        </HBox.margin>
+                     </Button>
+                  </children>
+                  <padding>
+                     <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
+                  </padding>
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+               </HBox>
+               <HBox alignment="CENTER_RIGHT" prefHeight="51.0" prefWidth="200.0" style="-fx-background-color: #1F263E; -fx-border-width: 1 0 1 0;">
+                  <children>
+                     <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../assets/admin.png" />
+                        </image>
+                        <HBox.margin>
+                           <Insets right="37.0" />
+                        </HBox.margin>
+                     </ImageView>
+                     <Button fx:id="adminButton" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Admin">
+                        <font>
+                           <Font size="15.0" />
+                        </font>
+                     </Button>
+                  </children>
+                  <padding>
+                     <Insets bottom="10.0" right="52.0" top="10.0" />
+                  </padding>
+                  <VBox.margin>
+                     <Insets />
+                  </VBox.margin>
+               </HBox>
+            </children>
+         </VBox>
+         <HBox alignment="CENTER_RIGHT" prefHeight="52.0" prefWidth="200.0" style="-fx-background-color: #303750; -fx-border-color: #000000; -fx-border-width: 1 0 1 0;">
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+            <padding>
+               <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
+            </padding>
+            <children>
+               <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../assets/power.png" />
+                  </image>
+                  <HBox.margin>
+                     <Insets left="10.0" right="30.0" />
+                  </HBox.margin>
+               </ImageView>
+               <Button fx:id="logOutButton" maxHeight="29.0" minHeight="29.0" mnemonicParsing="false" prefHeight="29.0" style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold;" text="Log Out">
+                  <font>
+                     <Font size="15.0" />
+                  </font>
+                  <HBox.margin>
+                     <Insets right="30.0" />
+                  </HBox.margin>
+               </Button>
+            </children>
+         </HBox>
+      </children>
+   </VBox>
 </AnchorPane>

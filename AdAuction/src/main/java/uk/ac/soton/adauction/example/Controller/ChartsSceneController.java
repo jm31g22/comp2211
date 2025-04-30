@@ -71,8 +71,6 @@ public class ChartsSceneController extends SceneController {
     private Label valueLabel;
     @FXML
     private Label timeOrCatLabel;
-    @FXML
-    private BarChart histogram;
     //variable to save what is the current page
     private int currentPage;
     private final ImpressionLog impressionLog;

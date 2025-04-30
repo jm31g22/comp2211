@@ -1,11 +1,13 @@
 package uk.ac.soton.adauction.example.Controller;
 
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import uk.ac.soton.adauction.example.App;
 import uk.ac.soton.adauction.example.Utils.CampaignImporter;
 
@@ -26,6 +28,9 @@ public class ImportController {
 
     @FXML
     private Label serverLabel;
+
+    @FXML
+    private Label importMessage;
 
    /**
      * Select first CSV
@@ -71,13 +76,50 @@ public class ImportController {
         return fileChooser.showOpenDialog(stage);
     }
 
+    @FXML
+    private void setErrorMessage(String text){
+        importMessage.setText(text);
+        importMessage.setVisible(true);
+    }
+
     /**
      * Handle upload button click
      */
     @FXML
     private void uploadFiles() {
         if (file1 == null && file2 == null && file3 == null) {
+            setErrorMessage("No files selected");
+            PauseTransition pause = new PauseTransition(Duration.seconds(20));
+            pause.setOnFinished(e -> importMessage.setVisible(false));
+            pause.play();
             System.out.println("No files selected.");
+            return;
+        }
+
+        if (file1 == null){
+            setErrorMessage("Click Log Missing");
+            PauseTransition pause = new PauseTransition(Duration.seconds(20));
+            pause.setOnFinished(e -> importMessage.setVisible(false));
+            pause.play();
+            System.out.println("No Click Log");
+            return;
+        }
+
+        if (file2 == null){
+            setErrorMessage("Impression Log Missing");
+            PauseTransition pause = new PauseTransition(Duration.seconds(20));
+            pause.setOnFinished(e -> importMessage.setVisible(false));
+            pause.play();
+            System.out.println("No Impression Log");
+            return;
+        }
+
+        if (file3 == null){
+            setErrorMessage("Server Log Missing");
+            PauseTransition pause = new PauseTransition(Duration.seconds(20));
+            pause.setOnFinished(e -> importMessage.setVisible(false));
+            pause.play();
+            System.out.println("No Server Log");
             return;
         }
 

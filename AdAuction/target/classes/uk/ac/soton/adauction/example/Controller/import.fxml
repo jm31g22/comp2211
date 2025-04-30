@@ -90,5 +90,10 @@
             <Image url="@../assets/logo.png" />
          </image>
       </ImageView>
+      <Label fx:id="importMessage" alignment="CENTER" layoutX="155.0" layoutY="411.0" prefHeight="15.0" prefWidth="176.0" text="Label" textAlignment="CENTER" textFill="#c93e3e" visible="false">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

@@ -1,11 +1,13 @@
 package uk.ac.soton.adauction.example.Controller;
 
+import javafx.animation.PauseTransition;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.util.Duration;
 import uk.ac.soton.adauction.example.App;
 import net.synedra.validatorfx.Check;
 import uk.ac.soton.adauction.example.App;
@@ -140,7 +142,10 @@ public class SettingsController extends SceneController {
         // Apply settings if all validations pass
         App.getAppState().setBounceDefinition(bounceDefinition);
         App.getAppState().setBounceDefinitionNumber(number);
-        showBounceMessage("Success!");
+        showBounceMessage("Success");
+        PauseTransition pause = new PauseTransition(Duration.seconds(5));
+        pause.setOnFinished(e -> bounceMessage.setVisible(false));
+        pause.play();
     }
 
     /**
