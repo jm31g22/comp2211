@@ -45,7 +45,7 @@ public class App extends Application {
             long end = System.currentTimeMillis();
             System.out.println("Elapsed time: " + (end - start) / 1000 + " s");
             sceneManager.loadScenes();
-            Platform.runLater(() -> sceneManager.switchTo("dashboard"));
+            Platform.runLater(() -> sceneManager.switchTo("login"));
         });
 
         importTask.setOnFailed(e -> {

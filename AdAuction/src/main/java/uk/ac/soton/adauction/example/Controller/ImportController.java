@@ -18,26 +18,28 @@ import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 
 public class ImportController {
-    private File file1, file2, file3;
+    public File file1;
+    public File file2;
+    public File file3;
 
     @FXML
-    private Label clickLabel;
+    public Label clickLabel;
 
     @FXML
-    private Label impressionLabel;
+    public Label impressionLabel;
 
     @FXML
-    private Label serverLabel;
+    public Label serverLabel;
 
     @FXML
-    private Label importMessage;
+    public Label importMessage;
 
    /**
      * Select first CSV
      * @param event
      */
     @FXML
-    private void selectClickLog(ActionEvent event) {
+    public void selectClickLog(ActionEvent event) {
         file1 = chooseFile(event);
         clickLabel.setText(file1.getName());
     }
@@ -47,7 +49,7 @@ public class ImportController {
      * @param event
      */
     @FXML
-    private void selectImpressionLog(ActionEvent event) {
+    public void selectImpressionLog(ActionEvent event) {
         file2 = chooseFile(event);
         impressionLabel.setText(file2.getName());
 
@@ -58,7 +60,7 @@ public class ImportController {
      * @param event
      */
     @FXML
-    private void selectServerLog(ActionEvent event) {
+    public void selectServerLog(ActionEvent event) {
         file3 = chooseFile(event);
         serverLabel.setText(file3.getName());
 
@@ -86,7 +88,7 @@ public class ImportController {
      * Handle upload button click
      */
     @FXML
-    private void uploadFiles() {
+    public void uploadFiles() {
         if (file1 == null && file2 == null && file3 == null) {
             setErrorMessage("No files selected");
             PauseTransition pause = new PauseTransition(Duration.seconds(20));
@@ -150,7 +152,7 @@ public class ImportController {
      * @param file
      * @param directory
      */
-    private void saveFile(File file, String directory) {
+    public void saveFile(File file, String directory) {
         if (file == null) return;
 
         File destination = new File(directory, file.getName()); // Save with the same name
