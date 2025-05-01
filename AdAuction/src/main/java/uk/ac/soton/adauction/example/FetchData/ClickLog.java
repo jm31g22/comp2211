@@ -37,6 +37,14 @@ public class ClickLog extends LocalQuerier {
                 tickIndex);
     }
 
+    /**
+     * Fetch click counts within a custom date range
+     * @param lowerDateTime
+     * @param upperDateTime
+     * @param tickIndex
+     * @return
+     * @throws SQLException
+     */
     public HashMap<String, Integer> fetchClickCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) throws SQLException {
         if (lowerDateTime.isAfter(upperDateTime)) {
             throw new IllegalArgumentException("lowerDateTime must be before upperDateTime");
@@ -44,6 +52,14 @@ public class ClickLog extends LocalQuerier {
         return fetchClickCountsInternal(lowerDateTime, upperDateTime, tickIndex);
     }
 
+    /**
+     * Internal handler for fetching click counts (custom date range or not)
+     * @param startBoundary
+     * @param endBoundary
+     * @param tickIndex
+     * @return
+     * @throws SQLException
+     */
     private HashMap<String, Integer> fetchClickCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) throws SQLException {
 
         HashMap<String, Integer> counts   = new HashMap<>();
@@ -66,7 +82,7 @@ public class ClickLog extends LocalQuerier {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();            // (or use a logger)
+            e.printStackTrace();
         }
 
         // pad out missing buckets with zeros so the chart has a continuous series
@@ -95,7 +111,6 @@ public class ClickLog extends LocalQuerier {
      * @return
      */
     public HashMap<String, Integer> fetchUniqueCounts(String groupingGranularity, int tickIndex, int offset) throws SQLException {
-        // compute latest and boundaries as before
         Timestamp latestTimestamp = getLatestClickTimestamp();
         if (latestTimestamp == null) {
             return new HashMap<>();
@@ -103,7 +118,6 @@ public class ClickLog extends LocalQuerier {
         LocalDateTime latestLdt = latestTimestamp.toLocalDateTime();
         Boundary boundaries = computeBoundaries(latestLdt, groupingGranularity, offset);
 
-        // delegate to the new overload
         return fetchUniqueCounts(boundaries.getStart(), boundaries.getEnd(), tickIndex);
     }
 
@@ -229,6 +243,12 @@ public class ClickLog extends LocalQuerier {
         return new Boundary(startBoundary, endBoundary);
     }
 
+    /**
+     * Calculate an appropriate tick interval if using custom date range
+     * @param start
+     * @param end
+     * @return
+     */
     private int resolveTickIndex(LocalDateTime start, LocalDateTime end) {
         int maxPoints = 50;
         long hours = ChronoUnit.HOURS.between(start, end) + 1;
@@ -238,6 +258,11 @@ public class ClickLog extends LocalQuerier {
         return 3;
     }
 
+    /**
+     * Add graph filter parameters
+     * @param graphFilters
+     * @throws SQLException
+     */
     public void addParameters(GraphFilters graphFilters) throws SQLException {
         parameters.clear();
         System.out.println("Add Parameters");
@@ -251,6 +276,12 @@ public class ClickLog extends LocalQuerier {
 
     }
 
+    /**
+     * get first column name in given table
+     * @param tableName
+     * @return
+     * @throws SQLException
+     */
     private String getFirstColumnName(String tableName) throws SQLException {
         String query = "PRAGMA table_info(" + tableName + ")";
         try (Statement stmt = conn.createStatement();
@@ -263,6 +294,12 @@ public class ClickLog extends LocalQuerier {
         return null; // Return null if no column is found
     }
 
+    /**
+     * Add filters to query
+     * @param query
+     * @return
+     * @throws SQLException
+     */
     private String addFilters(StringBuilder query) throws SQLException {
         String firstColumnName = getFirstColumnName("click_log");
         if (!parameters.containsValue("null")){

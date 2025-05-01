@@ -55,14 +55,16 @@ public class ImpressionLog extends LocalQuerier {
      *
      * @return HashMap of gender count
      */
-    // ---------------------------------------------
-// GENDER
-// ---------------------------------------------
     public HashMap<String, Integer> fetchImpressionGenderCount() {
-        // default to “everything up to now” – you can change this if you prefer a different default window
         return fetchImpressionGenderCount(LocalDateTime.MIN, LocalDateTime.now());
     }
 
+    /**
+     * fetch impression count by gender with custom date range
+     * @param lowerBound
+     * @param upperBound
+     * @return
+     */
     public HashMap<String, Integer> fetchImpressionGenderCount(LocalDateTime lowerBound,
                                                                LocalDateTime upperBound) {
         HashMap<String, Integer> counts = new HashMap<>();
@@ -105,14 +107,20 @@ public class ImpressionLog extends LocalQuerier {
         return counts;
     }
 
-
-    // ---------------------------------------------
-// AGE
-// ---------------------------------------------
+    /**
+     * Fetch impression count by age
+     * @return
+     */
     public HashMap<String, Integer> fetchImpressionAgeCount() {
         return fetchImpressionAgeCount(LocalDateTime.MIN, LocalDateTime.now());
     }
 
+    /**
+     * Fetch impression count by age with custom date range
+     * @param lowerBound
+     * @param upperBound
+     * @return
+     */
     public HashMap<String, Integer> fetchImpressionAgeCount(LocalDateTime lowerBound,
                                                             LocalDateTime upperBound) {
         HashMap<String, Integer> counts = new HashMap<>();
@@ -156,14 +164,20 @@ public class ImpressionLog extends LocalQuerier {
         return counts;
     }
 
-
-    // ---------------------------------------------
-// INCOME
-// ---------------------------------------------
+    /**
+     * fetch impression count by income
+     * @return
+     */
     public HashMap<String, Integer> fetchImpressionIncomeCount() {
         return fetchImpressionIncomeCount(LocalDateTime.MIN, LocalDateTime.now());
     }
 
+    /**
+     * fetch impression count by income with custom date range
+     * @param lowerBound
+     * @param upperBound
+     * @return
+     */
     public HashMap<String, Integer> fetchImpressionIncomeCount(LocalDateTime lowerBound,
                                                                LocalDateTime upperBound) {
         HashMap<String, Integer> counts = new HashMap<>();
@@ -207,12 +221,25 @@ public class ImpressionLog extends LocalQuerier {
         return counts;
     }
 
-
+    /**
+     * fetch impression count (no specified timeframe)
+     * @param groupingGranularity
+     * @param tickIndex
+     * @return
+     * @throws SQLException
+     */
     public HashMap<String, Integer> fetchImpressionCounts(String groupingGranularity, int tickIndex) throws SQLException {
         return fetchImpressionCounts(groupingGranularity, tickIndex, 0);
     }
 
-
+    /**
+     * fetch impression counts
+     * @param groupingGranularity
+     * @param tickIndex
+     * @param offset
+     * @return
+     * @throws SQLException
+     */
     public HashMap<String, Integer> fetchImpressionCounts(String groupingGranularity, int tickIndex, int offset) throws SQLException {
         Timestamp latestTimestamp = getLatestImpressionTimestamp();
         if (latestTimestamp == null) {
@@ -224,6 +251,14 @@ public class ImpressionLog extends LocalQuerier {
         return fetchImpressionCounts(boundaries.getStart(), boundaries.getEnd(), tickIndex);
     }
 
+    /**
+     * fetch impression count with custom date range
+     * @param lowerBound
+     * @param upperBound
+     * @param tickIndex
+     * @return
+     * @throws SQLException
+     */
     public HashMap<String, Integer> fetchImpressionCounts(LocalDateTime lowerBound, LocalDateTime upperBound, int tickIndex) throws SQLException {
         HashMap<String, Integer> counts = new HashMap<>();
         int newTick = (tickIndex >= 0) ? tickIndex : resolveTickIndex(lowerBound, upperBound);
@@ -254,6 +289,10 @@ public class ImpressionLog extends LocalQuerier {
         return generateFullSeries(counts, lowerBound, upperBound, newTick, tickInfo.getTickPattern());
     }
 
+    /**
+     * get timestamp of the latest impression in impression_log
+     * @return
+     */
     private Timestamp getLatestImpressionTimestamp() {
         String maxDateSql = "SELECT MAX(impression_date) AS maxDate FROM impression_log";
         try (Statement stmt = conn.createStatement();
@@ -267,7 +306,13 @@ public class ImpressionLog extends LocalQuerier {
         return null;
     }
 
-    //compute boundaries
+    /**
+     * compute date boundaries
+     * @param latestLdt
+     * @param groupingGranularity
+     * @param offset
+     * @return
+     */
     private Boundary computeBoundaries(LocalDateTime latestLdt, String groupingGranularity, int offset) {
         LocalDateTime startBoundary;
         LocalDateTime endBoundary;
@@ -310,6 +355,12 @@ public class ImpressionLog extends LocalQuerier {
         return new Boundary(startBoundary, endBoundary);
     }
 
+    /**
+     * get appropriate tick pattern for custom date range
+     * @param start
+     * @param end
+     * @return
+     */
     private int resolveTickIndex(LocalDateTime start, LocalDateTime end) {
         int maxPoints = 50;
         long hours = ChronoUnit.HOURS.between(start, end) + 1;
@@ -319,6 +370,11 @@ public class ImpressionLog extends LocalQuerier {
         return 3;
     }
 
+    /**
+     * get tick info based on index
+     * @param tickIndex
+     * @return
+     */
     private TickInfo getTickInfo(int tickIndex) {
         switch (tickIndex) {
             case 0: // hourly
@@ -335,7 +391,15 @@ public class ImpressionLog extends LocalQuerier {
     }
 
 
-    // ensure continuous x axis
+    /**
+     * Pad out dataset with 0s to ensure continuous dataset
+     * @param counts
+     * @param startBoundary
+     * @param endBoundary
+     * @param tickIndex
+     * @param tickPattern
+     * @return
+     */
     private HashMap<String, Integer> generateFullSeries(HashMap<String, Integer> counts,
                                                         LocalDateTime startBoundary,
                                                         LocalDateTime endBoundary,
@@ -370,6 +434,11 @@ public class ImpressionLog extends LocalQuerier {
         return fullCounts;
     }
 
+    /**
+     * Add parameters from GraphFilters object
+     * @param graphFilters
+     * @throws SQLException
+     */
     public void addParameters(GraphFilters graphFilters) throws SQLException {
         parameters.clear();
         System.out.println("Add Parameters");
@@ -379,22 +448,32 @@ public class ImpressionLog extends LocalQuerier {
         if (!graphFilters.getContext().equals("All")) parameters.put("context", graphFilters.getContext());
         if (!graphFilters.getEndDate().equals("End")) parameters.put("endDate", graphFilters.getEndDate());
         if (!graphFilters.getStartDate().equals("Start")) parameters.put("startDate", graphFilters.getStartDate());
-
-
     }
 
+    /**
+     * Get first column name from given table
+     * @param tableName
+     * @return
+     * @throws SQLException
+     */
     private String getFirstColumnName(String tableName) throws SQLException {
         String query = "PRAGMA table_info(" + tableName + ")";
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
 
             if (rs.next()) {
-                return rs.getString("name"); // The "name" column contains the column name
+                return rs.getString("name");
             }
         }
         return null; // Return null if no column is found
     }
 
+    /**
+     * Add filters to query
+     * @param query
+     * @return
+     * @throws SQLException
+     */
     private String addFilters(StringBuilder query) throws SQLException {
         String firstColumnName = getFirstColumnName("impression_log");
         if (!parameters.containsValue("null")){

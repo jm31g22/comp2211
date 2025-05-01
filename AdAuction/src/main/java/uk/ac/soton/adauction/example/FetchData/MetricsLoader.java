@@ -20,6 +20,17 @@ public class MetricsLoader extends LocalQuerier {
     List<Object> values = new ArrayList<>();
     private double cost;
 
+    /**
+     * Load all metrics
+     * @param age
+     * @param gender
+     * @param income
+     * @param context
+     * @param startDate
+     * @param endDate
+     * @return
+     * @throws SQLException
+     */
     public HashMap<String, SimpleStringProperty> loadAllMetrics(String age, String gender, String income, String context, String startDate, String endDate) throws SQLException {
         System.out.println("Updating metrics");
         addParameters(age, gender, income, context, startDate, endDate);
@@ -33,6 +44,10 @@ public class MetricsLoader extends LocalQuerier {
         return metricValuePairs;
     }
 
+    /**
+     * get earliest date from impression log
+     * @return
+     */
     public Date getStartDate(){
         String query = "SELECT min(i.impression_date) AS earliest date FROM impression_log i";
         try (Statement stmt = conn.createStatement();
@@ -47,6 +62,10 @@ public class MetricsLoader extends LocalQuerier {
         return null;
     }
 
+    /**
+     * get latest date from impression log
+     * @return
+     */
     public Date getEndDate(){
         String query = "SELECT max(i.impression_date) AS latest date FROM impression_log i";
         try (Statement stmt = conn.createStatement();
@@ -61,6 +80,16 @@ public class MetricsLoader extends LocalQuerier {
         return null;
     }
 
+    /**
+     * Add parameters
+     * @param age
+     * @param gender
+     * @param income
+     * @param context
+     * @param startDate
+     * @param endDate
+     * @throws SQLException
+     */
     private void addParameters(String age, String gender, String income, String context, String startDate, String endDate) throws SQLException {
         parameters.clear();
 
@@ -73,6 +102,12 @@ public class MetricsLoader extends LocalQuerier {
 
     }
 
+    /**
+     * get first column name from given table
+     * @param tableName
+     * @return
+     * @throws SQLException
+     */
     private String getFirstColumnName(String tableName) throws SQLException {
         String query = "PRAGMA table_info(" + tableName + ")";
         try (Statement stmt = conn.createStatement();
@@ -85,6 +120,9 @@ public class MetricsLoader extends LocalQuerier {
         return null; // Return null if no column is found
     }
 
+    /**
+     * Load simple metrics - number of impressions/clicks/conversions/uniques
+     */
     private void loadSimpleMetrics() {
         values.clear();
         values.addAll(parameters.values());
@@ -132,7 +170,10 @@ public class MetricsLoader extends LocalQuerier {
         }
     }
 
-
+    /**
+     * calculate total cost
+     * @throws SQLException
+     */
     private void loadTotalCost() throws SQLException {
 
         StringBuilder queryBuilder = new StringBuilder(
@@ -151,6 +192,9 @@ public class MetricsLoader extends LocalQuerier {
                 .set(String.format("%.2f", cost/100));
     }
 
+    /**
+     * load cost metrics (CTR,CPA,CPC,CPM)
+     */
     private void loadCostMetrics() {
         double CTR = Double.parseDouble(metricValuePairs.get("NumberOfClicks").get()) /
                 Double.parseDouble(metricValuePairs.get("NumberOfImpressions").get());
@@ -173,6 +217,11 @@ public class MetricsLoader extends LocalQuerier {
                 .set(String.format("%.4f", CPM));
     }
 
+    /**
+     * load bounce metrics depending on bounce definition
+     * @return
+     * @throws SQLException
+     */
     public HashMap<String, SimpleStringProperty> loadBounceMetrics() throws SQLException {
         String definition = App.getAppState().getBounceDefinitionBinding().get();
         int value = App.getAppState().getBounceDefinitionNumberBinding().get();
@@ -204,6 +253,12 @@ public class MetricsLoader extends LocalQuerier {
         return metricValuePairs;
     }
 
+    /**
+     * add filters to query
+     * @param query
+     * @param tableName
+     * @throws SQLException
+     */
     private void addFilters(StringBuilder query, String tableName) throws SQLException {
         String firstColumnName = getFirstColumnName(tableName);
 
@@ -220,6 +275,13 @@ public class MetricsLoader extends LocalQuerier {
         }
     }
 
+    /**
+     * execute query with filters attached
+     * @param query
+     * @param returnType
+     * @return
+     * @throws SQLException
+     */
     private Number executeFilteredQuery(String query, String returnType) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             // Set values dynamically
@@ -242,6 +304,12 @@ public class MetricsLoader extends LocalQuerier {
         return returnType.equals("int") ? 0 : 0.0; // Return default value (no -1 to avoid errors)
     }
 
+    /**
+     * execute double query with filters
+     * @param query
+     * @return
+     * @throws SQLException
+     */
     private Object[] executeFilteredDoubleQuery(String query) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             // Set values dynamically

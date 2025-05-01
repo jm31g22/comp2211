@@ -76,6 +76,10 @@ public class ImportController {
         return fileChooser.showOpenDialog(stage);
     }
 
+    /**
+     * Set error message
+     * @param text
+     */
     @FXML
     private void setErrorMessage(String text){
         importMessage.setText(text);

@@ -136,7 +136,9 @@ public class ComparisonController extends SceneController {
     private GraphFilters graph1Filters;
     private GraphFilters graph2Filters;
 
-
+    /**
+     * Constructor
+     */
     public ComparisonController() {
         impressionLog = new ImpressionLog();
         clickLog = new ClickLog();
@@ -269,6 +271,10 @@ public class ComparisonController extends SceneController {
         ageButton6.setToggleGroup(ageToggleGroup);
     }
 
+    /**
+     * Handle graph 1/graph 2 being selected for filters
+     * @param graph
+     */
     public void filterButtonUpdate(int graph) {
         GraphFilters filters = getGraphFilters();
         if (graph == 1) {
@@ -280,6 +286,10 @@ public class ComparisonController extends SceneController {
         }
     }
 
+    /**
+     * Get graph filters from UI options
+     * @return
+     */
     @NotNull
     private GraphFilters getGraphFilters() {
         RadioButton ageSelected = (RadioButton) ageToggleGroup.getSelectedToggle();
@@ -317,9 +327,12 @@ public class ComparisonController extends SceneController {
         viewer.setStyle("-fx-border-width: 0");
     }
 
-
     /**
-     * Function to modify the pie chart page and set metric selection
+     * Modify the pie chart page and set metric selection
+     * @param metricSelection
+     * @param timeSelection
+     * @param impressionPie
+     * @param pane
      */
     public void loadPieChartPage(ChoiceBox<String> metricSelection, ChoiceBox<String> timeSelection, PieChart impressionPie, AnchorPane pane) {
         metricSelection.getItems().clear();
@@ -345,6 +358,11 @@ public class ComparisonController extends SceneController {
         timeSelection.hide();
     }
 
+    /**
+     * Handle mouse entering graph area
+     * @param cat
+     * @param impressionPie
+     */
     private void hoverImpressionPane(String cat, PieChart impressionPie) {
         impressionPie.getData().stream().forEach(data -> {
             data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED,
@@ -1021,6 +1039,10 @@ public class ComparisonController extends SceneController {
         return min;
     }
 
+    /**
+     * Create histogram from clickLog
+     * @return
+     */
     private JFreeChart createHistogram() {
         double[] values = clickLog.getHistogramData();
         HistogramDataset dataset = new HistogramDataset();
@@ -1060,6 +1082,10 @@ public class ComparisonController extends SceneController {
         valueLabel.setText(String.valueOf(value));
     }
 
+    /**
+     * Refresh scene
+     * @throws SQLException
+     */
     @Override
     public void refreshScene() throws SQLException {
 

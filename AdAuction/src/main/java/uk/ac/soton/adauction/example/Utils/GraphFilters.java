@@ -10,6 +10,15 @@ public class GraphFilters {
     private String income;
     private String context;
 
+    /**
+     * constructor
+     * @param startDate
+     * @param endDate
+     * @param age
+     * @param gender
+     * @param income
+     * @param context
+     */
     public GraphFilters(String startDate, String endDate, String age, String gender, String income, String context) {
         this.startDate = startDate;
         this.endDate = endDate;

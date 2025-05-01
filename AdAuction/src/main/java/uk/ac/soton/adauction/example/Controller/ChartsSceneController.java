@@ -128,7 +128,7 @@ public class ChartsSceneController extends SceneController {
     private GraphFilters filters;
 
     /**
-     *
+     * Constructor
      */
     public ChartsSceneController() {
         impressionLog = new ImpressionLog();
@@ -277,6 +277,10 @@ public class ChartsSceneController extends SceneController {
         timeSelection.hide();
     }
 
+    /**
+     * Handle hovering over graph
+     * @param cat
+     */
     private void hoverImpressionPane(String cat){
         impressionPie.getData().stream().forEach(data ->{
             data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED,
@@ -448,6 +452,9 @@ public class ChartsSceneController extends SceneController {
         }
     }
 
+    /**
+     * Interface for fetching data for a given graph
+     */
     @FunctionalInterface
     private interface DataFetcher {
         HashMap<String, Integer> fetch(String groupingGranularity, int tickIndex, int offset);
@@ -828,6 +835,10 @@ public class ChartsSceneController extends SceneController {
         valueLabel.setText(String.valueOf(value));
     }
 
+    /**
+     * Create histogram from clickLog data
+     * @return
+     */
     private JFreeChart createHistogram(){
         double[] values = clickLog.getHistogramData();
         HistogramDataset dataset = new HistogramDataset();
@@ -877,6 +888,9 @@ public class ChartsSceneController extends SceneController {
         ageButton6.setToggleGroup(ageToggleGroup);
     }
 
+    /**
+     * Update filters when new radio button option/date selected
+     */
     public void filterButtonUpdate(){
         RadioButton ageSelected = (RadioButton) ageToggleGroup.getSelectedToggle();
         String age = (ageSelected != null) ? ageSelected.getText() : "All";
@@ -898,14 +912,18 @@ public class ChartsSceneController extends SceneController {
         );
     }
 
-
+    /**
+     * Handle chart selection (1 or 2)
+     */
     @FXML
     public void handleChartSelection() {
         if(dateRangeVisible) handleDateRangeToggle();
         System.out.println("handleChartSelection called");
     }
 
-
+    /**
+     * Handle toggling custom/fixed date range
+     */
     @FXML
     private void handleDateRangeToggle() {
         dateRangeVisible = !dateRangeVisible;

@@ -22,6 +22,14 @@ public class ServerLog extends LocalQuerier {
         return fetchConversionCounts(groupingGranularity, tickIndex, 0);
     }
 
+    /**
+     * fetch conversion counts
+     * @param groupingGranularity
+     * @param tickIndex
+     * @param offset
+     * @return
+     * @throws SQLException
+     */
     public HashMap<String, Integer> fetchConversionCounts(String groupingGranularity, int tickIndex, int offset) throws SQLException {
         Timestamp latest = getLatestEntryTimestamp();
         if (latest == null) {
@@ -36,6 +44,14 @@ public class ServerLog extends LocalQuerier {
                 tickIndex);
     }
 
+    /**
+     * fetch conversion counts with custom date range
+     * @param lowerDateTime
+     * @param upperDateTime
+     * @param tickIndex
+     * @return
+     * @throws SQLException
+     */
     public HashMap<String, Integer> fetchConversionCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) throws SQLException {
         if (lowerDateTime.isAfter(upperDateTime)) {
             throw new IllegalArgumentException("lowerDateTime must be before upperDateTime");
@@ -45,6 +61,14 @@ public class ServerLog extends LocalQuerier {
         return fetchConversionCountsInternal(lowerDateTime, upperDateTime, newTick);
     }
 
+    /**
+     * internal helper to fetch counts (regardless if custom date range)
+     * @param startBoundary
+     * @param endBoundary
+     * @param tickIndex
+     * @return
+     * @throws SQLException
+     */
     private HashMap<String, Integer> fetchConversionCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) throws SQLException {
         HashMap<String, Integer> counts   = new HashMap<>();
         TickInfo tickInfo = getTickInfo(tickIndex);
@@ -82,6 +106,14 @@ public class ServerLog extends LocalQuerier {
         return fetchBounceCounts(groupingGranularity, tickIndex, 0);
     }
 
+    /**
+     * fetch bounce count
+     * @param groupingGranularity
+     * @param tickIndex
+     * @param offset
+     * @return
+     * @throws SQLException
+     */
     public HashMap<String, Integer> fetchBounceCounts(String groupingGranularity, int tickIndex, int offset) throws SQLException {
         Timestamp latest = getLatestEntryTimestamp();
         if (latest == null) return new HashMap<>();
@@ -94,6 +126,14 @@ public class ServerLog extends LocalQuerier {
                 tickIndex);
     }
 
+    /**
+     * fetch bounce counts with custom date range
+     * @param lowerDateTime
+     * @param upperDateTime
+     * @param tickIndex
+     * @return
+     * @throws SQLException
+     */
     public HashMap<String, Integer> fetchBounceCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) throws SQLException {
         if (lowerDateTime.isAfter(upperDateTime)) {
             throw new IllegalArgumentException("lowerDateTime must be before upperDateTime");
@@ -101,8 +141,15 @@ public class ServerLog extends LocalQuerier {
         return fetchBounceCountsInternal(lowerDateTime, upperDateTime, tickIndex);
     }
 
+    /**
+     * internal helper to fetch bounce counts regardless of custom date
+     * @param startBoundary
+     * @param endBoundary
+     * @param tickIndex
+     * @return
+     * @throws SQLException
+     */
     private HashMap<String, Integer> fetchBounceCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) throws SQLException {
-
         HashMap<String, Integer> counts   = new HashMap<>();
         TickInfo tickInfo = getTickInfo(tickIndex);
         String query;
@@ -142,7 +189,10 @@ public class ServerLog extends LocalQuerier {
                 tickInfo.getTickPattern());
     }
 
-
+    /**
+     * Get latest entry date from server log
+     * @return
+     */
     private Timestamp getLatestEntryTimestamp() {
         String sql = "SELECT MAX(entry_date) AS maxDate FROM server_log";
         try (Statement stmt = conn.createStatement();
@@ -156,6 +206,13 @@ public class ServerLog extends LocalQuerier {
         return null;
     }
 
+    /**
+     * compute date boundaries
+     * @param latestLdt
+     * @param groupingGranularity
+     * @param offset
+     * @return
+     */
     private Boundary computeBoundaries(LocalDateTime latestLdt, String groupingGranularity, int offset) {
         LocalDateTime startBoundary;
         LocalDateTime endBoundary;
@@ -198,6 +255,12 @@ public class ServerLog extends LocalQuerier {
         return new Boundary(startBoundary, endBoundary);
     }
 
+    /**
+     * calculate sensible tick index based on custom dates
+     * @param start
+     * @param end
+     * @return
+     */
     private int resolveTickIndex(LocalDateTime start, LocalDateTime end) {
         int maxPoints = 50;
         long hours = ChronoUnit.HOURS.between(start, end) + 1;
@@ -207,6 +270,11 @@ public class ServerLog extends LocalQuerier {
         return 3;
     }
 
+    /**
+     * get tick info based in index
+     * @param tickIndex
+     * @return
+     */
     private TickInfo getTickInfo(int tickIndex) {
         switch (tickIndex) {
             case 0: // hourly
@@ -223,7 +291,15 @@ public class ServerLog extends LocalQuerier {
     }
 
 
-    //ensure continuous x axis
+    /**
+     * Pad out dataset with 0s to ensure continuous dataset
+     * @param counts
+     * @param startBoundary
+     * @param endBoundary
+     * @param tickIndex
+     * @param tickPattern
+     * @return
+     */
     private HashMap<String, Integer> generateFullSeries(HashMap<String, Integer> counts,
                                                         LocalDateTime startBoundary,
                                                         LocalDateTime endBoundary,
@@ -261,6 +337,11 @@ public class ServerLog extends LocalQuerier {
         return fullCounts;
     }
 
+    /**
+     * Add parameters from GraphFilters object
+     * @param graphFilters
+     * @throws SQLException
+     */
     public void addParameters(GraphFilters graphFilters) throws SQLException {
         parameters.clear();
         System.out.println("Add Parameters");
@@ -270,10 +351,14 @@ public class ServerLog extends LocalQuerier {
         if (!graphFilters.getContext().equals("All")) parameters.put("context", graphFilters.getContext());
         if (!graphFilters.getEndDate().equals("End")) parameters.put("endDate", graphFilters.getEndDate());
         if (!graphFilters.getStartDate().equals("Start")) parameters.put("startDate", graphFilters.getStartDate());
-
-
     }
 
+    /**
+     * Get first column name from given table
+     * @param tableName
+     * @return
+     * @throws SQLException
+     */
     private String getFirstColumnName(String tableName) throws SQLException {
         String query = "PRAGMA table_info(" + tableName + ")";
         try (Statement stmt = conn.createStatement();
@@ -286,6 +371,12 @@ public class ServerLog extends LocalQuerier {
         return null; // Return null if no column is found
     }
 
+    /**
+     * Add filters to query
+     * @param query
+     * @return
+     * @throws SQLException
+     */
     private String addFilters(StringBuilder query) throws SQLException {
         String firstColumnName = getFirstColumnName("server_log");
         if (!parameters.containsValue("null")){
