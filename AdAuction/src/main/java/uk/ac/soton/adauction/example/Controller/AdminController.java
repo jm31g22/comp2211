@@ -1,5 +1,6 @@
 package uk.ac.soton.adauction.example.Controller;
 
+import com.itextpdf.text.DocumentException;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,9 +12,11 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import uk.ac.soton.adauction.example.Utils.Export;
 import javafx.stage.Window;
 import uk.ac.soton.adauction.example.Utils.DatabaseConnection;
 
+import java.io.IOException;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -30,6 +33,9 @@ public class AdminController extends SceneController{
     @FXML private TextField newPassword;
     @FXML private TextField newEmail;
     @FXML private ComboBox<String> roleComboBox;
+
+
+    @FXML Label exportUsersLabel;
 
     private final Connection conn = DatabaseConnection.getRemoteUsersConnection();
     private final ObservableList<Map<String, String>> users = FXCollections.observableArrayList();
@@ -496,6 +502,29 @@ public class AdminController extends SceneController{
             System.out.println("=====================================================");
         } catch (SQLException e) {
             showErrorAlert("Database Error", "Failed to load logs: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void exportUsersCSV() {
+        try {
+            Export.exportUsers(users, "csv", "Downloads");
+            exportUsersLabel.setText("CSV saved!");
+            exportUsersLabel.setVisible(true);
+        } catch (IOException | DocumentException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
+    private void exportUsersPDF() {
+        try {
+            Export.exportUsers(users, "pdf", "Downloads");
+            exportUsersLabel.setText("PDF saved!");
+            exportUsersLabel.setVisible(true);
+
+        } catch (IOException | DocumentException e) {
+            throw new RuntimeException(e);
         }
     }
 }

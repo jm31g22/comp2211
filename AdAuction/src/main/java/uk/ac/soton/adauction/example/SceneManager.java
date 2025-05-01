@@ -39,7 +39,12 @@ public class SceneManager {
         loadScene("charts", "Controller/charts.fxml");
         loadScene("login", "Controller/login.fxml");
         loadScene("comparison", "Controller/comparison.fxml");
+        loadScene("loading", "Controller/loading.fxml");
+
     }
+
+
+
 
     /**
      * Loads a scene by reading its fxml file
