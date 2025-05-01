@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import org.jetbrains.annotations.NotNull;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.fx.ChartViewer;
@@ -26,6 +27,8 @@ import uk.ac.soton.adauction.example.Utils.GraphFilters;
 
 import java.awt.*;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -76,9 +79,9 @@ public class ComparisonController extends SceneController {
     private Label timeOrCatLabel;
 
     @FXML
-    private Button graph1FilterButton = new Button();
+    private Button graph1FilterButton;
     @FXML
-    private Button graph2FilterButton = new Button();
+    private Button graph2FilterButton;
     private int filterButtonShowing;
     @FXML
     private DatePicker startDatePicker;
@@ -134,12 +137,12 @@ public class ComparisonController extends SceneController {
     private GraphFilters graph2Filters;
 
 
-
-
     public ComparisonController() {
         impressionLog = new ImpressionLog();
         clickLog = new ClickLog();
         serverLog = new ServerLog();
+        graph1Filters = new GraphFilters("Null", "Null", "All", "All", "All", "All");
+        graph2Filters = new GraphFilters("Null", "Null", "All", "All", "All", "All");
     }
 
     /**
@@ -170,7 +173,7 @@ public class ComparisonController extends SceneController {
             hoverPane.opacityProperty().setValue(0);
             if (selectedIndex == 0) {
                 currentPage = 0;
-                loadLineChartPage(metricSelection1,timeSelection1,granSelection1,graph1Pane);
+                loadLineChartPage(metricSelection1, timeSelection1, granSelection1, graph1Pane);
                 panLeftButton1.setVisible(true);
                 panRightButton1.setVisible(true);
                 metricSelection1.opacityProperty().setValue(1);
@@ -266,36 +269,45 @@ public class ComparisonController extends SceneController {
         ageButton6.setToggleGroup(ageToggleGroup);
     }
 
-    public void filterButtonUpdate(int graph){
-        RadioButton ageSelected = (RadioButton) ageToggleGroup.getSelectedToggle();
-        String age = ageSelected.getText();
-        RadioButton genderSelected = (RadioButton) genderToggleGroup.getSelectedToggle();
-        String gender = genderSelected.getText();
-        RadioButton incomeSelected = (RadioButton) incomeToggleGroup.getSelectedToggle();
-        String income = incomeSelected.getText();
-        RadioButton contextSelected = (RadioButton) contextToggleGroup.getSelectedToggle();
-        String context = contextSelected.getText();
-        GraphFilters filters = new GraphFilters(
-                startDatePicker.getValue(),
-                endDatePicker.getValue(),
-                age,
-                gender,
-                income,
-                context
-        );
+    public void filterButtonUpdate(int graph) {
+        GraphFilters filters = getGraphFilters();
         if (graph == 1) {
             filterButtonShowing = 1;
             graph1Filters = filters;
-        }else if(graph == 2){
+        } else if (graph == 2) {
             filterButtonShowing = 2;
             graph2Filters = filters;
         }
     }
 
+    @NotNull
+    private GraphFilters getGraphFilters() {
+        RadioButton ageSelected = (RadioButton) ageToggleGroup.getSelectedToggle();
+        String age = (ageSelected != null) ? ageSelected.getText() : "All";
+        RadioButton genderSelected = (RadioButton) genderToggleGroup.getSelectedToggle();
+        String gender = (genderSelected != null) ? genderSelected.getText() : "All";
+        RadioButton incomeSelected = (RadioButton) incomeToggleGroup.getSelectedToggle();
+        String income = (incomeSelected != null) ? incomeSelected.getText() : "All";
+        RadioButton contextSelected = (RadioButton) contextToggleGroup.getSelectedToggle();
+        String context = (contextSelected != null) ? contextSelected.getText() : "All";
+        String lowDate = (startDatePicker.getValue() != null) ? startDatePicker.getValue().toString() : "null";
+        String upperDate = (endDatePicker.getValue() != null) ? endDatePicker.getValue().toString() : "null";
+        GraphFilters filters = new GraphFilters(
+                lowDate,
+                upperDate,
+                age,
+                gender,
+                income,
+                context
+        );
+        return filters;
+    }
+
+
     /**
      * Function to load the histogram of distributed click cost
      */
-    public void loadHistogramPage(AnchorPane pane){
+    public void loadHistogramPage(AnchorPane pane) {
         pane.getChildren().clear();
         ChartViewer viewer = new ChartViewer(createHistogram());
         viewer.setPrefWidth(623.0);
@@ -332,8 +344,8 @@ public class ComparisonController extends SceneController {
         timeSelection.hide();
     }
 
-    private void hoverImpressionPane(String cat, PieChart impressionPie){
-        impressionPie.getData().stream().forEach(data ->{
+    private void hoverImpressionPane(String cat, PieChart impressionPie) {
+        impressionPie.getData().stream().forEach(data -> {
             data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED,
                     new EventHandler<>() {
                         @Override
@@ -365,6 +377,7 @@ public class ComparisonController extends SceneController {
         impressionPie.setPrefHeight(242.0);
         impressionPie.setLegendVisible(false);
     }
+
     /**
      * Function to load impression group by age pie chart
      */
@@ -445,6 +458,7 @@ public class ComparisonController extends SceneController {
 
     /**
      * Add menu items for timeframe and granularity selection - and attempt to refresh graph upon changes
+     *
      * @param graphIndex - which graph
      */
     private void addTimeSelection(int graphIndex, ChoiceBox<String> timeSelection, ChoiceBox<String> granSelection, AnchorPane pane) {
@@ -460,10 +474,10 @@ public class ComparisonController extends SceneController {
         granSelection.getItems().addAll("Hourly", "Daily", "Weekly", "Monthly");
 
         // attempt graph load on selection change
-        if (pane == graph1Pane){
+        if (pane == graph1Pane) {
             timeSelection.setOnAction(e -> attemptGraphLoad(graphIndex, timeSelection, granSelection, pane, panLeftButton1, panRightButton1));
             granSelection.setOnAction(e -> attemptGraphLoad(graphIndex, timeSelection, granSelection, pane, panLeftButton1, panRightButton1));
-        }else{
+        } else {
             timeSelection.setOnAction(e -> attemptGraphLoad(graphIndex, timeSelection, granSelection, pane, panLeftButton2, panRightButton2));
             granSelection.setOnAction(e -> attemptGraphLoad(graphIndex, timeSelection, granSelection, pane, panLeftButton2, panRightButton2));
         }
@@ -472,6 +486,7 @@ public class ComparisonController extends SceneController {
 
     /**
      * Attempt to load graph over time
+     *
      * @param graphIndex
      */
     private void attemptGraphLoad(int graphIndex, ChoiceBox<String> timeSelection, ChoiceBox<String> granSelection, AnchorPane pane, Button panLeftButton, Button panRightButton) {
@@ -505,23 +520,24 @@ public class ComparisonController extends SceneController {
     }
 
     @FunctionalInterface
-    public interface Consumer<T,U,V,W,X>{
+    public interface Consumer<T, U, V, W, X> {
         void accept(T t, U u, V v, W w, X x);
     }
 
     @FunctionalInterface
     private interface DataFetcher {
-        HashMap<String, Integer> fetch(String groupingGranularity, int tickIndex, int offset);
+        HashMap<String, Integer> fetch(String groupingGranularity, int tickIndex, int offset) throws SQLException;
     }
 
     /**
      * Generic function to load a count graph over time
-     * @param tickIndex -
+     *
+     * @param tickIndex           -
      * @param groupingGranularity - granularity of data
-     * @param fetcher - generic data fetcher interface
-     * @param yAxisLabel - name of the y axis
-     * @param seriesName - name of the graph
-     * @param reloadFunc - function to reload when panning data
+     * @param fetcher             - generic data fetcher interface
+     * @param yAxisLabel          - name of the y axis
+     * @param seriesName          - name of the graph
+     * @param reloadFunc          - function to reload when panning data
      */
     private void loadCountGraph(
             int tickIndex,
@@ -559,10 +575,20 @@ public class ComparisonController extends SceneController {
                 throw new IllegalArgumentException("Invalid tick increment index: " + tickIndex);
         }
         HashMap<String, Integer> count = new HashMap<>();
-        if (pane == graph1Pane){
-            count = fetcher.fetch(groupingGranularity, tickIndex, offset1);
-        }else{
-            count = fetcher.fetch(groupingGranularity, tickIndex, offset2);
+        if (pane == graph1Pane) {
+            try {
+                count = fetcher.fetch(groupingGranularity, tickIndex, offset1);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+                ;
+            }
+        } else {
+            try {
+                count = fetcher.fetch(groupingGranularity, tickIndex, offset2);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+                ;
+            }
         }
         // fetch data
 
@@ -612,15 +638,15 @@ public class ComparisonController extends SceneController {
         metricsLine.setCreateSymbols(true);
         line = series.getNode().lookup(".chart-series-line");
         line.setStyle("-fx-stroke: #6677b2;");
-        for (XYChart.Data<String, Number> data: series.getData()){
-            Platform.runLater(()->{
+        for (XYChart.Data<String, Number> data : series.getData()) {
+            Platform.runLater(() -> {
                 Node symbol = data.getNode().lookup(".chart-line-symbol");
                 symbol.setStyle("-fx-background-color:  #1F263E, #FFFFFF");
             });
         }
         pane.getChildren().clear();
         pane.getChildren().add(metricsLine);
-        if (pane == graph1Pane){
+        if (pane == graph1Pane) {
             // panning button functionality
             panLeftButton.setOnAction(e -> {
                 offset1--;
@@ -631,7 +657,12 @@ public class ComparisonController extends SceneController {
                 offset1++;
                 reloadFunc.accept(tickIndex, groupingGranularity, pane, panLeftButton, panRightButton);
             });
-        }else{
+
+            graph1FilterButton.setOnAction(e -> {
+                filterButtonUpdate(1);
+                reloadFunc.accept(tickIndex, groupingGranularity, pane, panLeftButton, panRightButton);
+            });
+        } else {
             // panning button functionality
             panLeftButton.setOnAction(e -> {
                 offset2--;
@@ -642,13 +673,20 @@ public class ComparisonController extends SceneController {
                 offset2++;
                 reloadFunc.accept(tickIndex, groupingGranularity, pane, panLeftButton, panRightButton);
             });
+
+            graph2FilterButton.setOnAction(e -> {
+                filterButtonUpdate(2);
+                reloadFunc.accept(tickIndex, groupingGranularity, pane, panLeftButton, panRightButton);
+            });
+
         }
 
 
-        for (XYChart.Data<String, Number> data: series.getData()){
+        for (XYChart.Data<String, Number> data : series.getData()) {
             data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED,
                     new EventHandler<MouseEvent>() {
-                        @Override public void handle(MouseEvent e) {
+                        @Override
+                        public void handle(MouseEvent e) {
                             double coordX = e.getX();
                             double coordY = e.getY();
                             addChartHoverPane(coordX, coordY, "Time: ", data.getXValue(), (Integer) data.getYValue());
@@ -656,14 +694,15 @@ public class ComparisonController extends SceneController {
                     });
             data.getNode().addEventHandler(MouseEvent.MOUSE_EXITED,
                     new EventHandler<MouseEvent>() {
-                        @Override public void handle(MouseEvent e) {
+                        @Override
+                        public void handle(MouseEvent e) {
                             hoverPane.opacityProperty().setValue(0);
                         }
                     });
         }
-        if (pane == graph1Pane){
+        if (pane == graph1Pane) {
             System.out.println(seriesName + " loaded. Current offset = " + offset1);
-        }else{
+        } else {
             System.out.println(seriesName + " loaded. Current offset = " + offset2);
         }
 
@@ -671,6 +710,7 @@ public class ComparisonController extends SceneController {
 
     /**
      * Load impression count graph
+     *
      * @param tickIndex
      * @param groupingGranularity
      */
@@ -679,10 +719,31 @@ public class ComparisonController extends SceneController {
                                          AnchorPane pane,
                                          Button panLeftButton,
                                          Button panRightButton) {
+        DataFetcher fetcher = (g, t, o) -> {
+            if (startDatePicker.getValue() != null) {
+                System.out.println("loadImpressionCountGraph called with date range");
+                try {
+                    LocalDateTime startTime = startDatePicker.getValue().atStartOfDay();
+                    LocalDateTime endTime = endDatePicker.getValue().atStartOfDay();
+                    return impressionLog.fetchImpressionCounts(startTime, endTime, tickIndex);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
+            } else {
+                System.out.println("loadImpressionCountGraph called without date range");
+                try {
+                    return impressionLog.fetchImpressionCounts(g, t, o);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
+            }
+            return null;
+        };
+
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
-                impressionLog::fetchImpressionCounts,
+                fetcher,
                 "No of Impression",
                 "No of Impression over time",
                 this::loadImpressionCountGraph,
@@ -690,10 +751,25 @@ public class ComparisonController extends SceneController {
                 panLeftButton,
                 panRightButton
         );
+        if (pane == graph1Pane) {
+            try {
+                impressionLog.addParameters(graph1Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        } else {
+            try {
+                impressionLog.addParameters(graph2Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        }
+
     }
 
     /**
      * Load click count graph
+     *
      * @param tickIndex
      * @param groupingGranularity
      */
@@ -702,10 +778,29 @@ public class ComparisonController extends SceneController {
                                     AnchorPane pane,
                                     Button panLeftButton,
                                     Button panRightButton) {
+        DataFetcher fetcher = (g, t, o) -> {
+            if (startDatePicker.getValue() != null) {
+                try {
+                    LocalDateTime startTime = startDatePicker.getValue().atStartOfDay();
+                    LocalDateTime endTime = endDatePicker.getValue().atStartOfDay();
+                    return clickLog.fetchClickCounts(startTime, endTime, tickIndex);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
+            } else {
+                System.out.println("loadImpressionCountGraph called without date range");
+                try {
+                    return impressionLog.fetchImpressionCounts(g, t, o);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
+            }
+            return null;
+        };
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
-                clickLog::fetchClickCounts,
+                fetcher,
                 "No of Click",
                 "No of Click over time",
                 this::loadClickCountGraph,
@@ -713,10 +808,24 @@ public class ComparisonController extends SceneController {
                 panLeftButton,
                 panRightButton
         );
+        if (pane == graph1Pane) {
+            try {
+                clickLog.addParameters(graph1Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        } else {
+            try {
+                clickLog.addParameters(graph2Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        }
     }
 
     /**
      * Load unique count graph
+     *
      * @param tickIndex
      * @param groupingGranularity
      */
@@ -725,10 +834,28 @@ public class ComparisonController extends SceneController {
                                      AnchorPane pane,
                                      Button panLeftButton,
                                      Button panRightButton) {
+        DataFetcher fetcher = (g, t, o) -> {
+            if (startDatePicker.getValue() != null) {
+                try {
+                    LocalDateTime startTime = startDatePicker.getValue().atStartOfDay();
+                    LocalDateTime endTime = endDatePicker.getValue().atStartOfDay();
+                    return clickLog.fetchUniqueCounts(startTime, endTime, tickIndex);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
+            } else {
+                try {
+                    return clickLog.fetchUniqueCounts(g, t, o);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
+            }
+            return null;
+        };
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
-                clickLog::fetchUniqueCounts,
+                fetcher,
                 "No of Unique",
                 "No of Unique over time",
                 this::loadUniqueCountGraph,
@@ -736,10 +863,25 @@ public class ComparisonController extends SceneController {
                 panLeftButton,
                 panRightButton
         );
+        if (pane == graph1Pane) {
+            try {
+                clickLog.addParameters(graph1Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        } else {
+            try {
+                clickLog.addParameters(graph2Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        }
     }
+
 
     /**
      * Load conversion count graph
+     *
      * @param tickIndex
      * @param groupingGranularity
      */
@@ -748,10 +890,28 @@ public class ComparisonController extends SceneController {
                                          AnchorPane pane,
                                          Button panLeftButton,
                                          Button panRightButton) {
+        DataFetcher fetcher = (g, t, o) -> {
+            if (startDatePicker.getValue() != null) {
+                try {
+                    LocalDateTime startTime = startDatePicker.getValue().atStartOfDay();
+                    LocalDateTime endTime = endDatePicker.getValue().atStartOfDay();
+                    return serverLog.fetchConversionCounts(startTime, endTime, tickIndex);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
+            } else {
+                try {
+                    return serverLog.fetchConversionCounts(g, t, o);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
+            }
+            return null;
+        };
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
-                serverLog::fetchConversionCounts,
+                fetcher,
                 "No of Conversion",
                 "No of Conversion over time",
                 this::loadConversionCountGraph,
@@ -759,10 +919,24 @@ public class ComparisonController extends SceneController {
                 panLeftButton,
                 panRightButton
         );
+        if (pane == graph1Pane) {
+            try {
+                serverLog.addParameters(graph1Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        } else {
+            try {
+                serverLog.addParameters(graph2Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        }
     }
 
     /**
      * Load bounce count graph
+     *
      * @param tickIndex
      * @param groupingGranularity
      */
@@ -771,10 +945,28 @@ public class ComparisonController extends SceneController {
                                      AnchorPane pane,
                                      Button panLeftButton,
                                      Button panRightButton) {
+        DataFetcher fetcher = (g, t, o) -> {
+            if (startDatePicker.getValue() != null) {
+                try {
+                    LocalDateTime startTime = startDatePicker.getValue().atStartOfDay();
+                    LocalDateTime endTime = endDatePicker.getValue().atStartOfDay();
+                    return serverLog.fetchBounceCounts(startTime, endTime, tickIndex);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
+            } else {
+                try {
+                    return serverLog.fetchBounceCounts(g, t, o);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
+            }
+            return null;
+        };
         loadCountGraph(
                 tickIndex,
                 groupingGranularity,
-                serverLog::fetchBounceCounts,
+                fetcher,
                 "No of Bounce",
                 "No of Bounce over time",
                 this::loadBounceCountGraph,
@@ -782,15 +974,30 @@ public class ComparisonController extends SceneController {
                 panLeftButton,
                 panRightButton
         );
+        if (pane == graph1Pane) {
+            try {
+                serverLog.addParameters(graph1Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        } else {
+            try {
+                serverLog.addParameters(graph2Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        }
     }
+
     /**
      * Get maximum count from dataset
+     *
      * @param count
      * @return maximum
      */
-    private long getMaxCount(HashMap<String,Integer> count){
+    private long getMaxCount(HashMap<String, Integer> count) {
         long max = 0;
-        for (String date: count.keySet()){
+        for (String date : count.keySet()) {
             max = Math.max(max, count.get(date));
         }
         return max;
@@ -798,18 +1005,19 @@ public class ComparisonController extends SceneController {
 
     /**
      * Get minimum count from dataset
+     *
      * @param count
      * @return minimum
      */
-    private long getMinCount(HashMap<String,Integer> count){
+    private long getMinCount(HashMap<String, Integer> count) {
         long min = Integer.MAX_VALUE;
-        for (String date: count.keySet()){
+        for (String date : count.keySet()) {
             min = Math.min(min, count.get(date));
         }
         return min;
     }
 
-    private JFreeChart createHistogram(){
+    private JFreeChart createHistogram() {
         double[] values = clickLog.getHistogramData();
         HistogramDataset dataset = new HistogramDataset();
         dataset.addSeries("click-cost", values, 10);
@@ -832,15 +1040,16 @@ public class ComparisonController extends SceneController {
 
     /**
      * Function to add chart hovering pane
+     *
      * @param coordX x-coordinate of the hovering pane
      * @param coordY y-coordinate of the hovering pane
-     * @param cat category of the data
-     * @param key key of the data
-     * @param value value of the data
+     * @param cat    category of the data
+     * @param key    key of the data
+     * @param value  value of the data
      */
-    private void addChartHoverPane(double coordX, double coordY, String cat, String key, Integer value){
-        hoverPane.setLayoutX(coordX+200);
-        hoverPane.setLayoutY(coordY+200);
+    private void addChartHoverPane(double coordX, double coordY, String cat, String key, Integer value) {
+        hoverPane.setLayoutX(coordX + 200);
+        hoverPane.setLayoutY(coordY + 200);
         hoverPane.opacityProperty().setValue(1);
         timeOrCatLabel.setText(cat);
         timeLabel.setText(key);
