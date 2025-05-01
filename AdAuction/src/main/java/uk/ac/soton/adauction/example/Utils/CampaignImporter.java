@@ -50,6 +50,12 @@ public class CampaignImporter {
                     + "  context VARCHAR(20) "
                     + ")";
 
+    /**
+     * import campaign from csv files
+     * @param clickLogCSV
+     * @param impressionLogCSV
+     * @param serverLogCSV
+     */
     public static void importCampaign(String clickLogCSV, String impressionLogCSV, String serverLogCSV) {
         try {
             try (Statement stmt = conn.createStatement()) {
@@ -77,6 +83,10 @@ public class CampaignImporter {
         }
     }
 
+    /**
+     * drop all tables
+     * @throws SQLException
+     */
     private static void dropTables() throws SQLException {
         Statement stmt = conn.createStatement();
         stmt.execute("DROP TABLE IF EXISTS click_log");
@@ -85,6 +95,10 @@ public class CampaignImporter {
         stmt.execute("DROP TABLE IF EXISTS unique_users");
     }
 
+    /**
+     * create fresh tables
+     * @throws SQLException
+     */
     private static void createTables() throws SQLException {
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(CREATE_CLICK_LOG_TABLE);
@@ -94,6 +108,10 @@ public class CampaignImporter {
         }
     }
 
+    /**
+     * import impression log and populate users
+     * @param impressionLogCSV
+     */
     private static void importImpressionsAndPopulateUsers(String impressionLogCSV) {
         final String insertSQL = "INSERT OR IGNORE INTO impression_log VALUES (?, ?, ?, ?, ?, ?, ?)";
         final String userInsertSQL = "INSERT OR IGNORE INTO unique_users VALUES (?, ?, ?, ?, ?)";
@@ -167,6 +185,12 @@ public class CampaignImporter {
         }
     }
 
+    /**
+     * load and import csv file
+     * @param csvFile
+     * @param insertSQL
+     * @param expectedColumns
+     */
     private static void importCSV(String csvFile, String insertSQL, int expectedColumns) {
         try (
                 BufferedReader reader = new BufferedReader(new FileReader(csvFile));

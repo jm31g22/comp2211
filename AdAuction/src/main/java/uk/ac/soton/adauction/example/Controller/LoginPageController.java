@@ -36,10 +36,16 @@ public class LoginPageController extends SceneController{
     private volatile boolean isCountingDown = false;
     private final Connection conn = DatabaseConnection.getRemoteUsersConnection();
 
+    /**
+     * Constructor
+     * @throws SQLException
+     */
     public LoginPageController() throws SQLException {
     }
 
-
+    /**
+     * Initialise scene
+     */
     @FXML
     public void initialize() {
         dynamicVerificationCode = null;

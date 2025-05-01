@@ -20,6 +20,14 @@ public class Export {
     private static String filepath;
     private static ObservableList<Map<String, String>> users;
 
+    /**
+     * export metrics
+     * @param metricValuePairs
+     * @param type
+     * @param location
+     * @throws IOException
+     * @throws DocumentException
+     */
     public static void exportMetrics(HashMap<String, SimpleStringProperty> metricValuePairs, String type, String location) throws IOException, DocumentException {
         myMetricValuePairs = metricValuePairs;
         filepath = Paths.get(System.getProperty("user.home"), location).toString();
@@ -34,7 +42,10 @@ public class Export {
 
     }
 
-
+    /**
+     * export metrics to csv file
+     * @throws IOException
+     */
     private static void exportMetricsCSV() throws IOException {
         filepath = Paths.get(filepath, "metrics.csv").toString();
 
@@ -59,6 +70,11 @@ public class Export {
 
     }
 
+    /**
+     * export metrics to pdf file
+     * @throws FileNotFoundException
+     * @throws DocumentException
+     */
     private static void exportMetricsPDF() throws FileNotFoundException, DocumentException {
 
         filepath = Paths.get(filepath, "metrics.pdf").toString();
@@ -80,6 +96,14 @@ public class Export {
 
     }
 
+    /**
+     * export users
+     * @param usersMap
+     * @param type
+     * @param location
+     * @throws IOException
+     * @throws DocumentException
+     */
     public static void exportUsers(ObservableList<Map<String, String>> usersMap, String type, String location) throws IOException, DocumentException {
         users = usersMap;
         filepath = Paths.get(System.getProperty("user.home"), location).toString();
@@ -93,6 +117,9 @@ public class Export {
         }
     }
 
+    /**
+     * export users to csv file
+     */
     private static void exportUsersCSV() {
         filepath = Paths.get(filepath, "users.csv").toString();
 
@@ -119,7 +146,11 @@ public class Export {
         }
     }
 
-    // Helper to escape commas and quotes in CSV
+    /**
+     * Helper to escape commas and quotes in CSV
+     * @param value
+     * @return
+     */
     private static String escapeCSV(String value) {
         if (value == null) return "";
         if (value.contains(",") || value.contains("\"") || value.contains("\n")) {
@@ -129,6 +160,9 @@ public class Export {
         return value;
     }
 
+    /**
+     * Export users to pdf file
+     */
     private static void exportUsersPDF() {
         filepath = Paths.get(filepath, "users.pdf").toString();
         Document document = new Document();

@@ -40,6 +40,9 @@ public class AdminController extends SceneController{
     private final Connection conn = DatabaseConnection.getRemoteUsersConnection();
     private final ObservableList<Map<String, String>> users = FXCollections.observableArrayList();
 
+    /**
+     * Initialise scene
+     */
     @FXML
     public void initialize() {
         super.initialize();
@@ -50,7 +53,7 @@ public class AdminController extends SceneController{
         setupEmailTooltip();
     }
 
-    /*
+    /**
      * Initialize List Control
      */
     private void setupTable() {
@@ -150,7 +153,7 @@ public class AdminController extends SceneController{
         usersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     }
 
-    /*
+    /**
      * Role ComboxBox
      */
     private void setupRoleComboBox() {
@@ -158,7 +161,7 @@ public class AdminController extends SceneController{
         roleComboBox.getSelectionModel().selectFirst();
     }
 
-    /*
+    /**
      * Password Tooltip
      */
     private void setupPasswordTooltip() {
@@ -185,7 +188,7 @@ public class AdminController extends SceneController{
         // newPassword.setTooltip(tooltip);
     }
 
-    /*
+    /**
      * Email Tooltip
      */
     private void setupEmailTooltip() {
@@ -211,7 +214,7 @@ public class AdminController extends SceneController{
         //newEmail.setTooltip(tooltip);
     }
 
-    /*
+    /**
      * Retrieve all user data from the database users table to the list
      */
     private void loadUsers() {
@@ -233,7 +236,7 @@ public class AdminController extends SceneController{
         }
     }
 
-    /*
+    /**
      * Add a user to the users data table
      */
     @FXML
@@ -296,7 +299,11 @@ public class AdminController extends SceneController{
         }
     }
 
-    // Check if the username exists
+    /**
+     * Check if username exists
+     * @param username
+     * @return
+     */
     private boolean checkUserExists(String username) {
         String query = "SELECT username FROM users WHERE username = ?";
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -309,7 +316,11 @@ public class AdminController extends SceneController{
         }
     }
 
-    // Verify password
+    /**
+     * Verify password
+     * @param password
+     * @return
+     */
     private List<String> validatePassword(String password) {
         List<String> errors = new ArrayList<>();
 
@@ -337,7 +348,11 @@ public class AdminController extends SceneController{
         return errors;
     }
 
-    // Verify email
+    /**
+     * Verify email
+     * @param email
+     * @return
+     */
     private List<String> validateEmail(String email) {
         List<String> errors = new ArrayList<>();
 
@@ -359,8 +374,9 @@ public class AdminController extends SceneController{
         return errors;
     }
 
-    /*
-     * Delete a specified user
+    /**
+     * Delete user
+     * @param username
      */
     private void handleDeleteUser(String username) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -386,9 +402,12 @@ public class AdminController extends SceneController{
         });
     }
 
-    /*
+    /**
      * After the user directly modifies the user field in the list and presses enter,
      * it is used here to submit and update the user to the database
+     * @param originalUsername
+     * @param field
+     * @param newValue
      */
     private void updateUserField(String originalUsername, String field, String newValue) {
         String query = String.format("UPDATE users SET %s = ? WHERE username = ?", field);
@@ -404,8 +423,10 @@ public class AdminController extends SceneController{
         }
     }
 
-    /*
-     * Record the executed operation in the database user_rogs table
+    /**
+     * Record the executed operation in the database user_logs table
+     * @param actionType
+     * @param details
      */
     private void logAction(String actionType, String details) {
         String query = "INSERT INTO user_logs (action_type, details, timestamp) VALUES (?, ?, ?)";
@@ -419,7 +440,7 @@ public class AdminController extends SceneController{
         }
     }
 
-    /*
+    /**
      * Clear the input fields for adding users
      */
     private void clearInputFields() {
@@ -429,8 +450,10 @@ public class AdminController extends SceneController{
         roleComboBox.getSelectionModel().clearSelection();
     }
 
-    /*
+    /**
      * Pop up error prompt dialog box
+     * @param title
+     * @param message
      */
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -440,6 +463,10 @@ public class AdminController extends SceneController{
         alert.showAndWait();
     }
 
+    /**
+     * Show password error (with what requirements aren't met)
+     * @param errors
+     */
     private void showPasswordErrorAlert(List<String> errors) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Password Requirements Not Met");
@@ -461,6 +488,10 @@ public class AdminController extends SceneController{
         alert.showAndWait();
     }
 
+    /**
+     * Display email validation error
+     * @param errors
+     */
     private void showEmailErrorAlert(List<String> errors) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Invalid Email Address");
@@ -487,6 +518,9 @@ public class AdminController extends SceneController{
     public void refreshScene() {
     }
 
+    /**
+     * Show logs
+     */
     @FXML
     private void handleShowLogs() {
         String query = "SELECT * FROM user_logs ORDER BY timestamp DESC";
@@ -505,6 +539,9 @@ public class AdminController extends SceneController{
         }
     }
 
+    /**
+     * Call exportUsers from Export -> CSV
+     */
     @FXML
     private void exportUsersCSV() {
         try {
@@ -516,6 +553,9 @@ public class AdminController extends SceneController{
         }
     }
 
+    /**
+     * Call exportUsers from Export -> PDF
+     */
     @FXML
     private void exportUsersPDF() {
         try {

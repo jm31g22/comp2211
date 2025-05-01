@@ -9,6 +9,14 @@ import com.sun.mail.smtp.*;
 
 public class EmailUtils
 {
+    /**
+     * Send email given content and destination
+     * @param mailto
+     * @param mailsubject
+     * @param mailcontent
+     * @throws Exception
+     * @throws MessagingException
+     */
     public static void Email(String mailto, String mailsubject, String mailcontent) throws Exception, MessagingException
     {
         String prot = "smtp";
