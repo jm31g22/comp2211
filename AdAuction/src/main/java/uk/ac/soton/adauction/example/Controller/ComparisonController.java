@@ -300,6 +300,7 @@ public class ComparisonController extends SceneController {
                 income,
                 context
         );
+        filters.getFilters();
         return filters;
     }
 
@@ -719,6 +720,19 @@ public class ComparisonController extends SceneController {
                                          AnchorPane pane,
                                          Button panLeftButton,
                                          Button panRightButton) {
+        if (pane == graph1Pane) {
+            try {
+                impressionLog.addParameters(graph1Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        } else {
+            try {
+                impressionLog.addParameters(graph2Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        }
         DataFetcher fetcher = (g, t, o) -> {
             if (startDatePicker.getValue() != null) {
                 System.out.println("loadImpressionCountGraph called with date range");
@@ -751,19 +765,6 @@ public class ComparisonController extends SceneController {
                 panLeftButton,
                 panRightButton
         );
-        if (pane == graph1Pane) {
-            try {
-                impressionLog.addParameters(graph1Filters);
-            } catch (SQLException e) {
-                System.out.println("Some issues caused by the sql");
-            }
-        } else {
-            try {
-                impressionLog.addParameters(graph2Filters);
-            } catch (SQLException e) {
-                System.out.println("Some issues caused by the sql");
-            }
-        }
 
     }
 
@@ -778,6 +779,19 @@ public class ComparisonController extends SceneController {
                                     AnchorPane pane,
                                     Button panLeftButton,
                                     Button panRightButton) {
+        if (pane == graph1Pane) {
+            try {
+                clickLog.addParameters(graph1Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        } else {
+            try {
+                clickLog.addParameters(graph2Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        }
         DataFetcher fetcher = (g, t, o) -> {
             if (startDatePicker.getValue() != null) {
                 try {
@@ -790,7 +804,7 @@ public class ComparisonController extends SceneController {
             } else {
                 System.out.println("loadImpressionCountGraph called without date range");
                 try {
-                    return impressionLog.fetchImpressionCounts(g, t, o);
+                    return clickLog.fetchClickCounts(g, t, o);
                 } catch (SQLException e) {
                     System.out.println("Some issues caused by the sql");
                 }
@@ -808,19 +822,7 @@ public class ComparisonController extends SceneController {
                 panLeftButton,
                 panRightButton
         );
-        if (pane == graph1Pane) {
-            try {
-                clickLog.addParameters(graph1Filters);
-            } catch (SQLException e) {
-                System.out.println("Some issues caused by the sql");
-            }
-        } else {
-            try {
-                clickLog.addParameters(graph2Filters);
-            } catch (SQLException e) {
-                System.out.println("Some issues caused by the sql");
-            }
-        }
+
     }
 
     /**
@@ -834,6 +836,19 @@ public class ComparisonController extends SceneController {
                                      AnchorPane pane,
                                      Button panLeftButton,
                                      Button panRightButton) {
+        if (pane == graph1Pane) {
+            try {
+                clickLog.addParameters(graph1Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        } else {
+            try {
+                clickLog.addParameters(graph2Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        }
         DataFetcher fetcher = (g, t, o) -> {
             if (startDatePicker.getValue() != null) {
                 try {
@@ -863,19 +878,7 @@ public class ComparisonController extends SceneController {
                 panLeftButton,
                 panRightButton
         );
-        if (pane == graph1Pane) {
-            try {
-                clickLog.addParameters(graph1Filters);
-            } catch (SQLException e) {
-                System.out.println("Some issues caused by the sql");
-            }
-        } else {
-            try {
-                clickLog.addParameters(graph2Filters);
-            } catch (SQLException e) {
-                System.out.println("Some issues caused by the sql");
-            }
-        }
+
     }
 
 
@@ -890,6 +893,19 @@ public class ComparisonController extends SceneController {
                                          AnchorPane pane,
                                          Button panLeftButton,
                                          Button panRightButton) {
+        if (pane == graph1Pane) {
+            try {
+                serverLog.addParameters(graph1Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        } else {
+            try {
+                serverLog.addParameters(graph2Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        }
         DataFetcher fetcher = (g, t, o) -> {
             if (startDatePicker.getValue() != null) {
                 try {
@@ -919,19 +935,7 @@ public class ComparisonController extends SceneController {
                 panLeftButton,
                 panRightButton
         );
-        if (pane == graph1Pane) {
-            try {
-                serverLog.addParameters(graph1Filters);
-            } catch (SQLException e) {
-                System.out.println("Some issues caused by the sql");
-            }
-        } else {
-            try {
-                serverLog.addParameters(graph2Filters);
-            } catch (SQLException e) {
-                System.out.println("Some issues caused by the sql");
-            }
-        }
+
     }
 
     /**
@@ -945,6 +949,19 @@ public class ComparisonController extends SceneController {
                                      AnchorPane pane,
                                      Button panLeftButton,
                                      Button panRightButton) {
+        if (pane == graph1Pane) {
+            try {
+                serverLog.addParameters(graph1Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        } else {
+            try {
+                serverLog.addParameters(graph2Filters);
+            } catch (SQLException e) {
+                System.out.println("Some issues caused by the sql");
+            }
+        }
         DataFetcher fetcher = (g, t, o) -> {
             if (startDatePicker.getValue() != null) {
                 try {
@@ -974,19 +991,6 @@ public class ComparisonController extends SceneController {
                 panLeftButton,
                 panRightButton
         );
-        if (pane == graph1Pane) {
-            try {
-                serverLog.addParameters(graph1Filters);
-            } catch (SQLException e) {
-                System.out.println("Some issues caused by the sql");
-            }
-        } else {
-            try {
-                serverLog.addParameters(graph2Filters);
-            } catch (SQLException e) {
-                System.out.println("Some issues caused by the sql");
-            }
-        }
     }
 
     /**

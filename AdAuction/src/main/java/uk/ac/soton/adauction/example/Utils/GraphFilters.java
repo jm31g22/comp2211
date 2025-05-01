@@ -66,4 +66,8 @@ public class GraphFilters {
     public void setContext(String context) {
         this.context = context;
     }
+
+    public void getFilters(){
+        System.out.println("Current Filters: [" + startDate + ", " + endDate + ", " + age + ", " + gender + ", " + income + ", " + context);
+    }
 }
