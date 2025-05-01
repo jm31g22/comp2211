@@ -110,6 +110,9 @@
 
               </children>
           </VBox>
+         <Button fx:id="exportUsersCSV" alignment="CENTER" contentDisplay="CENTER" layoutX="475.0" layoutY="610.0" onAction="#exportUsersCSV" prefHeight="28.0" prefWidth="137.0" style="-fx-font-weight: bold; -fx-background-color: #1F263E; -fx-text-fill: white; -fx-background-radius: 7;" text="Export CSV" />
+         <Button fx:id="exportUsersPDF" alignment="CENTER" contentDisplay="CENTER" layoutX="620.0" layoutY="610.0" onAction="#exportUsersPDF" prefHeight="28.0" prefWidth="137.0" style="-fx-font-weight: bold; -fx-background-color: #1F263E; -fx-text-fill: white; -fx-background-radius: 7;" text="Export PDF" />
+         <Label fx:id="exportUsersLabel" layoutX="350.0" layoutY="617.0" text="Label" visible="false" />
       </children>
   </AnchorPane>
    <VBox layoutY="-1.0" prefHeight="719.0" prefWidth="200.0">

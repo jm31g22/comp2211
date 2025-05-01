@@ -708,7 +708,7 @@ public class DashboardController extends SceneController {
     @FXML
     private void exportCSV() {
         try {
-            Export.export(metricValuePairs, "csv", "Downloads");
+            Export.exportMetrics(metricValuePairs, "csv", "Downloads");
             exportLabel.setText("CSV saved to Downloads!");
         } catch (IOException | DocumentException e) {
             exportLabel.setText("Something went wrong!");
@@ -726,7 +726,7 @@ public class DashboardController extends SceneController {
     @FXML
     private void exportPDF() {
         try {
-            Export.export(metricValuePairs, "pdf", "Downloads");
+            Export.exportMetrics(metricValuePairs, "pdf", "Downloads");
             exportLabel.setText("PDF saved to Downloads!");
         } catch (IOException | DocumentException e) {
             exportLabel.setText("Something went wrong!");
