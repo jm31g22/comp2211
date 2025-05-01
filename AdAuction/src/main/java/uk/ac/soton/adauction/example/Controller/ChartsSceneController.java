@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -28,7 +29,9 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.statistics.HistogramDataset;
 import org.jfree.chart.fx.ChartViewer;
+import uk.ac.soton.adauction.example.Utils.GraphFilters;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -71,11 +74,58 @@ public class ChartsSceneController extends SceneController {
     private Label valueLabel;
     @FXML
     private Label timeOrCatLabel;
+    @FXML
+    private Button applyFilters;
+    @FXML
+    private Text fromLabel;
+    @FXML
+    private Text toLabel;
+    private final ToggleGroup genderToggleGroup = new ToggleGroup();
+    private final ToggleGroup incomeToggleGroup = new ToggleGroup();
+    private final ToggleGroup ageToggleGroup = new ToggleGroup();
+    private final ToggleGroup contextToggleGroup = new ToggleGroup();
+    @FXML
+    private RadioButton maleGenderButton;
+    @FXML
+    private RadioButton femaleGenderButton;
+    @FXML
+    private RadioButton bothGenderButton;
+    @FXML
+    private RadioButton lowIncomeButton;
+    @FXML
+    private RadioButton mediumIncomeButton;
+    @FXML
+    private RadioButton highIncomeButton;
+    @FXML
+    private RadioButton newsContextButton;
+    @FXML
+    private RadioButton blogContextButton;
+    @FXML
+    private RadioButton socialMediaContextButton;
+    @FXML
+    private RadioButton allContextButton;
+    @FXML
+    private RadioButton shoppingContextButton;
+    @FXML
+    private RadioButton allIncomeButton;
+    @FXML
+    private RadioButton ageButton1;
+    @FXML
+    private RadioButton ageButton2;
+    @FXML
+    private RadioButton ageButton3;
+    @FXML
+    private RadioButton ageButton4;
+    @FXML
+    private RadioButton ageButton5;
+    @FXML
+    private RadioButton ageButton6;
     //variable to save what is the current page
     private int currentPage;
     private final ImpressionLog impressionLog;
     private final ClickLog clickLog;
     private final ServerLog serverLog;
+    private GraphFilters filters;
 
     /**
      *
@@ -84,12 +134,14 @@ public class ChartsSceneController extends SceneController {
         impressionLog = new ImpressionLog();
         clickLog = new ClickLog();
         serverLog = new ServerLog();
+        filters = new GraphFilters("Null", "Null", "All", "All", "All", "All");
     }
 
     /**
      * Initialise scene - assume pie chart is shown after entering the scene
      */
     public void initialize() {
+        assignButtonGroups();
         super.initialize();
         granSelection.opacityProperty().setValue(1);
         panLeftButton.setVisible(false);
@@ -103,7 +155,10 @@ public class ChartsSceneController extends SceneController {
 
         lowerDatePicker.setVisible(false);
         upperDatePicker.setVisible(false);
+        fromLabel.setVisible(false);
+        toLabel.setVisible(false);
 
+        dateRangeToggle.setText("Custom date range");
         ChangeListener<LocalDate> dateChangeListener = (obs, oldVal, newVal) -> {
             // only reload if both dates are chosen
             System.out.println("dateChangeListener called");
@@ -188,7 +243,7 @@ public class ChartsSceneController extends SceneController {
         metricSelection.getItems().clear();
         stackPaneGraph.getChildren().clear();
         ChartViewer viewer = new ChartViewer(createHistogram());
-        viewer.setPrefWidth(789.0);
+        viewer.setPrefWidth(623.0);
         viewer.setPrefHeight(551.0);
         stackPaneGraph.getChildren().add(viewer);
         viewer.setStyle("-fx-border-width: 0");
@@ -251,7 +306,7 @@ public class ChartsSceneController extends SceneController {
         hoverImpressionPane("Gender :");
         pieChartData.get(0).getNode().setStyle("-fx-pie-color: #a85775;");
         pieChartData.get(1).getNode().setStyle("-fx-pie-color: #5f8df7;");
-        impressionPie.setPrefWidth(770.0);
+        impressionPie.setPrefWidth(623.0);
         impressionPie.setPrefHeight(500.0);
         impressionPie.setLegendVisible(false);
     }
@@ -279,7 +334,7 @@ public class ChartsSceneController extends SceneController {
         pieChartData.get(2).getNode().setStyle("-fx-pie-color: #e47c6f;");
         pieChartData.get(3).getNode().setStyle("-fx-pie-color: #ffb563;");
         pieChartData.get(4).getNode().setStyle("-fx-pie-color: #f9f871;");
-        impressionPie.setPrefWidth(770.0);
+        impressionPie.setPrefWidth(623.0);
         impressionPie.setPrefHeight(500.0);
         impressionPie.setLegendVisible(false);
     }
@@ -302,7 +357,7 @@ public class ChartsSceneController extends SceneController {
         pieChartData.get(0).getNode().setStyle("-fx-pie-color: #1f263e;");
         pieChartData.get(1).getNode().setStyle("-fx-pie-color: #d1eeec;");
         pieChartData.get(2).getNode().setStyle("-fx-pie-color: #208a86;");
-        impressionPie.setPrefWidth(789.0);
+        impressionPie.setPrefWidth(623.0);
         impressionPie.setPrefHeight(551.0);
         impressionPie.setLegendVisible(false);
     }
@@ -465,7 +520,7 @@ public class ChartsSceneController extends SceneController {
         // create chart
         LineChart<String, Number> metricsLine = new LineChart<>(xAxis, yAxis);
         metricsLine.setLegendVisible(false);
-        metricsLine.setPrefWidth(789.0);
+        metricsLine.setPrefWidth(623.0);
         metricsLine.setPrefHeight(551.0);
         metricsLine.setHorizontalGridLinesVisible(false);
         metricsLine.setVerticalGridLinesVisible(false);
@@ -513,6 +568,11 @@ public class ChartsSceneController extends SceneController {
             reloadFunc.accept(tickIndex, groupingGranularity);
         });
 
+        applyFilters.setOnAction(e ->{
+            filterButtonUpdate();
+            reloadFunc.accept(tickIndex, groupingGranularity);
+        });
+
         for (XYChart.Data<String, Number> data: series.getData()){
             data.getNode().addEventHandler(MouseEvent.MOUSE_ENTERED,
                     new EventHandler<MouseEvent>() {
@@ -542,11 +602,20 @@ public class ChartsSceneController extends SceneController {
         DataFetcher fetcher = (g, t, o) -> {
             if (dateRangeVisible) {
                 System.out.println("loadImpressionCountGraph called with date range");
-                return impressionLog.fetchImpressionCounts(lowerDateTime, upperDateTime, tickIndex);
+                try {
+                    return impressionLog.fetchImpressionCounts(lowerDateTime, upperDateTime, tickIndex);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");;
+                }
             } else {
                 System.out.println("loadImpressionCountGraph called without date range");
-                return impressionLog.fetchImpressionCounts(g, t, o);
+                try {
+                    return impressionLog.fetchImpressionCounts(g, t, o);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");;
+                }
             }
+            return null;
         };
 
         loadCountGraph(
@@ -557,6 +626,11 @@ public class ChartsSceneController extends SceneController {
                 "No of Impression over time",
                 this::loadImpressionCountGraph
         );
+        try {
+            impressionLog.addParameters(filters);
+        } catch (SQLException e) {
+            System.out.println("Some issues caused by the sql");;
+        }
     }
 
     /**
@@ -567,10 +641,19 @@ public class ChartsSceneController extends SceneController {
     public void loadClickCountGraph(int tickIndex, String groupingGranularity) {
         DataFetcher fetcher = (g, t, o) -> {
             if (dateRangeVisible) {
-                return clickLog.fetchClickCounts(lowerDateTime, upperDateTime, tickIndex);
+                try {
+                    return clickLog.fetchClickCounts(lowerDateTime, upperDateTime, tickIndex);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
             } else {
-                return clickLog.fetchClickCounts(g, t, o);
+                try {
+                    return clickLog.fetchClickCounts(g, t, o);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
             }
+            return null;
         };
 
         loadCountGraph(
@@ -581,6 +664,11 @@ public class ChartsSceneController extends SceneController {
                 "No of Click over time",
                 this::loadClickCountGraph
         );
+        try {
+            clickLog.addParameters(filters);
+        } catch (SQLException e) {
+            System.out.println("Some issues caused by the sql");
+        }
     }
 
     /**
@@ -591,10 +679,19 @@ public class ChartsSceneController extends SceneController {
     public void loadUniqueCountGraph(int tickIndex, String groupingGranularity) {
         DataFetcher fetcher = (g, t, o) -> {
             if (dateRangeVisible) {
-                return clickLog.fetchUniqueCounts(lowerDateTime, upperDateTime, tickIndex);
+                try {
+                    return clickLog.fetchUniqueCounts(lowerDateTime, upperDateTime, tickIndex);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
             } else {
-                return clickLog.fetchUniqueCounts(g, t, o);
+                try {
+                    return clickLog.fetchUniqueCounts(g, t, o);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");;
+                }
             }
+            return null;
         };
 
         loadCountGraph(
@@ -605,6 +702,11 @@ public class ChartsSceneController extends SceneController {
                 "No of Unique over time",
                 this::loadUniqueCountGraph
         );
+        try {
+            clickLog.addParameters(filters);
+        } catch (SQLException e) {
+            System.out.println("Some issues caused by the sql");
+        }
     }
 
     /**
@@ -615,10 +717,19 @@ public class ChartsSceneController extends SceneController {
     public void loadConversionCountGraph(int tickIndex, String groupingGranularity) {
         DataFetcher fetcher = (g, t, o) -> {
             if (dateRangeVisible) {
-                return serverLog.fetchConversionCounts(lowerDateTime, upperDateTime, tickIndex);
+                try {
+                    return serverLog.fetchConversionCounts(lowerDateTime, upperDateTime, tickIndex);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
             } else {
-                return serverLog.fetchConversionCounts(g, t, o);
+                try {
+                    return serverLog.fetchConversionCounts(g, t, o);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");;
+                }
             }
+            return null;
         };
 
         loadCountGraph(
@@ -629,6 +740,11 @@ public class ChartsSceneController extends SceneController {
                 "No of Conversion over time",
                 this::loadConversionCountGraph
         );
+        try {
+            serverLog.addParameters(filters);
+        } catch (SQLException e) {
+            System.out.println("Some issues caused by the sql");
+        }
     }
 
     /**
@@ -639,10 +755,19 @@ public class ChartsSceneController extends SceneController {
     public void loadBounceCountGraph(int tickIndex, String groupingGranularity) {
         DataFetcher fetcher = (g, t, o) -> {
             if (dateRangeVisible) {
-                return serverLog.fetchBounceCounts(lowerDateTime, upperDateTime, tickIndex);
+                try {
+                    return serverLog.fetchBounceCounts(lowerDateTime, upperDateTime, tickIndex);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");
+                }
             } else {
-                return serverLog.fetchBounceCounts(g, t, o);
+                try {
+                    return serverLog.fetchBounceCounts(g, t, o);
+                } catch (SQLException e) {
+                    System.out.println("Some issues caused by the sql");;
+                }
             }
+            return null;
         };
 
         loadCountGraph(
@@ -653,6 +778,11 @@ public class ChartsSceneController extends SceneController {
                 "No of Bounce over time",
                 this::loadBounceCountGraph
         );
+        try {
+            serverLog.addParameters(filters);
+        } catch (SQLException e) {
+            System.out.println("Some issues caused by the sql");
+        }
     }
 
     /**
@@ -719,6 +849,55 @@ public class ChartsSceneController extends SceneController {
         return histogram;
     }
 
+    /**
+     * Assign the button groups for the filters
+     */
+    private void assignButtonGroups() {
+        maleGenderButton.setToggleGroup(genderToggleGroup);
+        femaleGenderButton.setToggleGroup(genderToggleGroup);
+        bothGenderButton.setToggleGroup(genderToggleGroup);
+
+        lowIncomeButton.setToggleGroup(incomeToggleGroup);
+        mediumIncomeButton.setToggleGroup(incomeToggleGroup);
+        highIncomeButton.setToggleGroup(incomeToggleGroup);
+        allIncomeButton.setToggleGroup(incomeToggleGroup);
+
+
+        shoppingContextButton.setToggleGroup(contextToggleGroup);
+        newsContextButton.setToggleGroup(contextToggleGroup);
+        blogContextButton.setToggleGroup(contextToggleGroup);
+        socialMediaContextButton.setToggleGroup(contextToggleGroup);
+        allContextButton.setToggleGroup(contextToggleGroup);
+
+        ageButton1.setToggleGroup(ageToggleGroup);
+        ageButton2.setToggleGroup(ageToggleGroup);
+        ageButton3.setToggleGroup(ageToggleGroup);
+        ageButton4.setToggleGroup(ageToggleGroup);
+        ageButton5.setToggleGroup(ageToggleGroup);
+        ageButton6.setToggleGroup(ageToggleGroup);
+    }
+
+    public void filterButtonUpdate(){
+        RadioButton ageSelected = (RadioButton) ageToggleGroup.getSelectedToggle();
+        String age = (ageSelected != null) ? ageSelected.getText() : "All";
+        RadioButton genderSelected = (RadioButton) genderToggleGroup.getSelectedToggle();
+        String gender = (genderSelected != null) ? genderSelected.getText() : "All";
+        RadioButton incomeSelected = (RadioButton) incomeToggleGroup.getSelectedToggle();
+        String income = (incomeSelected != null) ? incomeSelected.getText() : "All";
+        RadioButton contextSelected = (RadioButton) contextToggleGroup.getSelectedToggle();
+        String context = (contextSelected != null) ? contextSelected.getText() : "All";
+        String lowDate = (lowerDatePicker.getValue() != null) ? lowerDatePicker.getValue().toString() : "null";
+        String upperDate = (upperDatePicker.getValue() != null) ? upperDatePicker.getValue().toString() : "null";
+        filters = new GraphFilters(
+                lowDate,
+                upperDate,
+                age,
+                gender,
+                income,
+                context
+        );
+    }
+
 
     @FXML
     public void handleChartSelection() {
@@ -734,10 +913,11 @@ public class ChartsSceneController extends SceneController {
 
         lowerDatePicker.setVisible(dateRangeVisible);
         upperDatePicker.setVisible(dateRangeVisible);
+        toLabel.setVisible(dateRangeVisible);
+        fromLabel.setVisible(dateRangeVisible);
 
         if(chartSelection.getSelectionModel().getSelectedIndex() == 0){
             granSelection.setVisible(!dateRangeVisible);
-            timeSelection.setVisible(!dateRangeVisible);
         }
 
         if (dateRangeVisible) {

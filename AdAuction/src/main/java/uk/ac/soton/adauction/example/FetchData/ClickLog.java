@@ -2,6 +2,7 @@ package uk.ac.soton.adauction.example.FetchData;
 
 import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
 import uk.ac.soton.adauction.example.FetchData.Queriers.RemoteQuerier;
+import uk.ac.soton.adauction.example.Utils.GraphFilters;
 
 import java.sql.*;
 import java.time.*;
@@ -10,10 +11,11 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ClickLog extends LocalQuerier {
-
-    public HashMap<String, Integer> fetchClickCounts(String groupingGranularity, int tickIndex) {
+    private HashMap<String, String> parameters = new HashMap<>();
+    public HashMap<String, Integer> fetchClickCounts(String groupingGranularity, int tickIndex) throws SQLException {
         return fetchClickCounts(groupingGranularity, tickIndex, 0);
     }
 
@@ -24,7 +26,7 @@ public class ClickLog extends LocalQuerier {
      * @param offset
      * @return
      */
-    public HashMap<String, Integer> fetchClickCounts(String groupingGranularity, int tickIndex, int offset) {
+    public HashMap<String, Integer> fetchClickCounts(String groupingGranularity, int tickIndex, int offset) throws SQLException {
         Timestamp latestTimestamp = getLatestClickTimestamp();
         if (latestTimestamp == null) return new HashMap<>();
         LocalDateTime latestLdt = latestTimestamp.toLocalDateTime();
@@ -35,29 +37,28 @@ public class ClickLog extends LocalQuerier {
                 tickIndex);
     }
 
-    public HashMap<String, Integer> fetchClickCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) {
+    public HashMap<String, Integer> fetchClickCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) throws SQLException {
         if (lowerDateTime.isAfter(upperDateTime)) {
             throw new IllegalArgumentException("lowerDateTime must be before upperDateTime");
         }
         return fetchClickCountsInternal(lowerDateTime, upperDateTime, tickIndex);
     }
 
-    private HashMap<String, Integer> fetchClickCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) {
+    private HashMap<String, Integer> fetchClickCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) throws SQLException {
 
         HashMap<String, Integer> counts   = new HashMap<>();
         TickInfo                 tickInfo = getTickInfo(tickIndex);
 
-        String sql =
-                "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
-                        "FROM click_log " +
-                        "WHERE click_date BETWEEN ? AND ? " +
-                        "GROUP BY tick";
+        StringBuilder sql = new StringBuilder("SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
+                "FROM click_log c JOIN unique_users i ON c.id = i.id WHERE 1=1");
+        String query = addFilters(sql);
+        System.out.println("SQL statement: " + query);
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(fmt));
-            stmt.setString(2, endBoundary  .truncatedTo(ChronoUnit.SECONDS).format(fmt));
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            //stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+            //stmt.setString(2, endBoundary  .truncatedTo(ChronoUnit.SECONDS).format(fmt));
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -82,7 +83,7 @@ public class ClickLog extends LocalQuerier {
      * @param tickIndex
      * @return
      */
-    public HashMap<String, Integer> fetchUniqueCounts(String groupingGranularity, int tickIndex) {
+    public HashMap<String, Integer> fetchUniqueCounts(String groupingGranularity, int tickIndex) throws SQLException {
         return fetchUniqueCounts(groupingGranularity, tickIndex, 0);
     }
 
@@ -93,7 +94,7 @@ public class ClickLog extends LocalQuerier {
      * @param offset
      * @return
      */
-    public HashMap<String, Integer> fetchUniqueCounts(String groupingGranularity, int tickIndex, int offset) {
+    public HashMap<String, Integer> fetchUniqueCounts(String groupingGranularity, int tickIndex, int offset) throws SQLException {
         // compute latest and boundaries as before
         Timestamp latestTimestamp = getLatestClickTimestamp();
         if (latestTimestamp == null) {
@@ -106,31 +107,28 @@ public class ClickLog extends LocalQuerier {
         return fetchUniqueCounts(boundaries.getStart(), boundaries.getEnd(), tickIndex);
     }
 
-    public HashMap<String, Integer> fetchUniqueCounts(LocalDateTime lowerBound, LocalDateTime upperBound, int tickIndex) {
+    public HashMap<String, Integer> fetchUniqueCounts(LocalDateTime lowerBound, LocalDateTime upperBound, int tickIndex) throws SQLException {
         HashMap<String, Integer> counts = new HashMap<>();
         int newTick = (tickIndex >= 0) ? tickIndex : resolveTickIndex(lowerBound, upperBound);
         TickInfo tickInfo = getTickInfo(newTick);
 
-        String query =
-                "WITH first_date AS (" +
-                        "   SELECT id, MIN(click_date) AS earliest_click " +
-                        "   FROM click_log " +
-                        "   GROUP BY id" +
-                        ") " +
-                        "SELECT " +
-                        tickInfo.getTickExpression().replace("click_date", "earliest_click") +
-                        " AS tick, COUNT(*) AS count " +
-                        "FROM first_date " +
-                        "WHERE earliest_click BETWEEN ? AND ? " +
-                        "GROUP BY tick";
-
+        StringBuilder sql = new StringBuilder("WITH first_date AS (" +
+                "   SELECT id, MIN(click_date) AS click_date " +
+                "   FROM click_log " +
+                "   GROUP BY id" +
+                ") " +
+                "SELECT " +
+                tickInfo.getTickExpression() +
+                " AS tick, COUNT(*) AS count " +
+                "FROM first_date c JOIN unique_users i ON c.id = i.id WHERE 1=1");
+        String query = addFilters(sql);
         System.out.println("SQL statement: " + query);
         System.out.println("Boundaries (unique): " + lowerBound + " to " + upperBound);
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
             DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            stmt.setString(1, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
-            stmt.setString(2, upperBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+            //stmt.setString(1, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+            //stmt.setString(2, upperBound.truncatedTo(ChronoUnit.SECONDS).format(fmt));
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -238,6 +236,49 @@ public class ClickLog extends LocalQuerier {
         if (hours / 24 <= maxPoints) return 1;
         if (hours / (24 * 7) <= maxPoints) return 2;
         return 3;
+    }
+
+    public void addParameters(GraphFilters graphFilters) throws SQLException {
+        parameters.clear();
+        System.out.println("Add Parameters");
+        if (!graphFilters.getAge().equals("All")) parameters.put("age", graphFilters.getAge());
+        if (!graphFilters.getGender().equals("All")) parameters.put("gender", graphFilters.getGender());
+        if (!graphFilters.getIncome().equals("All")) parameters.put("income", graphFilters.getIncome());
+        if (!graphFilters.getContext().equals("All")) parameters.put("context", graphFilters.getContext());
+        if (!graphFilters.getEndDate().equals("End")) parameters.put("endDate", graphFilters.getEndDate());
+        if (!graphFilters.getStartDate().equals("Start")) parameters.put("startDate", graphFilters.getStartDate());
+
+
+    }
+
+    private String getFirstColumnName(String tableName) throws SQLException {
+        String query = "PRAGMA table_info(" + tableName + ")";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            if (rs.next()) {
+                return rs.getString("name"); // The "name" column contains the column name
+            }
+        }
+        return null; // Return null if no column is found
+    }
+
+    private String addFilters(StringBuilder query) throws SQLException {
+        String firstColumnName = getFirstColumnName("click_log");
+        if (!parameters.containsValue("null")){
+            query.append(" AND DATE(click_date) BETWEEN DATE(").append(firstColumnName).append(") AND " +
+                    "DATE(").append(firstColumnName).append(")");
+        }
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String key = entry.getKey();
+            if (!"startDate".equalsIgnoreCase(key) && !"endDate".equalsIgnoreCase(key)) {
+                query.append(" AND i.").append(key).append(" = '").append(parameters.get(key)).append("'");
+            }
+
+        }
+        query.append(" GROUP BY tick");
+        System.out.println(query);
+        return query.toString();
     }
 
     /**

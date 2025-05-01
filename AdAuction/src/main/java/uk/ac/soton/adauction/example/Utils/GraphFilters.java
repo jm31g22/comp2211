@@ -3,14 +3,14 @@ package uk.ac.soton.adauction.example.Utils;
 import java.time.LocalDate;
 
 public class GraphFilters {
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
     private String age;
     private String gender;
     private String income;
     private String context;
 
-    public GraphFilters(LocalDate startDate, LocalDate endDate, String age, String gender, String income, String context) {
+    public GraphFilters(String startDate, String endDate, String age, String gender, String income, String context) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.age = age;
@@ -19,19 +19,19 @@ public class GraphFilters {
         this.context = context;
     }
 
-    public LocalDate getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(LocalDate startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public LocalDate getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(LocalDate endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 

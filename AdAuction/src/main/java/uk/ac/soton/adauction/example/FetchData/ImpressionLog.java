@@ -1,7 +1,7 @@
 package uk.ac.soton.adauction.example.FetchData;
 
 import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
-import uk.ac.soton.adauction.example.FetchData.Queriers.RemoteQuerier;
+import uk.ac.soton.adauction.example.Utils.GraphFilters;
 
 
 import java.sql.*;
@@ -11,11 +11,13 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class to obtain data from the impression log
  */
 public class ImpressionLog extends LocalQuerier {
+    private HashMap<String, String> parameters = new HashMap<>();
 
     /**
      * Function to fetch all impression data
@@ -206,12 +208,12 @@ public class ImpressionLog extends LocalQuerier {
     }
 
 
-    public HashMap<String, Integer> fetchImpressionCounts(String groupingGranularity, int tickIndex) {
+    public HashMap<String, Integer> fetchImpressionCounts(String groupingGranularity, int tickIndex) throws SQLException {
         return fetchImpressionCounts(groupingGranularity, tickIndex, 0);
     }
 
 
-    public HashMap<String, Integer> fetchImpressionCounts(String groupingGranularity, int tickIndex, int offset) {
+    public HashMap<String, Integer> fetchImpressionCounts(String groupingGranularity, int tickIndex, int offset) throws SQLException {
         Timestamp latestTimestamp = getLatestImpressionTimestamp();
         if (latestTimestamp == null) {
             return new HashMap<>();
@@ -222,22 +224,21 @@ public class ImpressionLog extends LocalQuerier {
         return fetchImpressionCounts(boundaries.getStart(), boundaries.getEnd(), tickIndex);
     }
 
-    public HashMap<String, Integer> fetchImpressionCounts(LocalDateTime lowerBound, LocalDateTime upperBound, int tickIndex) {
+    public HashMap<String, Integer> fetchImpressionCounts(LocalDateTime lowerBound, LocalDateTime upperBound, int tickIndex) throws SQLException {
         HashMap<String, Integer> counts = new HashMap<>();
         int newTick = (tickIndex >= 0) ? tickIndex : resolveTickIndex(lowerBound, upperBound);
         TickInfo tickInfo = getTickInfo(newTick);
 
-        String sql = "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
-                "FROM impression_log " +
-                "WHERE impression_date BETWEEN ? AND ? " +
-                "GROUP BY tick";
-        System.out.println("SQL statement: " + sql);
+        StringBuilder sql = new StringBuilder("SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
+                "FROM impression_log i WHERE 1=1");
+        String query = addFilters(sql);
+        System.out.println("SQL statement: " + query);
         System.out.println("Boundaries: " + lowerBound + " to " + upperBound);
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            stmt.setString(1, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(formatter));
-            stmt.setString(2, upperBound.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+            //stmt.setString(1, lowerBound.truncatedTo(ChronoUnit.SECONDS).format(formatter));
+            //stmt.setString(2, upperBound.truncatedTo(ChronoUnit.SECONDS).format(formatter));
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
@@ -367,6 +368,49 @@ public class ImpressionLog extends LocalQuerier {
             fullCounts.put(tick, counts.getOrDefault(tick, 0));
         }
         return fullCounts;
+    }
+
+    public void addParameters(GraphFilters graphFilters) throws SQLException {
+        parameters.clear();
+        System.out.println("Add Parameters");
+        if (!graphFilters.getAge().equals("All")) parameters.put("age", graphFilters.getAge());
+        if (!graphFilters.getGender().equals("All")) parameters.put("gender", graphFilters.getGender());
+        if (!graphFilters.getIncome().equals("All")) parameters.put("income", graphFilters.getIncome());
+        if (!graphFilters.getContext().equals("All")) parameters.put("context", graphFilters.getContext());
+        if (!graphFilters.getEndDate().equals("End")) parameters.put("endDate", graphFilters.getEndDate());
+        if (!graphFilters.getStartDate().equals("Start")) parameters.put("startDate", graphFilters.getStartDate());
+
+
+    }
+
+    private String getFirstColumnName(String tableName) throws SQLException {
+        String query = "PRAGMA table_info(" + tableName + ")";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            if (rs.next()) {
+                return rs.getString("name"); // The "name" column contains the column name
+            }
+        }
+        return null; // Return null if no column is found
+    }
+
+    private String addFilters(StringBuilder query) throws SQLException {
+        String firstColumnName = getFirstColumnName("impression_log");
+        if (!parameters.containsValue("null")){
+            query.append(" AND DATE(impression_date) BETWEEN DATE(").append(firstColumnName).append(") AND " +
+                    "DATE(").append(firstColumnName).append(")");
+        }
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String key = entry.getKey();
+            if (!"startDate".equalsIgnoreCase(key) && !"endDate".equalsIgnoreCase(key)) {
+                query.append(" AND i.").append(key).append(" = '").append(parameters.get(key)).append("'");
+            }
+
+        }
+        query.append(" GROUP BY tick");
+        System.out.println(query);
+        return query.toString();
     }
 
     private static class Boundary {

@@ -32,26 +32,14 @@
   OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.chart.PieChart?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.ComparisonController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="713.0" prefWidth="1020.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uk.ac.soton.adauction.example.Controller.ComparisonController">
    <children>
       <VBox prefHeight="719.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
@@ -298,6 +286,47 @@
             <AnchorPane fx:id="graph1Pane" prefHeight="241.0" prefWidth="623.0">
                <children>
                   <PieChart fx:id="piechart1" layoutX="-3.0" prefHeight="242.0" prefWidth="623.0" />
+                  <VBox fx:id="hoverPane" layoutX="341.0" layoutY="14.0" prefHeight="103.0" prefWidth="258.0" style="-fx-border-color: #1F263E; -fx-border-width: 2; -fx-background-color: white; -fx-border-radius: 10;">
+                     <children>
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                           <children>
+                              <Label fx:id="timeOrCatLabel" prefHeight="50.0" prefWidth="87.0" text="Time:">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="timeLabel" prefHeight="50.0" prefWidth="163.0" text="Label">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
+                        </HBox>
+                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                           <children>
+                              <Label prefHeight="50.0" prefWidth="65.0" text="Value:">
+                                 <font>
+                                    <Font name="System Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="valueLabel" prefHeight="110.0" prefWidth="154.0" text="Label">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                  </VBox>
                </children>
             </AnchorPane>
          </children>
@@ -326,47 +355,6 @@
                   <PieChart fx:id="piechart2" layoutX="-1.0" prefHeight="262.0" prefWidth="623.0" />
                </children>
             </AnchorPane>
-         </children>
-      </VBox>
-      <VBox fx:id="hoverPane" layoutX="933.0" layoutY="587.0" prefHeight="103.0" prefWidth="258.0" style="-fx-border-color: #1F263E; -fx-border-width: 2; -fx-background-color: white; -fx-border-radius: 10;">
-         <children>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
-               <children>
-                  <Label fx:id="timeOrCatLabel" prefHeight="50.0" prefWidth="87.0" text="Time:">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="timeLabel" prefHeight="50.0" prefWidth="163.0" text="Label">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-               </children>
-               <opaqueInsets>
-                  <Insets />
-               </opaqueInsets>
-               <padding>
-                  <Insets left="5.0" right="5.0" />
-               </padding>
-            </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0">
-               <children>
-                  <Label prefHeight="50.0" prefWidth="65.0" text="Value:">
-                     <font>
-                        <Font name="System Bold" size="16.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="valueLabel" prefHeight="110.0" prefWidth="154.0" text="Label">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-               </children>
-               <padding>
-                  <Insets left="5.0" right="5.0" />
-               </padding>
-            </HBox>
          </children>
       </VBox>
       <Text layoutX="850.0" layoutY="64.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From">
@@ -453,17 +441,12 @@
             <RadioButton fx:id="allContextButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" stylesheets="@style.css" text="All" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <Button fx:id="applyButtonDashboard" layoutX="850.0" layoutY="587.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="79.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Apply to Graph 1">
+      <Button fx:id="graph1FilterButton" layoutX="850.0" layoutY="598.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="116.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Graph 1 Filters">
          <font>
             <Font size="11.0" />
          </font>
       </Button>
-      <Button fx:id="graph1FilterButton" layoutX="850.0" layoutY="612.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="79.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Graph 1 Filters">
-         <font>
-            <Font size="11.0" />
-         </font>
-      </Button>
-      <Button fx:id="graph2FilterButton" layoutX="850.0" layoutY="637.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="79.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Graph 2 Filters">
+      <Button fx:id="graph2FilterButton" layoutX="850.0" layoutY="639.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="116.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Graph 2 Filters">
          <font>
             <Font size="11.0" />
          </font>

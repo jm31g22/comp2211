@@ -441,17 +441,12 @@
             <RadioButton fx:id="allContextButton" mnemonicParsing="false" prefHeight="17.0" prefWidth="64.0" stylesheets="@style.css" text="All" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
       </GridPane>
-      <Button fx:id="applyButtonDashboard" layoutX="850.0" layoutY="587.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="116.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Apply to Graph 1">
+      <Button fx:id="graph1FilterButton" layoutX="850.0" layoutY="598.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="116.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Graph 1 Filters">
          <font>
             <Font size="11.0" />
          </font>
       </Button>
-      <Button fx:id="graph1FilterButton" layoutX="850.0" layoutY="612.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="116.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Graph 1 Filters">
-         <font>
-            <Font size="11.0" />
-         </font>
-      </Button>
-      <Button fx:id="graph2FilterButton" layoutX="850.0" layoutY="637.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="116.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Graph 2 Filters">
+      <Button fx:id="graph2FilterButton" layoutX="850.0" layoutY="639.0" mnemonicParsing="false" prefHeight="23.0" prefWidth="116.0" style="-fx-background-color: #1F263E; -fx-border-radius: 10; -fx-text-fill: white;" styleClass="custom-button" text="Graph 2 Filters">
          <font>
             <Font size="11.0" />
          </font>

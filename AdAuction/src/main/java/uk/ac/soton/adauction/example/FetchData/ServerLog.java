@@ -1,25 +1,28 @@
 package uk.ac.soton.adauction.example.FetchData;
 
+import uk.ac.soton.adauction.example.App;
 import uk.ac.soton.adauction.example.FetchData.Queriers.LocalQuerier;
 import uk.ac.soton.adauction.example.FetchData.Queriers.RemoteQuerier;
+import uk.ac.soton.adauction.example.Utils.GraphFilters;
 
 import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.*;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ServerLog extends LocalQuerier {
-
+    private HashMap<String, String> parameters = new HashMap<>();
 
     /**
      * Overload without offset for conversions.
      */
-    public HashMap<String, Integer> fetchConversionCounts(String groupingGranularity, int tickIndex) {
+    public HashMap<String, Integer> fetchConversionCounts(String groupingGranularity, int tickIndex) throws SQLException {
         return fetchConversionCounts(groupingGranularity, tickIndex, 0);
     }
 
-    public HashMap<String, Integer> fetchConversionCounts(String groupingGranularity, int tickIndex, int offset) {
+    public HashMap<String, Integer> fetchConversionCounts(String groupingGranularity, int tickIndex, int offset) throws SQLException {
         Timestamp latest = getLatestEntryTimestamp();
         if (latest == null) {
             return new HashMap<>();
@@ -33,7 +36,7 @@ public class ServerLog extends LocalQuerier {
                 tickIndex);
     }
 
-    public HashMap<String, Integer> fetchConversionCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) {
+    public HashMap<String, Integer> fetchConversionCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) throws SQLException {
         if (lowerDateTime.isAfter(upperDateTime)) {
             throw new IllegalArgumentException("lowerDateTime must be before upperDateTime");
         }
@@ -42,23 +45,20 @@ public class ServerLog extends LocalQuerier {
         return fetchConversionCountsInternal(lowerDateTime, upperDateTime, newTick);
     }
 
-    private HashMap<String, Integer> fetchConversionCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) {
+    private HashMap<String, Integer> fetchConversionCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) throws SQLException {
         HashMap<String, Integer> counts   = new HashMap<>();
         TickInfo tickInfo = getTickInfo(tickIndex);
 
-        String sql =
-                "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
-                        "FROM server_log " +
-                        "WHERE conversion = 'Yes' " +
-                        "  AND entry_date BETWEEN ? AND ? " +
-                        "GROUP BY tick";
+        StringBuilder sql = new StringBuilder("SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
+                "FROM server_log s JOIN unique_users i ON s.id = i.id WHERE conversion = 'Yes' ");
+        String query = addFilters(sql);
 
         System.out.println("SQL statement: " + sql);
         System.out.println("Boundaries: " + startBoundary + " to " + endBoundary);
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setTimestamp(1, Timestamp.valueOf(startBoundary));
-            stmt.setTimestamp(2, Timestamp.valueOf(endBoundary));
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            //stmt.setTimestamp(1, Timestamp.valueOf(startBoundary));
+            //stmt.setTimestamp(2, Timestamp.valueOf(endBoundary));
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -78,11 +78,11 @@ public class ServerLog extends LocalQuerier {
     }
 
 
-    public HashMap<String, Integer> fetchBounceCounts(String groupingGranularity, int tickIndex) {
+    public HashMap<String, Integer> fetchBounceCounts(String groupingGranularity, int tickIndex) throws SQLException {
         return fetchBounceCounts(groupingGranularity, tickIndex, 0);
     }
 
-    public HashMap<String, Integer> fetchBounceCounts(String groupingGranularity, int tickIndex, int offset) {
+    public HashMap<String, Integer> fetchBounceCounts(String groupingGranularity, int tickIndex, int offset) throws SQLException {
         Timestamp latest = getLatestEntryTimestamp();
         if (latest == null) return new HashMap<>();
 
@@ -94,31 +94,36 @@ public class ServerLog extends LocalQuerier {
                 tickIndex);
     }
 
-    public HashMap<String, Integer> fetchBounceCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) {
+    public HashMap<String, Integer> fetchBounceCounts(LocalDateTime lowerDateTime, LocalDateTime upperDateTime, int tickIndex) throws SQLException {
         if (lowerDateTime.isAfter(upperDateTime)) {
             throw new IllegalArgumentException("lowerDateTime must be before upperDateTime");
         }
         return fetchBounceCountsInternal(lowerDateTime, upperDateTime, tickIndex);
     }
 
-    private HashMap<String, Integer> fetchBounceCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) {
+    private HashMap<String, Integer> fetchBounceCountsInternal(LocalDateTime startBoundary, LocalDateTime endBoundary, int tickIndex) throws SQLException {
 
         HashMap<String, Integer> counts   = new HashMap<>();
         TickInfo tickInfo = getTickInfo(tickIndex);
-
-        String sql =
-                "SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
-                        "FROM server_log " +
-                        "WHERE ((strftime('%s', exit_date) - strftime('%s', entry_date)) <= 10 " +
-                        "       OR pages_viewed = 1) " +
-                        "  AND entry_date BETWEEN ? AND ? " +
-                        "GROUP BY " + tickInfo.getTickExpression();
+        String query;
+        String definition = App.getAppState().getBounceDefinitionBinding().get();
+        int value = App.getAppState().getBounceDefinitionNumberBinding().get();
+        if (definition.equalsIgnoreCase("Pages")){
+            StringBuilder sql = new StringBuilder("SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
+            "FROM server_log s JOIN unique_users i ON s.id = i.id WHERE pages_viewed = " + value);
+            query = addFilters(sql);
+        }else{
+            StringBuilder sql = new StringBuilder("SELECT " + tickInfo.getTickExpression() + " AS tick, COUNT(*) AS count " +
+                    "FROM server_log s JOIN unique_users i ON s.id = i.id WHERE " +
+                    "((strftime('%s', exit_date) - strftime('%s', entry_date)) <= " + value);
+            query = addFilters(sql);
+        }
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(fmt));
-            stmt.setString(2, endBoundary  .truncatedTo(ChronoUnit.SECONDS).format(fmt));
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            //stmt.setString(1, startBoundary.truncatedTo(ChronoUnit.SECONDS).format(fmt));
+            //stmt.setString(2, endBoundary  .truncatedTo(ChronoUnit.SECONDS).format(fmt));
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -254,6 +259,49 @@ public class ServerLog extends LocalQuerier {
         }
 
         return fullCounts;
+    }
+
+    public void addParameters(GraphFilters graphFilters) throws SQLException {
+        parameters.clear();
+        System.out.println("Add Parameters");
+        if (!graphFilters.getAge().equals("All")) parameters.put("age", graphFilters.getAge());
+        if (!graphFilters.getGender().equals("All")) parameters.put("gender", graphFilters.getGender());
+        if (!graphFilters.getIncome().equals("All")) parameters.put("income", graphFilters.getIncome());
+        if (!graphFilters.getContext().equals("All")) parameters.put("context", graphFilters.getContext());
+        if (!graphFilters.getEndDate().equals("End")) parameters.put("endDate", graphFilters.getEndDate());
+        if (!graphFilters.getStartDate().equals("Start")) parameters.put("startDate", graphFilters.getStartDate());
+
+
+    }
+
+    private String getFirstColumnName(String tableName) throws SQLException {
+        String query = "PRAGMA table_info(" + tableName + ")";
+        try (Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            if (rs.next()) {
+                return rs.getString("name"); // The "name" column contains the column name
+            }
+        }
+        return null; // Return null if no column is found
+    }
+
+    private String addFilters(StringBuilder query) throws SQLException {
+        String firstColumnName = getFirstColumnName("server_log");
+        if (!parameters.containsValue("null")){
+            query.append(" AND DATE(entry_date) BETWEEN DATE(").append(firstColumnName).append(") AND " +
+                    "DATE(").append(firstColumnName).append(")");
+        }
+        for (Map.Entry<String, String> entry : parameters.entrySet()) {
+            String key = entry.getKey();
+            if (!"startDate".equalsIgnoreCase(key) && !"endDate".equalsIgnoreCase(key)) {
+                query.append(" AND i.").append(key).append(" = '").append(parameters.get(key)).append("'");
+            }
+
+        }
+        query.append(" GROUP BY tick");
+        System.out.println(query);
+        return query.toString();
     }
 
     // helper classes
