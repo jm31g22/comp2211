@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="uk.ac.soton.adauction.example.Controller.LoadingController"
+            prefHeight="400.0" prefWidth="600.0"
+            style="-fx-background-color: #f0f0f0;">
+
+    <VBox alignment="CENTER" spacing="20.0" layoutX="100.0" layoutY="100.0" prefWidth="400" AnchorPane.topAnchor="100.0" AnchorPane.leftAnchor="100.0">
+        <ProgressIndicator fx:id="progressIndicator" prefWidth="80" prefHeight="80"/>
+        <Label fx:id="loadingLabel" text="Loading..." style="-fx-font-size: 16px; -fx-text-fill: #444;" wrapText="true" textAlignment="CENTER"/>
+    </VBox>
+
+    <!-- Logo at the bottom center -->
+    <!-- Logo at the bottom center -->
+    <HBox alignment="CENTER"
+          AnchorPane.bottomAnchor="75.0"
+          AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0">
+        <ImageView fx:id="logoImage"
+                   fitHeight="60.0"
+                   preserveRatio="true"
+                   pickOnBounds="true"
+                   style="-fx-opacity: 0.8;">
+            <Image url="@../assets/logo.png" />
+        </ImageView>
+    </HBox>
+
+
+</AnchorPane>

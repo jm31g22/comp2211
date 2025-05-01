@@ -1,6 +1,8 @@
 package uk.ac.soton.adauction.example;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.stage.Stage;
 import uk.ac.soton.adauction.example.FetchData.MetricsLoader;
 import uk.ac.soton.adauction.example.Utils.CampaignImporter;
@@ -14,31 +16,49 @@ public class App extends Application {
     private static MetricsLoader metricsLoader = new MetricsLoader();
     private static AppState appState = new AppState();
 
-    /**
-     * Start the program - load scenes and switch to dashboard.
-     * @param stage
-     * @throws SQLException
-     */
+    @Override
     public void start(Stage stage) throws SQLException {
-
         List<String> args = getParameters().getRaw();
-
-        long start = System.currentTimeMillis();
-        sceneManager = new SceneManager(stage);
         String pathPrefix = "AdAuction/src/main/java/uk/ac/soton/adauction/example/";
 
-        CampaignImporter.importCampaign(pathPrefix + args.get(0),
-                pathPrefix + args.get(1), pathPrefix + args.get(2));
-
-
+        sceneManager = new SceneManager(stage);
         sceneManager.loadScenes();
-        sceneManager.switchTo("dashboard");
+        sceneManager.switchTo("loading"); // Show loading screen immediately
         stage.show();
 
-        long end = System.currentTimeMillis();
-        System.out.println("Elapsed time: " + (end - start)/1000 + " s");
-    }
+        long start = System.currentTimeMillis();
 
+        // Background task to import campaign
+        Task<Void> importTask = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                CampaignImporter.importCampaign(
+                        pathPrefix + args.get(0),
+                        pathPrefix + args.get(1),
+                        pathPrefix + args.get(2)
+                );
+                return null;
+            }
+        };
+
+        importTask.setOnSucceeded(e -> {
+            long end = System.currentTimeMillis();
+            System.out.println("Elapsed time: " + (end - start) / 1000 + " s");
+            sceneManager.loadScenes();
+            Platform.runLater(() -> sceneManager.switchTo("dashboard"));
+        });
+
+        importTask.setOnFailed(e -> {
+            Throwable ex = importTask.getException();
+            ex.printStackTrace();
+            Platform.runLater(() -> {
+                // Optional: switch to error scene or display error message
+                System.out.println("Campaign import failed: " + ex.getMessage());
+            });
+        });
+
+        new Thread(importTask).start();
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -48,7 +68,9 @@ public class App extends Application {
         return sceneManager;
     }
 
-    public static MetricsLoader getMetricsLoader() {return metricsLoader;}
+    public static MetricsLoader getMetricsLoader() {
+        return metricsLoader;
+    }
 
     public static AppState getAppState() {
         return appState;
